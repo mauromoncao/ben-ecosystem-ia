@@ -58,7 +58,7 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     ecosystem: 'Ben Ecosystem IA',
-    versao: '2.1',
+    versao: '3.0',
     stack: 'Claude Haiku 4.5 · GPT-4o · GPT-4o-mini · Perplexity',
     status: allOnline ? (vpsOnline ? 'online' : 'parcial') : 'degraded',
     timestamp: new Date().toISOString(),
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     modulos: { growth, juris, vps },
     agentes: {
       growth: { total: 9, modelos: ['gpt-4o-mini','gpt-4o','claude-haiku-4-5'] },
-      juris:  { total: 15, modelos: ['claude-haiku-4-5','gpt-4o','perplexity'], extras: ['dr-ben-engenheiro'] },
+      juris:  { total: 25, modelos: ['claude-haiku-4-5','gpt-4o','perplexity'], extras: ['contador-ia','perito-ia'] },
     },
     urls: {
       growth: GROWTH_URL,

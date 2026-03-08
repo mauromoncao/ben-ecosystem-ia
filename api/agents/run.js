@@ -36,6 +36,14 @@ const JURIS_AGENTS = new Set([
   'dr-ben-constitucional', 'dr-ben-compliance', 'dr-ben-pesquisa',
   'dr-ben-relatorio', 'dr-ben-producao', 'dr-ben-admin',
   'dr-ben-engenheiro',
+  // Contador IA (5)
+  'dr-ben-contador-fiscal', 'dr-ben-contador-planejamento',
+  'dr-ben-contador-creditos', 'dr-ben-contador-inconsistencias',
+  'dr-ben-contador-relatorio',
+  // Perito IA (5)
+  'dr-ben-perito-documentos', 'dr-ben-perito-digital',
+  'dr-ben-perito-laudo', 'dr-ben-perito-contestar',
+  'dr-ben-perito-relatorio',
   // Aliases usados no Ecosystem UI
   'dr-ben-auditoria', 'dr-ben-analise',
 ])
