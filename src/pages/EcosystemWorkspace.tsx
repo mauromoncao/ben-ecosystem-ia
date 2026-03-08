@@ -226,9 +226,9 @@ export default function EcosystemWorkspace() {
 
   // ── Nova conversa ─────────────────────────────────────────────
   const startConversation = useCallback((agent: Agent) => {
-    setSelectedAgent(agent)
+    const newConvId = `conv-${Date.now()}`
     const newConv: Conversation = {
-      id: `conv-${Date.now()}`,
+      id: newConvId,
       title: `${agent.emoji} ${agent.name}`,
       agentId: agent.id,
       messages: [],
@@ -236,7 +236,8 @@ export default function EcosystemWorkspace() {
       project: agent.project,
     }
     setConversations(prev => [newConv, ...prev])
-    setActiveConvId(newConv.id)
+    setSelectedAgent(agent)
+    setActiveConvId(newConvId)
     setPrompt('')
     setAttachments([])
     setUseSearch(false)
@@ -609,7 +610,7 @@ export default function EcosystemWorkspace() {
   // ÁREA DE CHAT
   // ══════════════════════════════════════════════════════════════
   const renderChat = () => {
-    if (!selectedAgent || !activeConv) {
+    if (!selectedAgent || !activeConvId) {
       return (
         <div className="flex-1 flex flex-col items-center justify-center p-8" style={{ background: '#f8f9fb' }}>
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
@@ -664,6 +665,7 @@ export default function EcosystemWorkspace() {
       )
     }
 
+    const currentConv = conversations.find(c => c.id === activeConvId)
     return (
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header do chat */}
@@ -701,7 +703,7 @@ export default function EcosystemWorkspace() {
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
-          {activeConv.messages.length === 0 && (
+          {(currentConv?.messages.length ?? 0) === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center py-8">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3"
                 style={{ background: selectedAgent.color + '22' }}>
@@ -715,7 +717,7 @@ export default function EcosystemWorkspace() {
             </div>
           )}
 
-          {activeConv.messages.map(msg => (
+          {(currentConv?.messages ?? []).map(msg => (
             <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.role === 'assistant' && (
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm mr-2 flex-shrink-0 mt-0.5"
