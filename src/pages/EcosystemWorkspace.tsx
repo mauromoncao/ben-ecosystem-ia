@@ -11,7 +11,7 @@ import {
 
 // ─── Tipos ────────────────────────────────────────────────────
 type Project      = 'growth' | 'juris'
-type AgentCategory = 'atendimento' | 'juridico' | 'marketing' | 'sistema'
+type AgentCategory = 'atendimento' | 'juridico' | 'marketing' | 'sistema' | 'contador' | 'perito'
 type ModuleStatus  = 'online' | 'offline' | 'degraded' | 'checking'
 
 interface Agent {
@@ -68,28 +68,47 @@ interface EcosystemStatus {
 
 // ─── Agentes — IDs alinhados com APIs do Growth e Juris ───────
 const ECOSYSTEM_AGENTS: Agent[] = [
-  // ── Growth Center ───────────────────────────────────────────
-  { id: 'dr-ben',          name: 'Dr. Ben Atendimento',      emoji: '🤖', description: 'Qualificação de leads, triagem e atendimento 24/7.', model: 'Gemini 2.5 Flash', modelBadge: 'bg-green-100 text-green-800',   category: 'atendimento', project: 'growth', color: '#0f2044', active: true },
-  { id: 'mara-ia',         name: 'MARA — Secretária IA',      emoji: '👩‍💼', description: 'Agenda, notificações, triagem urgente e WhatsApp executivo.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'atendimento', project: 'growth', color: '#1e3470', active: true },
-  { id: 'lex-conteudo',    name: 'Lex Conteúdo',              emoji: '✍️', description: 'Artigos jurídicos, posts e conteúdo institucional OAB.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'marketing', project: 'growth', color: '#7c3aed', active: true },
-  { id: 'lex-campanhas',   name: 'Lex Campanhas',             emoji: '📊', description: 'Análise de performance Meta Ads e Google Ads.', model: 'GPT-4o', modelBadge: 'bg-green-100 text-green-800', category: 'marketing', project: 'growth', color: '#059669', active: true },
-  { id: 'lex-relatorio',   name: 'Lex Relatório',             emoji: '📈', description: 'Relatório semanal com insights de performance e KPIs.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'marketing', project: 'growth', color: '#d97706', active: true },
-  { id: 'lex-monitor',     name: 'Lex Monitor',               emoji: '🔍', description: 'Monitoramento de saúde do sistema e alertas críticos.', model: 'Gemini 2.5 Flash', modelBadge: 'bg-green-100 text-green-800', category: 'sistema', project: 'growth', color: '#dc2626', active: true },
-  { id: 'lex-marketing',   name: 'Lex Marketing',             emoji: '📣', description: 'Redes sociais, Instagram, Reels e conteúdo OAB-compliant.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'marketing', project: 'growth', color: '#0369a1', active: true },
-  // ── Juris Center ────────────────────────────────────────────
-  { id: 'dr-ben-peticoes',           name: 'Dr. Ben Petições',            emoji: '⚖️', description: 'Peças processuais elaboradas conforme o caso concreto.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#92400e', active: true },
-  { id: 'dr-ben-contratos',          name: 'Dr. Ben Contratos',           emoji: '📋', description: 'Contratos empresariais, NDAs e documentos societários.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#1d4ed8', active: true },
-  { id: 'dr-ben-procuracoes',        name: 'Dr. Ben Procurações',         emoji: '📜', description: 'Procurações Ad Judicia, gerais, especiais e substabelecimentos.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#7c3aed', active: true },
-  { id: 'dr-ben-analise-processo',   name: 'Dr. Ben Análise Processual',  emoji: '🔬', description: 'Análise estratégica de processos com avaliação de risco.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#dc2626', active: true },
-  { id: 'dr-ben-auditoria-processual', name: 'Dr. Ben Auditoria',         emoji: '🔏', description: 'Auditoria processual, prazos críticos e conformidade OAB.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#059669', active: true },
-  { id: 'dr-ben-fiscal',             name: 'Dr. Ben Fiscal/Tributário',   emoji: '💰', description: 'Direito tributário, planejamento fiscal e teses tributárias.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#d97706', active: true },
-  { id: 'dr-ben-trabalhista',        name: 'Dr. Ben Trabalhista',         emoji: '👷', description: 'Direito do trabalho, TST, reclamações e acordos trabalhistas.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#0369a1', active: true },
-  { id: 'dr-ben-previdenciario',     name: 'Dr. Ben Previdenciário',      emoji: '🏛️', description: 'Benefícios INSS, aposentadorias e revisões previdenciárias.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#7c3aed', active: true },
-  { id: 'dr-ben-pesquisa',           name: 'Dr. Ben Pesquisa Jurídica',   emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.', model: 'Perplexity llama-3.1', modelBadge: 'bg-indigo-100 text-indigo-800', category: 'juridico', project: 'juris', color: '#6d28d9', active: true },
-  { id: 'dr-ben-compliance',         name: 'Dr. Ben Compliance/LGPD',     emoji: '🛡️', description: 'Conformidade LGPD, políticas de privacidade e dados.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#0f766e', active: true },
-  { id: 'dr-ben-producao',           name: 'Dr. Ben Produção Intelectual',emoji: '📚', description: 'Artigos jurídicos, pareceres técnicos e publicações.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#1e40af', active: true },
-  { id: 'dr-ben-admin',              name: 'Dr. Ben Administrativo',      emoji: '🏛️', description: 'Direito Administrativo, licitações (Lei 14.133/21), recursos.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#374151', active: true },
-  { id: 'dr-ben-constitucional',     name: 'Dr. Ben Constitucional',      emoji: '⚡', description: 'MS, HC, Mandado de Injunção, ações constitucionais STF.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#b91c1c', active: true },
+  // ── Growth Center (9) ───────────────────────────────────────
+  { id: 'ben-atendente',              name: 'BEN Atendente Jurídico',       emoji: '🤖', description: 'Qualificação de leads, triagem e atendimento 24/7. Suporte jurídico inicial.', model: 'Gemini 2.5 Flash', modelBadge: 'bg-green-100 text-green-800',   category: 'atendimento', project: 'growth', color: '#0f2044', active: true },
+  { id: 'mara-ia',                    name: 'MARA — Secretária IA',          emoji: '👩‍💼', description: 'Agenda, notificações, triagem urgente e WhatsApp executivo.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'atendimento', project: 'growth', color: '#1e3470', active: true },
+  { id: 'ben-conteudista',            name: 'BEN Conteudista Jurídico',      emoji: '✍️', description: 'Artigos jurídicos, posts e conteúdo institucional OAB-compliant.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'marketing', project: 'growth', color: '#7c3aed', active: true },
+  { id: 'ben-estrategista-campanhas', name: 'BEN Estrategista de Campanhas', emoji: '📊', description: 'Análise de performance Meta Ads e Google Ads. ROI e KPIs.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'marketing', project: 'growth', color: '#059669', active: true },
+  { id: 'ben-analista-relatorios',    name: 'BEN Analista de Relatórios',    emoji: '📈', description: 'Relatório semanal com insights de performance e métricas executivas.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'marketing', project: 'growth', color: '#d97706', active: true },
+  { id: 'ben-analista-monitoramento', name: 'BEN Analista de Monitoramento', emoji: '🔍', description: 'Monitoramento de saúde do sistema e alertas críticos em tempo real.', model: 'Gemini 2.5 Flash', modelBadge: 'bg-green-100 text-green-800', category: 'sistema', project: 'growth', color: '#dc2626', active: true },
+  { id: 'ben-estrategista-marketing', name: 'BEN Estrategista de Marketing', emoji: '📣', description: 'Redes sociais, Instagram, Reels e conteúdo OAB-compliant.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'marketing', project: 'growth', color: '#0369a1', active: true },
+  { id: 'ben-diretor-criativo',       name: 'BEN Diretor Criativo',          emoji: '🎨', description: 'Identidade visual, branding jurídico e direção criativa institucional.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'marketing', project: 'growth', color: '#7c3aed', active: true },
+  { id: 'ben-revisor-juridico',       name: 'BEN Revisor Jurídico',          emoji: '📝', description: 'Revisão técnica e linguística de peças jurídicas e documentos.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'growth', color: '#374151', active: true },
+  // ── Juris Center — Core (16) ─────────────────────────────────
+  { id: 'ben-super-agente-juridico',  name: 'BEN Super Agente Jurídico ⭐',  emoji: '🌟', description: 'Coordenação estratégica multidisciplinar — o mais poderoso do ecossistema (Claude Opus 4.6).', model: 'Claude Opus 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'juridico', project: 'juris', color: '#92400e', active: true },
+  { id: 'ben-peticionista-juridico',  name: 'BEN Peticionista Jurídico',     emoji: '⚖️', description: 'Peças processuais elaboradas conforme o caso concreto e jurisprudência atual.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#1d4ed8', active: true },
+  { id: 'ben-contratualista',         name: 'BEN Contratualista',            emoji: '📋', description: 'Contratos empresariais, NDAs, societários e documentos negociais.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#7c3aed', active: true },
+  { id: 'ben-mandatario-juridico',    name: 'BEN Mandatário Jurídico',       emoji: '📜', description: 'Procurações Ad Judicia, gerais, especiais e substabelecimentos.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#059669', active: true },
+  { id: 'ben-analista-processual',    name: 'BEN Analista Processual',       emoji: '🔬', description: 'Análise estratégica de processos com avaliação de risco e prognóstico.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#dc2626', active: true },
+  { id: 'ben-auditor-processual',     name: 'BEN Auditor Processual',        emoji: '🔏', description: 'Auditoria de prazos críticos, conformidade OAB e gestão de risco.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#0f766e', active: true },
+  { id: 'ben-gestor-juridico',        name: 'BEN Gestor Jurídico',           emoji: '🏢', description: 'Gestão de escritório, produtividade jurídica e governança operacional.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#374151', active: true },
+  { id: 'ben-tributarista',           name: 'BEN Tributarista',              emoji: '💰', description: 'Direito tributário, planejamento fiscal e teses tributárias avançadas.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'juridico', project: 'juris', color: '#d97706', active: true },
+  { id: 'ben-trabalhista',            name: 'BEN Trabalhista',               emoji: '👷', description: 'Direito do trabalho, TST, reclamações e acordos trabalhistas.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#0369a1', active: true },
+  { id: 'ben-previdenciarista',       name: 'BEN Previdenciarista',          emoji: '🏛️', description: 'Benefícios INSS, aposentadorias, revisões previdenciárias e planejamento.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#7c3aed', active: true },
+  { id: 'ben-pesquisador-juridico',   name: 'BEN Pesquisador Jurídico',      emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações precisas.', model: 'Perplexity llama-3.1', modelBadge: 'bg-indigo-100 text-indigo-800', category: 'juridico', project: 'juris', color: '#6d28d9', active: true },
+  { id: 'ben-especialista-compliance',name: 'BEN Especialista Compliance',   emoji: '🛡️', description: 'Conformidade LGPD, políticas de privacidade e proteção de dados.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#0f766e', active: true },
+  { id: 'ben-relator-juridico',       name: 'BEN Relator Jurídico',          emoji: '📚', description: 'Artigos jurídicos, pareceres técnicos e publicações institucionais.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#1e40af', active: true },
+  { id: 'ben-redator-juridico',       name: 'BEN Redator Jurídico',          emoji: '✒️', description: 'Redação técnica jurídica, memorandos, ofícios e comunicações formais.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico', project: 'juris', color: '#374151', active: true },
+  { id: 'ben-constitucionalista',     name: 'BEN Constitucionalista',        emoji: '⚡', description: 'MS, HC, Mandado de Injunção, ações constitucionais e STF.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'juridico', project: 'juris', color: '#b91c1c', active: true },
+  { id: 'ben-engenheiro-prompt',      name: 'BEN Engenheiro de Prompt',      emoji: '🧠', description: 'Otimização de prompts, configuração de agentes e arquitetura IA.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'sistema', project: 'juris', color: '#4f46e5', active: true },
+  // ── Juris Center — Contador Tributarista (6) ─────────────────
+  { id: 'ben-contador-tributarista',             name: 'BEN Contador — Triagem',         emoji: '🧮', description: 'Triagem fiscal: classifica demanda e encaminha ao especialista correto.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#92400e', active: true },
+  { id: 'ben-contador-tributarista-especialista',name: 'BEN Contador — Especialista',    emoji: '📊', description: 'Análise fiscal profunda com Claude Sonnet 4.6 — planejamento tributário avançado.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#b45309', active: true },
+  { id: 'ben-contador-tributarista-planejamento',name: 'BEN Contador — Planejamento',    emoji: '🗺️', description: 'Planejamento tributário estratégico, elisão fiscal e otimização de carga.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#d97706', active: true },
+  { id: 'ben-contador-tributarista-creditos',    name: 'BEN Contador — Créditos',        emoji: '💳', description: 'Recuperação de créditos tributários, compensações e restituições.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#059669', active: true },
+  { id: 'ben-contador-tributarista-auditoria',   name: 'BEN Contador — Auditoria',       emoji: '🔍', description: 'Auditoria fiscal, conformidade tributária e gestão de risco fiscal.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#dc2626', active: true },
+  { id: 'ben-contador-tributarista-relatorio',   name: 'BEN Contador — Relatório',       emoji: '📋', description: 'Relatórios fiscais executivos, dashboards tributários e sínteses gerenciais.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'contador', project: 'juris', color: '#0369a1', active: true },
+  // ── Juris Center — Perito Forense (6) ────────────────────────
+  { id: 'ben-perito-forense',          name: 'BEN Perito Forense — Padrão',   emoji: '🔬', description: 'Análise pericial padrão com Claude Sonnet 4.6 — laudos e pareceres técnicos.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'perito', project: 'juris', color: '#4f46e5', active: true },
+  { id: 'ben-perito-forense-profundo', name: 'BEN Perito Forense — Profundo ⚠️', emoji: '🧬', description: 'Análise pericial profunda com Claude Opus 4.6 — alto custo, máxima precisão.', model: 'Claude Opus 4.6', modelBadge: 'bg-red-100 text-red-800', category: 'perito', project: 'juris', color: '#b91c1c', active: true },
+  { id: 'ben-perito-forense-digital',  name: 'BEN Perito Forense Digital',    emoji: '💻', description: 'Perícia digital, análise de evidências eletrônicas e cibersegurança forense.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'perito', project: 'juris', color: '#7c3aed', active: true },
+  { id: 'ben-perito-forense-laudo',    name: 'BEN Perito Forense — Laudo',    emoji: '📄', description: 'Elaboração de laudos periciais técnicos para processos judiciais.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'perito', project: 'juris', color: '#0369a1', active: true },
+  { id: 'ben-perito-forense-contestar',name: 'BEN Perito — Contraditório',    emoji: '🛡️', description: 'Contestação de laudos periciais adversariais e quesitos técnicos.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'perito', project: 'juris', color: '#059669', active: true },
+  { id: 'ben-perito-forense-relatorio',name: 'BEN Perito Forense — Relatório',emoji: '📊', description: 'Relatórios periciais executivos e sínteses técnicas para clientes.', model: 'Gemini 2.5 Pro', modelBadge: 'bg-purple-100 text-purple-800', category: 'perito', project: 'juris', color: '#374151', active: true },
 ]
 
 const CATEGORY_ICONS: Record<AgentCategory, React.ReactNode> = {
@@ -97,6 +116,8 @@ const CATEGORY_ICONS: Record<AgentCategory, React.ReactNode> = {
   juridico:    <Scale className="w-3.5 h-3.5" />,
   marketing:   <Megaphone className="w-3.5 h-3.5" />,
   sistema:     <Cpu className="w-3.5 h-3.5" />,
+  contador:    <Zap className="w-3.5 h-3.5" />,
+  perito:      <TrendingUp className="w-3.5 h-3.5" />,
 }
 
 // ─── Opções de anexo ──────────────────────────────────────────
@@ -315,7 +336,7 @@ export default function EcosystemWorkspace() {
           agentId: selectedAgent.id,
           input: fullPrompt,
           context: { history, letterhead: letterheadMode },
-          useSearch: useSearch || selectedAgent.id === 'dr-ben-pesquisa',
+          useSearch: useSearch || selectedAgent.id === 'ben-pesquisador-juridico',
           useMemory: false,
         }),
       })
@@ -453,8 +474,8 @@ export default function EcosystemWorkspace() {
             {statusOpen && (
               <div className="mt-2 space-y-1 text-[10px]">
                 {[
-                  { label: 'Growth Center', key: 'growth' as const, url: 'ben-growth-center.vercel.app' },
-                  { label: 'Juris Center',  key: 'juris'  as const, url: 'ben-juris-center.vercel.app'  },
+                  { label: 'Growth Center', key: 'growth' as const, url: 'bengrowth.mauromoncao.adv.br' },
+                  { label: 'Juris Center',  key: 'juris'  as const, url: 'juris.mauromoncao.adv.br'     },
                   { label: 'VPS Hostinger', key: 'vps'    as const, url: '181.215.135.202:3001'          },
                 ].map(({ label, key, url }) => (
                   <div key={key} className="flex items-center justify-between px-2 py-1 rounded" style={{ background: '#081530' }}>
@@ -500,13 +521,13 @@ export default function EcosystemWorkspace() {
                 className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${activeCategory === 'all' ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
                 style={activeCategory === 'all' ? { background: '#D4A017' } : {}}
               >Todos</button>
-              {(['atendimento', 'juridico', 'marketing', 'sistema'] as AgentCategory[]).map(cat => (
+              {(['atendimento', 'juridico', 'marketing', 'sistema', 'contador', 'perito'] as AgentCategory[]).map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
                   className={`px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1 transition-colors ${activeCategory === cat ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
                   style={activeCategory === cat ? { background: '#1a3060' } : {}}
                 >
                   {CATEGORY_ICONS[cat]}
-                  {cat === 'atendimento' ? 'CRM' : cat === 'juridico' ? 'Jurídico' : cat === 'marketing' ? 'Marketing' : 'Sistema'}
+                  {cat === 'atendimento' ? 'CRM' : cat === 'juridico' ? 'Jurídico' : cat === 'marketing' ? 'Marketing' : cat === 'sistema' ? 'Sistema' : cat === 'contador' ? 'Contador' : 'Perito'}
                 </button>
               ))}
             </div>
@@ -597,16 +618,16 @@ export default function EcosystemWorkspace() {
           <h2 className="text-xl font-bold mb-2" style={{ color: '#0f2044' }}>Ben Ecosystem IA</h2>
           <p className="text-sm text-center max-w-md mb-6" style={{ color: '#666' }}>
             Workspace unificado com <strong>{ECOSYSTEM_AGENTS.length} agentes</strong> de IA —
-            Growth Center (7) + Juris Center (13).
+            Growth Center (9) + Juris Center (28).
             Selecione um agente na barra lateral para começar.
           </p>
           {/* Cards rápidos */}
           <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
             {[
-              { id: 'dr-ben',        emoji: '🤖', name: 'Dr. Ben',        sub: 'Atendimento & Leads',  badge: 'Growth' },
-              { id: 'dr-ben-peticoes', emoji: '⚖️', name: 'Dr. Ben Petições', sub: 'Peças processuais', badge: 'Juris'  },
-              { id: 'dr-ben-fiscal', emoji: '💰', name: 'Dr. Ben Fiscal', sub: 'Planejamento tributário', badge: 'Juris' },
-              { id: 'lex-conteudo',  emoji: '✍️', name: 'Lex Conteúdo',  sub: 'Artigos & SEO jurídico', badge: 'Growth'},
+              { id: 'ben-atendente',             emoji: '🤖', name: 'BEN Atendente',      sub: 'Atendimento & Leads',       badge: 'Growth' },
+              { id: 'ben-super-agente-juridico',  emoji: '🌟', name: 'BEN Super Agente',   sub: 'Coordenação jurídica ⭐',    badge: 'Juris'  },
+              { id: 'ben-tributarista',           emoji: '💰', name: 'BEN Tributarista',   sub: 'Planejamento tributário',   badge: 'Juris'  },
+              { id: 'ben-conteudista',            emoji: '✍️', name: 'BEN Conteudista',    sub: 'Artigos & SEO jurídico',    badge: 'Growth' },
             ].map(card => {
               const agent = ECOSYSTEM_AGENTS.find(a => a.id === card.id)
               if (!agent) return null
