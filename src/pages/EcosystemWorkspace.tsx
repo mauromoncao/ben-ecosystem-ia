@@ -3,7 +3,7 @@ import {
   Send, Paperclip, FileText, Globe, Mic, Camera,
   Mail, HardDrive, Link2, Download, Copy, Check,
   X, Loader2, ChevronLeft, ChevronRight,
-  RefreshCw, Zap, TrendingUp, Plus, MessageSquare
+  RefreshCw, Zap, TrendingUp, Plus
 } from 'lucide-react'
 
 // ─── Tipos ────────────────────────────────────────────────────
@@ -369,56 +369,57 @@ export default function EcosystemWorkspace() {
   const hasMessages = messages.length > 0
 
   // ══════════════════════════════════════════════════════════════
-  // RENDER — TELA ÚNICA PERMANENTE (header sempre visível)
+  // RENDER — LAYOUT CENTRALIZADO ESTILO CHATGPT
+  // Header fixo no topo → área de mensagens (cresce) →
+  // input centralizado → carrossel de agentes abaixo do input
+  // NADA MUDA VISUALMENTE AO ACIONAR AGENTE
   // ══════════════════════════════════════════════════════════════
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-white">
+    <div className="flex flex-col h-full overflow-hidden" style={{background:'#ffffff'}}>
 
-      {/* ══ CABEÇALHO FIXO — SEMPRE VISÍVEL, NUNCA MUDA ══════════
-          Logo Falcone original + nome BEN ECOSYSTEM IA Workspace
-          Permanece idêntico antes e depois de acionar qualquer agente
-      ═══════════════════════════════════════════════════════════ */}
-      <div className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b" style={{borderColor:'#f0f0f0', background:'#ffffff'}}>
-        {/* Lado esquerdo: logo + nome */}
-        <div className="flex items-center gap-3">
-          <img
-            src="/falcone-logo.png"
-            alt="Falcone"
-            className="w-10 h-10 rounded-xl object-cover shadow-sm"
-            onError={(e) => {
-              // fallback se logo não carregar
-              const t = e.currentTarget
-              t.style.display = 'none'
-              const fb = t.nextElementSibling as HTMLElement
-              if (fb) fb.style.display = 'flex'
-            }}
-          />
-          {/* fallback dourado (oculto por padrão) */}
-          <div className="w-10 h-10 rounded-xl items-center justify-center text-white font-bold text-lg hidden"
-            style={{background:'linear-gradient(135deg,#D4A017,#b8860b)'}}>F</div>
-          <div>
-            <p className="text-sm font-bold leading-tight" style={{color:'#0f2044'}}>BEN ECOSYSTEM IA Workspace</p>
-            <p className="text-[10px] leading-tight" style={{color:'#888'}}>Mauro Monção Advogados · falcone · {ECOSYSTEM_AGENTS.length} agentes</p>
-          </div>
-        </div>
-        {/* Lado direito: status dots + botão refresh */}
-        <div className="flex items-center gap-4 text-xs" style={{color:'#999'}}>
+      {/* ══ TOPO: logo + título CENTRALIZADO — SEMPRE VISÍVEL ═════ */}
+      <div className="flex-shrink-0 flex flex-col items-center pt-5 pb-3" style={{background:'#ffffff'}}>
+        {/* Logo Falcone original */}
+        <img
+          src="/falcone-logo.png"
+          alt="Falcone"
+          className="w-12 h-12 rounded-2xl object-cover shadow-md mb-2"
+          onError={(e) => {
+            const t = e.currentTarget
+            t.style.display = 'none'
+            const fb = t.nextElementSibling as HTMLElement
+            if (fb) fb.style.display = 'flex'
+          }}
+        />
+        {/* fallback dourado */}
+        <div className="w-12 h-12 rounded-2xl items-center justify-center text-white font-bold text-xl mb-2 hidden"
+          style={{background:'linear-gradient(135deg,#D4A017,#b8860b)'}}>F</div>
+
+        {/* Título sempre visível */}
+        <h1 className="text-lg font-bold tracking-tight" style={{color:'#0f2044'}}>
+          BEN ECOSYSTEM IA Workspace
+        </h1>
+        <p className="text-xs mt-0.5" style={{color:'#888'}}>
+          Mauro Monção Advogados · falcone · {ECOSYSTEM_AGENTS.length} agentes ativos
+        </p>
+
+        {/* Status dots — linha de status */}
+        <div className="flex items-center gap-4 mt-2 text-xs" style={{color:'#999'}}>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.growth}/> Growth</span>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.juris}/> Juris</span>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.vps}/> VPS</span>
-          <button onClick={checkStatus} className="text-gray-400 hover:text-gray-600 transition-colors ml-1" title="Atualizar status">
-            <RefreshCw className="w-3.5 h-3.5"/>
+          <button onClick={checkStatus} className="text-gray-400 hover:text-gray-600 transition-colors" title="Atualizar status">
+            <RefreshCw className="w-3 h-3"/>
           </button>
         </div>
       </div>
 
-      {/* ══ ÁREA DE MENSAGENS — aparece quando há mensagens ══════
-          O carrossel CONTINUA visível abaixo; apenas esta área
-          cresce quando o agente responde. Interface NÃO muda.
-      ═══════════════════════════════════════════════════════════ */}
+      {/* ══ ÁREA DE MENSAGENS — cresce quando há chat, some quando vazia ══
+          O header acima e o carrossel+input abaixo NUNCA saem da tela.
+      ════════════════════════════════════════════════════════════════════ */}
       {hasMessages && activeConv && selectedAgent && (
-        <div className="flex-1 overflow-y-auto px-4 py-4" style={{background:'#fafafa', minHeight:0}}>
-          <div className="max-w-2xl mx-auto space-y-5">
+        <div className="flex-1 overflow-y-auto px-4 py-2" style={{background:'#fafafa', minHeight:0}}>
+          <div className="max-w-2xl mx-auto space-y-4">
             {messages.map(msg => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'assistant' && (
@@ -485,78 +486,15 @@ export default function EcosystemWorkspace() {
         </div>
       )}
 
-      {/* ══ CARROSSEL — sempre visível (se não há mensagens ocupa o espaço; se há mensagens fica compacto) ══ */}
-      <div className={`flex-shrink-0 ${hasMessages ? 'border-t' : 'flex-1 flex flex-col justify-center'} px-4 py-3`}
-        style={{borderColor:'#f0f0f0', background:'#ffffff'}}>
+      {/* ══ COLUNA CENTRAL FIXA — input + carrossel ═══════════════
+          Esta área fica sempre visível na parte inferior da tela.
+          Quando não há mensagens, ocupa o espaço e centraliza tudo.
+      ════════════════════════════════════════════════════════════ */}
+      <div className={`flex-shrink-0 flex flex-col items-center px-4 pb-4 ${!hasMessages ? 'flex-1 justify-center' : ''}`}
+        style={{background:'#ffffff'}}>
 
-        {/* Filtros de projeto */}
-        <div className="flex items-center justify-between mb-2 max-w-4xl mx-auto w-full">
-          <div className="flex gap-1.5 items-center">
-            {(['all','growth','juris'] as const).map(p => (
-              <button key={p}
-                onClick={() => { setFilterProject(p); setCarouselIdx(0) }}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${filterProject === p ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
-                style={filterProject === p ? {background: p==='growth' ? '#059669' : p==='juris' ? '#1d4ed8' : '#0f2044'} : {}}>
-                {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? 'Growth (10)' : 'Juris (28)'}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">{carouselIdx + 1}/{totalSlides}</span>
-            <button onClick={() => setCarouselIdx(i => Math.max(0, i-1))} disabled={carouselIdx === 0}
-              className="w-6 h-6 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{borderColor:'#e5e7eb'}}>
-              <ChevronLeft className="w-3 h-3 text-gray-500"/>
-            </button>
-            <button onClick={() => setCarouselIdx(i => Math.min(totalSlides-1, i+1))} disabled={carouselIdx >= totalSlides-1}
-              className="w-6 h-6 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{borderColor:'#e5e7eb'}}>
-              <ChevronRight className="w-3 h-3 text-gray-500"/>
-            </button>
-          </div>
-        </div>
-
-        {/* Cards de agentes */}
-        <div className="grid grid-cols-5 gap-2 max-w-4xl mx-auto w-full">
-          {visibleAgents.map(agent => (
-            <button key={agent.id} onClick={() => selectAgent(agent)}
-              className={`flex flex-col items-center p-2.5 rounded-xl border transition-all text-center group ${selectedAgent?.id === agent.id ? 'shadow-md' : 'hover:shadow-sm'}`}
-              style={{
-                background: selectedAgent?.id === agent.id ? agent.color + '08' : '#ffffff',
-                borderColor: selectedAgent?.id === agent.id ? agent.color : '#e5e7eb',
-                borderWidth: selectedAgent?.id === agent.id ? '2px' : '1px',
-              }}>
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-1.5 transition-transform group-hover:scale-110"
-                style={{background: agent.color + '18', border: `1.5px solid ${agent.color}35`}}>
-                {agent.emoji}
-              </div>
-              <p className="text-[10px] font-semibold leading-tight mb-1 line-clamp-2 w-full" style={{color:'#222222'}}>{agent.name}</p>
-              <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold ${agent.project === 'growth' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                {agent.project === 'growth' ? 'Growth' : 'Juris'}
-              </span>
-              {selectedAgent?.id === agent.id && (
-                <span className="mt-1 text-[8px] px-1.5 py-0.5 rounded font-bold text-white" style={{background: agent.color}}>
-                  Ativo
-                </span>
-              )}
-            </button>
-          ))}
-          {Array.from({length: CARDS - visibleAgents.length}).map((_, i) => (
-            <div key={`e-${i}`} className="rounded-xl" style={{background:'#fafafa', border:'1.5px dashed #e5e7eb'}}/>
-          ))}
-        </div>
-
-        {/* Dots de paginação */}
-        <div className="flex justify-center gap-1 mt-2">
-          {Array.from({length: totalSlides}).map((_, i) => (
-            <button key={i} onClick={() => setCarouselIdx(i)}
-              className="rounded-full transition-all"
-              style={{width: i === carouselIdx ? 16 : 6, height: 6, background: i === carouselIdx ? '#D4A017' : '#d1d5db'}}/>
-          ))}
-        </div>
-      </div>
-
-      {/* ══ INPUT FIXO — sempre visível na base ═══════════════════ */}
-      <div className="flex-shrink-0 px-4 pb-4 pt-2 border-t" style={{borderColor:'#f3f4f6', background:'#ffffff'}}>
-        <div className="max-w-2xl mx-auto">
+        {/* ── INPUT CENTRALIZADO ─────────────────────────────────── */}
+        <div className="w-full max-w-2xl">
 
           {/* Chip do agente ativo + opções */}
           <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -570,7 +508,7 @@ export default function EcosystemWorkspace() {
                 </button>
               </div>
             ) : (
-              <span className="text-xs text-gray-400 italic">Selecione um agente acima ↑</span>
+              <span className="text-xs italic" style={{color:'#aaa'}}>Selecione um agente abaixo ↓</span>
             )}
             <button onClick={() => setUseSearch(!useSearch)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${useSearch ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
@@ -611,7 +549,7 @@ export default function EcosystemWorkspace() {
             </div>
           )}
 
-          {/* Caixa de texto */}
+          {/* Caixa de texto centralizada */}
           <div className="flex items-end gap-2 rounded-2xl border shadow-sm px-4 py-3"
             style={{borderColor: selectedAgent ? selectedAgent.color + '60' : '#e5e7eb', background:'#ffffff'}}>
             <div className="relative flex-shrink-0" ref={attachMenuRef}>
@@ -632,7 +570,7 @@ export default function EcosystemWorkspace() {
               }}
               placeholder={selectedAgent
                 ? `Mensagem para ${selectedAgent.emoji} ${selectedAgent.name}… (Enter para enviar)`
-                : 'Selecione um agente acima e faça sua pergunta…'}
+                : 'Selecione um agente abaixo e descreva o caso ou faça sua solicitação…'}
               rows={1}
               className="flex-1 resize-none text-sm outline-none"
               style={{background:'transparent', maxHeight:'160px', lineHeight:'1.5', color:'#222222'}}
@@ -647,9 +585,79 @@ export default function EcosystemWorkspace() {
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin"/> : <Send className="w-4 h-4"/>}
             </button>
           </div>
-          <p className="text-center text-[10px] mt-1.5" style={{color:'#cccccc'}}>
+          <p className="text-center text-[10px] mt-1" style={{color:'#ccc'}}>
             Shift+Enter nova linha &nbsp;·&nbsp; Enter enviar
           </p>
+        </div>
+
+        {/* ── CARROSSEL DE AGENTES — ABAIXO DO INPUT, CENTRALIZADO ── */}
+        <div className="w-full max-w-3xl mt-4">
+          {/* Label + filtros */}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{color:'#888'}}>
+              Selecione um agente para começar
+            </p>
+            <div className="flex items-center gap-1.5">
+              {(['all','growth','juris'] as const).map(p => (
+                <button key={p}
+                  onClick={() => { setFilterProject(p); setCarouselIdx(0) }}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all ${filterProject === p ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
+                  style={filterProject === p ? {background: p==='growth' ? '#059669' : p==='juris' ? '#1d4ed8' : '#0f2044'} : {}}>
+                  {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? 'Growth (10)' : 'Juris (28)'}
+                </button>
+              ))}
+              <span className="text-[10px] text-gray-400 ml-1">{carouselIdx+1}/{totalSlides}</span>
+              <button onClick={() => setCarouselIdx(i => Math.max(0, i-1))} disabled={carouselIdx === 0}
+                className="w-5 h-5 flex items-center justify-center rounded border disabled:opacity-30 hover:bg-gray-50" style={{borderColor:'#e5e7eb'}}>
+                <ChevronLeft className="w-3 h-3 text-gray-500"/>
+              </button>
+              <button onClick={() => setCarouselIdx(i => Math.min(totalSlides-1, i+1))} disabled={carouselIdx >= totalSlides-1}
+                className="w-5 h-5 flex items-center justify-center rounded border disabled:opacity-30 hover:bg-gray-50" style={{borderColor:'#e5e7eb'}}>
+                <ChevronRight className="w-3 h-3 text-gray-500"/>
+              </button>
+            </div>
+          </div>
+
+          {/* Cards — grade de 4 colunas, centralizada */}
+          <div className="grid grid-cols-4 gap-3">
+            {visibleAgents.map(agent => (
+              <button key={agent.id} onClick={() => selectAgent(agent)}
+                className={`flex items-start gap-3 p-3 rounded-2xl border text-left transition-all group ${selectedAgent?.id === agent.id ? 'shadow-md' : 'hover:shadow-sm hover:bg-gray-50'}`}
+                style={{
+                  background: selectedAgent?.id === agent.id ? agent.color + '08' : '#ffffff',
+                  borderColor: selectedAgent?.id === agent.id ? agent.color : '#e5e7eb',
+                  borderWidth: selectedAgent?.id === agent.id ? '2px' : '1px',
+                }}>
+                {/* Ícone */}
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 transition-transform group-hover:scale-105"
+                  style={{background: agent.color + '18', border:`1.5px solid ${agent.color}35`}}>
+                  {agent.emoji}
+                </div>
+                {/* Info */}
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold leading-tight line-clamp-2 mb-1" style={{color:'#222222'}}>{agent.name}</p>
+                  <p className="text-[10px] leading-tight line-clamp-2 mb-1.5" style={{color:'#888'}}>{agent.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold ${agent.project === 'growth' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {agent.project === 'growth' ? 'Growth' : 'Juris'}
+                    </span>
+                    <span className={`text-[8px] px-1.5 py-0.5 rounded font-medium ${agent.modelBadge}`}>
+                      {agent.model.length > 14 ? agent.model.slice(0,14)+'…' : agent.model}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Dots de paginação */}
+          <div className="flex justify-center gap-1.5 mt-3">
+            {Array.from({length: totalSlides}).map((_, i) => (
+              <button key={i} onClick={() => setCarouselIdx(i)}
+                className="rounded-full transition-all"
+                style={{width: i === carouselIdx ? 20 : 7, height: 7, background: i === carouselIdx ? '#D4A017' : '#d1d5db'}}/>
+            ))}
+          </div>
         </div>
       </div>
 
