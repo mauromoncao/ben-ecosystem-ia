@@ -2,9 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Send, Paperclip, FileText, Globe, Mic, Camera,
   Mail, HardDrive, Link2, Download, Copy, Check,
-  X, Loader2, ChevronLeft, ChevronRight, Trash2,
-  RefreshCw, Activity, Zap, TrendingUp, Plus,
-  Scale, Megaphone, Cpu, Users
+  X, Loader2, ChevronLeft, ChevronRight,
+  RefreshCw, Zap, TrendingUp, Plus, MessageSquare
 } from 'lucide-react'
 
 // ─── Tipos ────────────────────────────────────────────────────
@@ -13,54 +12,25 @@ type AgentCategory = 'atendimento' | 'juridico' | 'marketing' | 'sistema' | 'con
 type ModuleStatus  = 'online' | 'offline' | 'degraded' | 'checking'
 
 interface Agent {
-  id: string
-  name: string
-  emoji: string
-  description: string
-  model: string
-  modelBadge: string
-  category: AgentCategory
-  project: Project | 'both'
-  color: string
-  active: boolean
+  id: string; name: string; emoji: string; description: string
+  model: string; modelBadge: string; category: AgentCategory
+  project: Project | 'both'; color: string; active: boolean
 }
-
 interface Attachment {
-  id: string
-  name: string
-  type: string
-  size: number
-  base64?: string
+  id: string; name: string; type: string; size: number; base64?: string
 }
-
 interface Message {
-  id: string
-  role: 'user' | 'assistant'
-  content: string
-  agentId?: string
-  agentName?: string
-  timestamp: Date
-  attachments?: Attachment[]
-  isLoading?: boolean
-  modelUsed?: string
-  destino?: string
-  elapsed_ms?: number
+  id: string; role: 'user' | 'assistant'; content: string
+  agentId?: string; agentName?: string; timestamp: Date
+  attachments?: Attachment[]; isLoading?: boolean
+  modelUsed?: string; destino?: string; elapsed_ms?: number
 }
-
 interface Conversation {
-  id: string
-  title: string
-  agentId: string
-  messages: Message[]
-  createdAt: Date
-  project: Project | 'both'
+  id: string; title: string; agentId: string
+  messages: Message[]; createdAt: Date; project: Project | 'both'
 }
-
 interface EcosystemStatus {
-  growth: ModuleStatus
-  juris:  ModuleStatus
-  vps:    ModuleStatus
-  lastCheck?: string
+  growth: ModuleStatus; juris: ModuleStatus; vps: ModuleStatus; lastCheck?: string
 }
 
 // ─── Agentes ──────────────────────────────────────────────────
@@ -91,12 +61,12 @@ const ECOSYSTEM_AGENTS: Agent[] = [
   { id: 'ben-redator-juridico',       name: 'BEN Redator Jurídico',           emoji: '✒️', description: 'Redação técnica jurídica, memorandos, ofícios e comunicações.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'juridico',      project: 'juris', color: '#374151', active: true },
   { id: 'ben-constitucionalista',     name: 'BEN Constitucionalista',         emoji: '⚡', description: 'MS, HC, Mandado de Injunção, ações constitucionais e STF.', model: 'GPT-4o',      modelBadge: 'bg-blue-100 text-blue-800',    category: 'juridico',    project: 'juris', color: '#b91c1c', active: true },
   { id: 'ben-engenheiro-prompt',      name: 'BEN Engenheiro de Prompt',       emoji: '🧠', description: 'Otimização de prompts, configuração de agentes e arquitetura IA.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'sistema',      project: 'juris', color: '#4f46e5', active: true },
-  { id: 'ben-contador-tributarista',             name: 'BEN Contador — Triagem',       emoji: '🧮', description: 'Triagem fiscal: classifica e encaminha ao especialista correto.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#92400e', active: true },
-  { id: 'ben-contador-tributarista-especialista',name: 'BEN Contador — Especialista',  emoji: '📊', description: 'Análise fiscal profunda — planejamento tributário avançado.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#b45309', active: true },
-  { id: 'ben-contador-tributarista-planejamento',name: 'BEN Contador — Planejamento',  emoji: '🗺️', description: 'Planejamento tributário estratégico e otimização de carga.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#d97706', active: true },
-  { id: 'ben-contador-tributarista-creditos',    name: 'BEN Contador — Créditos',      emoji: '💳', description: 'Recuperação de créditos tributários e compensações.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#059669', active: true },
-  { id: 'ben-contador-tributarista-auditoria',   name: 'BEN Contador — Auditoria',     emoji: '🔍', description: 'Auditoria fiscal, conformidade tributária e gestão de risco.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#dc2626', active: true },
-  { id: 'ben-contador-tributarista-relatorio',   name: 'BEN Contador — Relatório',     emoji: '📋', description: 'Relatórios fiscais executivos e dashboards tributários.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#0369a1', active: true },
+  { id: 'ben-contador-tributarista',             name: 'BEN Contador — Triagem',      emoji: '🧮', description: 'Triagem fiscal: classifica e encaminha ao especialista correto.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#92400e', active: true },
+  { id: 'ben-contador-tributarista-especialista',name: 'BEN Contador — Especialista', emoji: '📊', description: 'Análise fiscal profunda — planejamento tributário avançado.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#b45309', active: true },
+  { id: 'ben-contador-tributarista-planejamento',name: 'BEN Contador — Planejamento', emoji: '🗺️', description: 'Planejamento tributário estratégico e otimização de carga.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'contador', project: 'juris', color: '#d97706', active: true },
+  { id: 'ben-contador-tributarista-creditos',    name: 'BEN Contador — Créditos',     emoji: '💳', description: 'Recuperação de créditos tributários e compensações.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#059669', active: true },
+  { id: 'ben-contador-tributarista-auditoria',   name: 'BEN Contador — Auditoria',    emoji: '🔍', description: 'Auditoria fiscal, conformidade tributária e gestão de risco.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#dc2626', active: true },
+  { id: 'ben-contador-tributarista-relatorio',   name: 'BEN Contador — Relatório',    emoji: '📋', description: 'Relatórios fiscais executivos e dashboards tributários.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'contador', project: 'juris', color: '#0369a1', active: true },
   { id: 'ben-perito-forense',          name: 'BEN Perito Forense — Padrão',   emoji: '🔬', description: 'Análise pericial padrão — laudos e pareceres técnicos.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'perito', project: 'juris', color: '#4f46e5', active: true },
   { id: 'ben-perito-forense-profundo', name: 'BEN Perito Forense — Profundo ⚠️', emoji: '🧬', description: 'Análise pericial profunda — alto custo, máxima precisão.', model: 'Claude Opus 4.6', modelBadge: 'bg-red-100 text-red-800', category: 'perito', project: 'juris', color: '#b91c1c', active: true },
   { id: 'ben-perito-forense-digital',  name: 'BEN Perito Forense Digital',    emoji: '💻', description: 'Perícia digital e análise de evidências eletrônicas.', model: 'Claude Sonnet 4.6', modelBadge: 'bg-yellow-100 text-yellow-800', category: 'perito', project: 'juris', color: '#7c3aed', active: true },
@@ -105,92 +75,55 @@ const ECOSYSTEM_AGENTS: Agent[] = [
   { id: 'ben-perito-forense-relatorio',name: 'BEN Perito Forense — Relatório',emoji: '📊', description: 'Relatórios periciais executivos e sínteses técnicas.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'perito', project: 'juris', color: '#374151', active: true },
 ]
 
-// ─── Logo Falcone SVG ─────────────────────────────────────────
-function FalconeLogo({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" rx="18" fill="#0f1a3e"/>
-      <defs>
-        <linearGradient id="goldGrad" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#f0c040"/>
-          <stop offset="50%" stopColor="#D4A017"/>
-          <stop offset="100%" stopColor="#b8860b"/>
-        </linearGradient>
-        <linearGradient id="purpGrad" x1="20" y1="80" x2="80" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#7c3aed"/>
-          <stop offset="100%" stopColor="#a855f7"/>
-        </linearGradient>
-      </defs>
-      {/* Letra B dourada */}
-      <path d="M28 22 L28 78 L54 78 C66 78 74 70 74 60 C74 53 70 48 64 46 C69 43 72 38 72 32 C72 23 65 22 54 22 Z
-               M38 32 L52 32 C57 32 62 34 62 40 C62 46 57 48 52 48 L38 48 Z
-               M38 57 L54 57 C60 57 64 60 64 65 C64 70 60 68 54 68 L38 68 Z"
-        fill="url(#goldGrad)"/>
-      {/* Circuito roxo decorativo */}
-      <circle cx="28" cy="22" r="3" fill="url(#purpGrad)" opacity="0.9"/>
-      <circle cx="28" cy="78" r="3" fill="url(#purpGrad)" opacity="0.9"/>
-      <circle cx="74" cy="46" r="2.5" fill="url(#purpGrad)" opacity="0.8"/>
-      <line x1="74" y1="46" x2="82" y2="38" stroke="url(#purpGrad)" strokeWidth="1.5" opacity="0.7"/>
-      <circle cx="82" cy="38" r="2" fill="url(#purpGrad)" opacity="0.7"/>
-      <line x1="74" y1="60" x2="82" y2="68" stroke="url(#purpGrad)" strokeWidth="1.5" opacity="0.7"/>
-      <circle cx="82" cy="68" r="2" fill="url(#purpGrad)" opacity="0.7"/>
-      <line x1="28" y1="22" x2="18" y2="14" stroke="url(#purpGrad)" strokeWidth="1.5" opacity="0.6"/>
-      <circle cx="18" cy="14" r="2" fill="url(#purpGrad)" opacity="0.6"/>
-    </svg>
-  )
-}
-
-// ─── Status dot ───────────────────────────────────────────────
-function StatusDot({ status }: { status: ModuleStatus }) {
-  const map: Record<ModuleStatus, string> = {
-    online:   'bg-green-500',
-    offline:  'bg-red-500',
-    degraded: 'bg-yellow-400',
-    checking: 'bg-gray-400 animate-pulse',
-  }
-  return <span className={`inline-block w-2 h-2 rounded-full ${map[status]}`} />
-}
-
-// ─── Opções de anexo ──────────────────────────────────────────
 const ATTACH_OPTIONS = [
-  { id: 'file',  icon: <FileText className="w-4 h-4"/>, label: 'Documento',    sub: 'PDF, Word, TXT, Excel',  color: 'text-blue-600',   bg: 'bg-blue-50'   },
-  { id: 'image', icon: <Camera   className="w-4 h-4"/>, label: 'Imagem/Foto',  sub: 'JPG, PNG, WebP',          color: 'text-green-600',  bg: 'bg-green-50'  },
-  { id: 'email', icon: <Mail     className="w-4 h-4"/>, label: 'E-mail',        sub: 'Importar .eml',           color: 'text-red-500',    bg: 'bg-red-50'    },
-  { id: 'drive', icon: <HardDrive className="w-4 h-4"/>,label: 'Google Drive',  sub: 'Conectar Drive',          color: 'text-yellow-600', bg: 'bg-yellow-50' },
-  { id: 'url',   icon: <Link2    className="w-4 h-4"/>, label: 'Link / URL',    sub: 'Página web ou doc',       color: 'text-purple-600', bg: 'bg-purple-50' },
-  { id: 'audio', icon: <Mic      className="w-4 h-4"/>, label: 'Áudio',         sub: 'MP3, M4A, transcrição',   color: 'text-pink-600',   bg: 'bg-pink-50'   },
+  { id: 'file',  icon: <FileText  className="w-4 h-4"/>, label: 'Documento',   sub: 'PDF, Word, TXT, Excel',  color: 'text-blue-600',   bg: 'bg-blue-50'   },
+  { id: 'image', icon: <Camera    className="w-4 h-4"/>, label: 'Imagem/Foto', sub: 'JPG, PNG, WebP',          color: 'text-green-600',  bg: 'bg-green-50'  },
+  { id: 'email', icon: <Mail      className="w-4 h-4"/>, label: 'E-mail',       sub: 'Importar .eml',           color: 'text-red-500',    bg: 'bg-red-50'    },
+  { id: 'drive', icon: <HardDrive className="w-4 h-4"/>, label: 'Google Drive', sub: 'Conectar Drive',          color: 'text-yellow-600', bg: 'bg-yellow-50' },
+  { id: 'url',   icon: <Link2     className="w-4 h-4"/>, label: 'Link / URL',   sub: 'Página web ou doc',       color: 'text-purple-600', bg: 'bg-purple-50' },
+  { id: 'audio', icon: <Mic       className="w-4 h-4"/>, label: 'Áudio',        sub: 'MP3, M4A, transcrição',   color: 'text-pink-600',   bg: 'bg-pink-50'   },
 ]
 
+function StatusDot({ status }: { status: ModuleStatus }) {
+  const map: Record<ModuleStatus, string> = {
+    online: 'bg-green-500', offline: 'bg-red-500',
+    degraded: 'bg-yellow-400', checking: 'bg-gray-400 animate-pulse',
+  }
+  return <span className={`inline-block w-2 h-2 rounded-full ${map[status]}`}/>
+}
+
 // ═══════════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL — INTERFACE PERMANENTE, SEM MUDANÇA VISUAL
 // ═══════════════════════════════════════════════════════════════
 export default function EcosystemWorkspace() {
-  const [selectedAgent, setSelectedAgent]   = useState<Agent | null>(null)
-  const [conversations, setConversations]   = useState<Conversation[]>([])
-  const [activeConvId, setActiveConvId]     = useState<string | null>(null)
-  const [prompt, setPrompt]                 = useState('')
-  const [attachments, setAttachments]       = useState<Attachment[]>([])
-  const [isLoading, setIsLoading]           = useState(false)
-  const [copiedMsgId, setCopiedMsgId]       = useState<string | null>(null)
-  const [attachMenuOpen, setAttachMenuOpen] = useState(false)
-  const [urlInput, setUrlInput]             = useState('')
-  const [showUrlInput, setShowUrlInput]     = useState(false)
-  const [useSearch, setUseSearch]           = useState(false)
-  const [letterheadMode, setLetterheadMode] = useState(false)
-  const [filterProject, setFilterProject]  = useState<'all' | 'growth' | 'juris'>('all')
-  const [carouselIdx, setCarouselIdx]       = useState(0)
-  const [ecoStatus, setEcoStatus]           = useState<EcosystemStatus>({ growth: 'checking', juris: 'checking', vps: 'checking' })
+  const [selectedAgent,   setSelectedAgent]   = useState<Agent | null>(null)
+  const [conversations,   setConversations]   = useState<Conversation[]>([])
+  const [activeConvId,    setActiveConvId]     = useState<string | null>(null)
+  const [prompt,          setPrompt]           = useState('')
+  const [attachments,     setAttachments]      = useState<Attachment[]>([])
+  const [isLoading,       setIsLoading]        = useState(false)
+  const [copiedMsgId,     setCopiedMsgId]      = useState<string | null>(null)
+  const [attachMenuOpen,  setAttachMenuOpen]   = useState(false)
+  const [urlInput,        setUrlInput]         = useState('')
+  const [showUrlInput,    setShowUrlInput]     = useState(false)
+  const [useSearch,       setUseSearch]        = useState(false)
+  const [letterheadMode,  setLetterheadMode]   = useState(false)
+  const [filterProject,   setFilterProject]    = useState<'all' | 'growth' | 'juris'>('all')
+  const [carouselIdx,     setCarouselIdx]      = useState(0)
+  const [ecoStatus,       setEcoStatus]        = useState<EcosystemStatus>({
+    growth: 'checking', juris: 'checking', vps: 'checking',
+  })
 
-  const fileInputRef   = useRef<HTMLInputElement>(null)
-  const imageInputRef  = useRef<HTMLInputElement>(null)
-  const audioInputRef  = useRef<HTMLInputElement>(null)
-  const chatEndRef     = useRef<HTMLDivElement>(null)
-  const textareaRef    = useRef<HTMLTextAreaElement>(null)
-  const attachMenuRef  = useRef<HTMLDivElement>(null)
+  const fileInputRef  = useRef<HTMLInputElement>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const audioInputRef = useRef<HTMLInputElement>(null)
+  const chatEndRef    = useRef<HTMLDivElement>(null)
+  const textareaRef   = useRef<HTMLTextAreaElement>(null)
+  const attachMenuRef = useRef<HTMLDivElement>(null)
 
   const activeConv = conversations.find(c => c.id === activeConvId)
 
-  // ── Verifica status ───────────────────────────────────────────
+  // ── Status ────────────────────────────────────────────────────
   const checkStatus = useCallback(async () => {
     try {
       const r = await fetch('/api/bridge?action=status', { signal: AbortSignal.timeout(10000) })
@@ -205,7 +138,7 @@ export default function EcosystemWorkspace() {
         return
       }
     } catch { /* silencioso */ }
-    setEcoStatus({ growth: 'offline', juris: 'offline', vps: 'offline', lastCheck: new Date().toLocaleTimeString('pt-BR') })
+    setEcoStatus({ growth: 'offline', juris: 'offline', vps: 'offline' })
   }, [])
 
   useEffect(() => { checkStatus() }, [checkStatus])
@@ -220,25 +153,38 @@ export default function EcosystemWorkspace() {
     return () => document.removeEventListener('mousedown', h)
   }, [])
 
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [activeConv?.messages])
+  // Auto-scroll ao fim das mensagens
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [activeConv?.messages])
 
+  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 180) + 'px'
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 160) + 'px'
     }
   }, [prompt])
 
-  // ── Agentes filtrados para carrossel ─────────────────────────
+  // ── Carrossel ─────────────────────────────────────────────────
   const filteredAgents = ECOSYSTEM_AGENTS.filter(a =>
     filterProject === 'all' || a.project === filterProject
   )
-  const CARDS_PER_SLIDE = 5
-  const totalSlides = Math.ceil(filteredAgents.length / CARDS_PER_SLIDE)
-  const visibleAgents = filteredAgents.slice(carouselIdx * CARDS_PER_SLIDE, (carouselIdx + 1) * CARDS_PER_SLIDE)
+  const CARDS = 5
+  const totalSlides = Math.ceil(filteredAgents.length / CARDS)
+  const visibleAgents = filteredAgents.slice(carouselIdx * CARDS, (carouselIdx + 1) * CARDS)
 
-  // ── Nova conversa ─────────────────────────────────────────────
-  const startConversation = useCallback((agent: Agent) => {
+  // ── Selecionar agente — NÃO muda o visual da interface ────────
+  // O header, o carrossel e tudo permanecem; apenas o agente fica ativo
+  const selectAgent = useCallback((agent: Agent) => {
+    // Se já existe uma conversa com este agente sem mensagens, reutilizar
+    const existingEmpty = conversations.find(c => c.agentId === agent.id && c.messages.length === 0)
+    if (existingEmpty) {
+      setSelectedAgent(agent)
+      setActiveConvId(existingEmpty.id)
+      setTimeout(() => textareaRef.current?.focus(), 100)
+      return
+    }
     const newId = `conv-${Date.now()}`
     const newConv: Conversation = {
       id: newId, title: `${agent.emoji} ${agent.name}`,
@@ -247,8 +193,10 @@ export default function EcosystemWorkspace() {
     setConversations(prev => [newConv, ...prev])
     setSelectedAgent(agent)
     setActiveConvId(newId)
-    setPrompt(''); setAttachments([])
-  }, [])
+    setPrompt('')
+    setAttachments([])
+    setTimeout(() => textareaRef.current?.focus(), 100)
+  }, [conversations])
 
   // ── Upload ────────────────────────────────────────────────────
   const handleFileUpload = useCallback((files: FileList | null) => {
@@ -279,7 +227,7 @@ export default function EcosystemWorkspace() {
     if (id === 'drive') { window.open('https://drive.google.com', '_blank'); setAttachMenuOpen(false) }
   }
 
-  // ── Enviar mensagem ───────────────────────────────────────────
+  // ── Enviar ────────────────────────────────────────────────────
   const sendMessage = useCallback(async () => {
     const text = prompt.trim()
     if (!text || !selectedAgent || !activeConvId) return
@@ -287,8 +235,7 @@ export default function EcosystemWorkspace() {
     const attachText = attachments.length > 0
       ? '\n\n[ARQUIVOS ANEXADOS]\n' + attachments.map(a =>
           a.type === 'text/url' ? `• URL: ${a.name}` : `• ${a.name} (${(a.size/1024).toFixed(1)} KB)`
-        ).join('\n')
-      : ''
+        ).join('\n') : ''
 
     const fullPrompt = text + attachText
       + (letterheadMode ? '\n\n[INSTRUÇÃO: Usar timbre oficial — Mauro Monção Advogados, Parnaíba-PI e Fortaleza-CE, OAB/PI.]' : '')
@@ -306,7 +253,7 @@ export default function EcosystemWorkspace() {
     setConversations(prev => prev.map(c =>
       c.id === activeConvId
         ? { ...c, messages: [...c.messages, userMsg, loadingMsg],
-            title: c.messages.length === 0 ? text.slice(0, 50) + (text.length > 50 ? '…' : '') : c.title }
+            title: c.messages.length === 0 ? text.slice(0,50) + (text.length > 50 ? '…' : '') : c.title }
         : c
     ))
     setPrompt(''); setAttachments([]); setIsLoading(true)
@@ -331,7 +278,7 @@ export default function EcosystemWorkspace() {
         const d = await res.json()
         resultText = d.output || d.result || d.resposta || d.content || JSON.stringify(d)
         modelUsed  = d.modelUsed || d.model || ''
-        destino    = d.destino   || ''
+        destino    = d.destino || ''
         elapsed    = d.elapsed_ms || 0
       } else {
         const err = await res.json().catch(() => ({}))
@@ -362,7 +309,6 @@ export default function EcosystemWorkspace() {
     } finally { setIsLoading(false) }
   }, [prompt, selectedAgent, activeConvId, attachments, conversations, useSearch, letterheadMode])
 
-  // ── Copy / Download ───────────────────────────────────────────
   const copyMessage = (msgId: string, content: string) => {
     navigator.clipboard.writeText(content)
     setCopiedMsgId(msgId)
@@ -376,126 +322,305 @@ export default function EcosystemWorkspace() {
     a.click(); URL.revokeObjectURL(url)
   }
 
-  // ── Markdown simples ──────────────────────────────────────────
   const renderLine = (line: string, li: number) => {
-    if (line.startsWith('### ')) return <p key={li} className="font-bold text-sm mt-3 mb-1 text-gray-900">{line.slice(4)}</p>
-    if (line.startsWith('## '))  return <p key={li} className="font-bold mt-3 mb-1 text-gray-900">{line.slice(3)}</p>
-    if (line.startsWith('# '))   return <p key={li} className="font-extrabold text-base mt-3 mb-2 text-gray-900">{line.slice(2)}</p>
+    if (line.startsWith('### ')) return <p key={li} className="font-bold text-sm mt-3 mb-1" style={{color:'#222'}}>{line.slice(4)}</p>
+    if (line.startsWith('## '))  return <p key={li} className="font-bold mt-3 mb-1" style={{color:'#222'}}>{line.slice(3)}</p>
+    if (line.startsWith('# '))   return <p key={li} className="font-extrabold text-base mt-3 mb-2" style={{color:'#222'}}>{line.slice(2)}</p>
     if (line.startsWith('---'))  return <hr key={li} className="my-2 border-gray-200"/>
     if (line.startsWith('• ') || line.startsWith('- ') || line.startsWith('* '))
-      return <p key={li} className="ml-3 mb-0.5 flex gap-2 text-gray-800"><span className="text-gray-400">•</span><span>{line.slice(2)}</span></p>
-    if (/^\d+\.\s/.test(line))
-      return <p key={li} className="ml-3 mb-0.5 text-gray-800">{line}</p>
+      return <p key={li} className="ml-3 mb-0.5 flex gap-2" style={{color:'#333'}}><span className="text-gray-400">•</span><span>{line.slice(2)}</span></p>
+    if (/^\d+\.\s/.test(line)) return <p key={li} className="ml-3 mb-0.5" style={{color:'#333'}}>{line}</p>
     const parts = line.split(/(\*\*[^*]+\*\*)/)
     const rendered = parts.map((p, i) =>
       p.startsWith('**') && p.endsWith('**')
-        ? <strong key={i} className="text-gray-900">{p.slice(2,-2)}</strong> : p
+        ? <strong key={i} style={{color:'#111'}}>{p.slice(2,-2)}</strong> : p
     )
-    return <p key={li} className={`${line === '' ? 'mb-2' : 'mb-0.5'} text-gray-800`}>{rendered}</p>
+    return <p key={li} className={line === '' ? 'mb-2' : 'mb-0.5'} style={{color:'#333'}}>{rendered}</p>
   }
 
-  // ══════════════════════════════════════════════════════════════
-  // RENDER: TELA INICIAL (sem agente selecionado)
-  // ══════════════════════════════════════════════════════════════
-  const renderWelcome = () => (
-    <div className="flex-1 flex flex-col overflow-hidden bg-white">
+  // ── Painel de anexo ───────────────────────────────────────────
+  const renderAttachMenu = () => (
+    <div className="absolute bottom-12 left-0 bg-white rounded-2xl shadow-2xl border p-2 w-60 z-50" style={{borderColor:'#e5e7eb'}}>
+      {showUrlInput ? (
+        <div className="p-2">
+          <input autoFocus value={urlInput} onChange={e => setUrlInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleAddUrl()}
+            placeholder="https://..." className="w-full text-xs border rounded-xl px-3 py-2 outline-none" style={{borderColor:'#d1d5db'}}/>
+          <div className="flex gap-1 mt-2">
+            <button onClick={handleAddUrl} className="flex-1 text-xs py-1.5 rounded-xl text-white font-medium" style={{background:'#0f2044'}}>Adicionar</button>
+            <button onClick={() => setShowUrlInput(false)} className="px-3 text-xs py-1.5 rounded-xl bg-gray-100 text-gray-600">✕</button>
+          </div>
+        </div>
+      ) : ATTACH_OPTIONS.map(opt => (
+        <button key={opt.id} onClick={() => handleAttachOption(opt.id)}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-left">
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${opt.bg} ${opt.color} flex-shrink-0`}>{opt.icon}</div>
+          <div>
+            <p className="text-xs font-semibold text-gray-800">{opt.label}</p>
+            <p className="text-[10px] text-gray-400">{opt.sub}</p>
+          </div>
+        </button>
+      ))}
+    </div>
+  )
 
-      {/* ── Cabeçalho centralizado ── */}
-      <div className="flex flex-col items-center pt-10 pb-6 px-4">
-        <FalconeLogo size={64} />
-        <h1 className="mt-4 text-2xl font-bold tracking-tight" style={{ color: '#222222' }}>
-          BEN ECOSYSTEM IA Workspace
-        </h1>
-        <p className="mt-1 text-sm" style={{ color: '#666666' }}>
-          Mauro Monção Advogados Associados &nbsp;·&nbsp; {ECOSYSTEM_AGENTS.length} agentes ativos
-        </p>
-        {/* Status dots */}
-        <div className="mt-3 flex items-center gap-5 text-xs" style={{ color: '#888888' }}>
+  // Mensagens da conversa ativa
+  const messages = activeConv?.messages ?? []
+  const hasMessages = messages.length > 0
+
+  // ══════════════════════════════════════════════════════════════
+  // RENDER — TELA ÚNICA PERMANENTE (header sempre visível)
+  // ══════════════════════════════════════════════════════════════
+  return (
+    <div className="flex flex-col h-full overflow-hidden bg-white">
+
+      {/* ══ CABEÇALHO FIXO — SEMPRE VISÍVEL, NUNCA MUDA ══════════
+          Logo Falcone original + nome BEN ECOSYSTEM IA Workspace
+          Permanece idêntico antes e depois de acionar qualquer agente
+      ═══════════════════════════════════════════════════════════ */}
+      <div className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b" style={{borderColor:'#f0f0f0', background:'#ffffff'}}>
+        {/* Lado esquerdo: logo + nome */}
+        <div className="flex items-center gap-3">
+          <img
+            src="/falcone-logo.png"
+            alt="Falcone"
+            className="w-10 h-10 rounded-xl object-cover shadow-sm"
+            onError={(e) => {
+              // fallback se logo não carregar
+              const t = e.currentTarget
+              t.style.display = 'none'
+              const fb = t.nextElementSibling as HTMLElement
+              if (fb) fb.style.display = 'flex'
+            }}
+          />
+          {/* fallback dourado (oculto por padrão) */}
+          <div className="w-10 h-10 rounded-xl items-center justify-center text-white font-bold text-lg hidden"
+            style={{background:'linear-gradient(135deg,#D4A017,#b8860b)'}}>F</div>
+          <div>
+            <p className="text-sm font-bold leading-tight" style={{color:'#0f2044'}}>BEN ECOSYSTEM IA Workspace</p>
+            <p className="text-[10px] leading-tight" style={{color:'#888'}}>Mauro Monção Advogados · falcone · {ECOSYSTEM_AGENTS.length} agentes</p>
+          </div>
+        </div>
+        {/* Lado direito: status dots + botão refresh */}
+        <div className="flex items-center gap-4 text-xs" style={{color:'#999'}}>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.growth}/> Growth</span>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.juris}/> Juris</span>
           <span className="flex items-center gap-1.5"><StatusDot status={ecoStatus.vps}/> VPS</span>
-          <button onClick={checkStatus} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <RefreshCw className="w-3 h-3"/>
+          <button onClick={checkStatus} className="text-gray-400 hover:text-gray-600 transition-colors ml-1" title="Atualizar status">
+            <RefreshCw className="w-3.5 h-3.5"/>
           </button>
         </div>
       </div>
 
-      {/* ── Input centralizado ── */}
-      <div className="px-4 w-full max-w-3xl mx-auto">
-        {/* Anexos */}
-        {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {attachments.map(att => (
-              <span key={att.id} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                📎 {att.name.slice(0,25)}
-                <button onClick={() => setAttachments(p => p.filter(a => a.id !== att.id))} className="ml-0.5">
-                  <X className="w-3 h-3"/>
-                </button>
-              </span>
+      {/* ══ ÁREA DE MENSAGENS — aparece quando há mensagens ══════
+          O carrossel CONTINUA visível abaixo; apenas esta área
+          cresce quando o agente responde. Interface NÃO muda.
+      ═══════════════════════════════════════════════════════════ */}
+      {hasMessages && activeConv && selectedAgent && (
+        <div className="flex-1 overflow-y-auto px-4 py-4" style={{background:'#fafafa', minHeight:0}}>
+          <div className="max-w-2xl mx-auto space-y-5">
+            {messages.map(msg => (
+              <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                {msg.role === 'assistant' && (
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base mr-2 flex-shrink-0 mt-0.5"
+                    style={{background: selectedAgent.color + '18'}}>
+                    {selectedAgent.emoji}
+                  </div>
+                )}
+                <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm shadow-sm'}`}
+                  style={msg.role === 'user'
+                    ? {background:'#0f2044', color:'#ffffff'}
+                    : {background:'#ffffff', border:'1px solid #e5e7eb', color:'#222222'}}>
+                  {msg.isLoading ? (
+                    <div className="flex items-center gap-2 py-1">
+                      <Loader2 className="w-4 h-4 animate-spin" style={{color: selectedAgent.color}}/>
+                      <span className="text-sm text-gray-400">Processando…</span>
+                    </div>
+                  ) : msg.role === 'user' ? (
+                    <>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                      {msg.attachments && msg.attachments.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {msg.attachments.map(a => (
+                            <span key={a.id} className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">📎 {a.name.slice(0,20)}</span>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-sm leading-relaxed">
+                        {msg.content.split('\n').map((line, li) => renderLine(line, li))}
+                      </div>
+                      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100">
+                        <span className="text-[10px] text-gray-400">
+                          {msg.timestamp.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}
+                        </span>
+                        {msg.modelUsed && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">{msg.modelUsed}</span>
+                        )}
+                        {msg.elapsed_ms && msg.elapsed_ms > 0 && (
+                          <span className="text-[10px] text-gray-400 flex items-center gap-0.5">
+                            <Zap className="w-2.5 h-2.5"/>{(msg.elapsed_ms/1000).toFixed(1)}s
+                          </span>
+                        )}
+                        <div className="ml-auto flex gap-1">
+                          <button onClick={() => copyMessage(msg.id, msg.content)}
+                            className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+                            {copiedMsgId === msg.id ? <Check className="w-3.5 h-3.5 text-green-500"/> : <Copy className="w-3.5 h-3.5"/>}
+                          </button>
+                          <button onClick={() => downloadDocument(msg.content, selectedAgent.name)}
+                            className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+                            <Download className="w-3.5 h-3.5"/>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            <div ref={chatEndRef}/>
+          </div>
+        </div>
+      )}
+
+      {/* ══ CARROSSEL — sempre visível (se não há mensagens ocupa o espaço; se há mensagens fica compacto) ══ */}
+      <div className={`flex-shrink-0 ${hasMessages ? 'border-t' : 'flex-1 flex flex-col justify-center'} px-4 py-3`}
+        style={{borderColor:'#f0f0f0', background:'#ffffff'}}>
+
+        {/* Filtros de projeto */}
+        <div className="flex items-center justify-between mb-2 max-w-4xl mx-auto w-full">
+          <div className="flex gap-1.5 items-center">
+            {(['all','growth','juris'] as const).map(p => (
+              <button key={p}
+                onClick={() => { setFilterProject(p); setCarouselIdx(0) }}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${filterProject === p ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
+                style={filterProject === p ? {background: p==='growth' ? '#059669' : p==='juris' ? '#1d4ed8' : '#0f2044'} : {}}>
+                {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? 'Growth (10)' : 'Juris (28)'}
+              </button>
             ))}
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-400">{carouselIdx + 1}/{totalSlides}</span>
+            <button onClick={() => setCarouselIdx(i => Math.max(0, i-1))} disabled={carouselIdx === 0}
+              className="w-6 h-6 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{borderColor:'#e5e7eb'}}>
+              <ChevronLeft className="w-3 h-3 text-gray-500"/>
+            </button>
+            <button onClick={() => setCarouselIdx(i => Math.min(totalSlides-1, i+1))} disabled={carouselIdx >= totalSlides-1}
+              className="w-6 h-6 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{borderColor:'#e5e7eb'}}>
+              <ChevronRight className="w-3 h-3 text-gray-500"/>
+            </button>
+          </div>
+        </div>
 
-        {/* Caixa de input principal */}
-        <div className="rounded-2xl border shadow-md overflow-visible" style={{ borderColor: '#e5e7eb', background: '#ffffff' }}>
-          {/* Linha de opções */}
-          <div className="flex items-center gap-2 px-4 pt-3 pb-1 border-b" style={{ borderColor: '#f3f4f6' }}>
-            {selectedAgent && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-                style={{ background: selectedAgent.color + '15', color: selectedAgent.color, border: `1px solid ${selectedAgent.color}40` }}>
+        {/* Cards de agentes */}
+        <div className="grid grid-cols-5 gap-2 max-w-4xl mx-auto w-full">
+          {visibleAgents.map(agent => (
+            <button key={agent.id} onClick={() => selectAgent(agent)}
+              className={`flex flex-col items-center p-2.5 rounded-xl border transition-all text-center group ${selectedAgent?.id === agent.id ? 'shadow-md' : 'hover:shadow-sm'}`}
+              style={{
+                background: selectedAgent?.id === agent.id ? agent.color + '08' : '#ffffff',
+                borderColor: selectedAgent?.id === agent.id ? agent.color : '#e5e7eb',
+                borderWidth: selectedAgent?.id === agent.id ? '2px' : '1px',
+              }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-1.5 transition-transform group-hover:scale-110"
+                style={{background: agent.color + '18', border: `1.5px solid ${agent.color}35`}}>
+                {agent.emoji}
+              </div>
+              <p className="text-[10px] font-semibold leading-tight mb-1 line-clamp-2 w-full" style={{color:'#222222'}}>{agent.name}</p>
+              <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold ${agent.project === 'growth' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                {agent.project === 'growth' ? 'Growth' : 'Juris'}
+              </span>
+              {selectedAgent?.id === agent.id && (
+                <span className="mt-1 text-[8px] px-1.5 py-0.5 rounded font-bold text-white" style={{background: agent.color}}>
+                  Ativo
+                </span>
+              )}
+            </button>
+          ))}
+          {Array.from({length: CARDS - visibleAgents.length}).map((_, i) => (
+            <div key={`e-${i}`} className="rounded-xl" style={{background:'#fafafa', border:'1.5px dashed #e5e7eb'}}/>
+          ))}
+        </div>
+
+        {/* Dots de paginação */}
+        <div className="flex justify-center gap-1 mt-2">
+          {Array.from({length: totalSlides}).map((_, i) => (
+            <button key={i} onClick={() => setCarouselIdx(i)}
+              className="rounded-full transition-all"
+              style={{width: i === carouselIdx ? 16 : 6, height: 6, background: i === carouselIdx ? '#D4A017' : '#d1d5db'}}/>
+          ))}
+        </div>
+      </div>
+
+      {/* ══ INPUT FIXO — sempre visível na base ═══════════════════ */}
+      <div className="flex-shrink-0 px-4 pb-4 pt-2 border-t" style={{borderColor:'#f3f4f6', background:'#ffffff'}}>
+        <div className="max-w-2xl mx-auto">
+
+          {/* Chip do agente ativo + opções */}
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            {selectedAgent ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                style={{background: selectedAgent.color + '15', color: selectedAgent.color, border: `1px solid ${selectedAgent.color}40`}}>
                 <span>{selectedAgent.emoji}</span>
                 <span>{selectedAgent.name}</span>
-                <button onClick={() => { setSelectedAgent(null); setActiveConvId(null) }}><X className="w-3 h-3"/></button>
+                <button onClick={() => {setSelectedAgent(null); setActiveConvId(null)}} title="Desativar agente">
+                  <X className="w-3 h-3 ml-0.5 opacity-60 hover:opacity-100"/>
+                </button>
               </div>
+            ) : (
+              <span className="text-xs text-gray-400 italic">Selecione um agente acima ↑</span>
             )}
             <button onClick={() => setUseSearch(!useSearch)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${useSearch ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-              <Globe className="w-3 h-3"/> Pesquisa Web
+              <Globe className="w-3 h-3"/> Web
             </button>
             <button onClick={() => setLetterheadMode(!letterheadMode)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${letterheadMode ? 'text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-              style={letterheadMode ? { background: '#0f2044' } : {}}>
-              <TrendingUp className="w-3 h-3"/> Timbre Oficial
+              style={letterheadMode ? {background:'#0f2044'} : {}}>
+              <TrendingUp className="w-3 h-3"/> Timbre
             </button>
+            {hasMessages && selectedAgent && (
+              <button onClick={() => {
+                const newId = `conv-${Date.now()}`
+                const newConv: Conversation = {
+                  id: newId, title: `${selectedAgent.emoji} ${selectedAgent.name}`,
+                  agentId: selectedAgent.id, messages: [], createdAt: new Date(), project: selectedAgent.project,
+                }
+                setConversations(prev => [newConv, ...prev])
+                setActiveConvId(newId)
+                setPrompt('')
+                setAttachments([])
+              }}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 hover:bg-gray-200 ml-auto">
+                <Plus className="w-3 h-3"/> Nova conversa
+              </button>
+            )}
           </div>
 
-          {/* Textarea */}
-          <div className="flex items-end gap-2 px-4 py-3">
-            {/* Botão de anexo */}
+          {/* Anexos */}
+          {attachments.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {attachments.map(att => (
+                <span key={att.id} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                  📎 {att.name.slice(0,25)}
+                  <button onClick={() => setAttachments(p => p.filter(a => a.id !== att.id))}><X className="w-3 h-3"/></button>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Caixa de texto */}
+          <div className="flex items-end gap-2 rounded-2xl border shadow-sm px-4 py-3"
+            style={{borderColor: selectedAgent ? selectedAgent.color + '60' : '#e5e7eb', background:'#ffffff'}}>
             <div className="relative flex-shrink-0" ref={attachMenuRef}>
-              <button
-                onClick={() => setAttachMenuOpen(!attachMenuOpen)}
-                className="w-9 h-9 flex items-center justify-center rounded-xl border hover:bg-gray-50 transition-colors"
-                style={{ borderColor: '#e5e7eb', color: '#888' }}>
+              <button onClick={() => setAttachMenuOpen(!attachMenuOpen)}
+                className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+                style={{color:'#888'}}>
                 <Paperclip className="w-4 h-4"/>
               </button>
-              {attachMenuOpen && (
-                <div className="absolute bottom-12 left-0 bg-white rounded-2xl shadow-2xl border p-2 w-60 z-50" style={{ borderColor: '#e5e7eb' }}>
-                  {showUrlInput ? (
-                    <div className="p-2">
-                      <input autoFocus value={urlInput} onChange={e => setUrlInput(e.target.value)}
-                        onKeyDown={e => e.key === 'Enter' && handleAddUrl()}
-                        placeholder="https://..."
-                        className="w-full text-xs border rounded-xl px-3 py-2 outline-none" style={{ borderColor: '#d1d5db' }}/>
-                      <div className="flex gap-1 mt-2">
-                        <button onClick={handleAddUrl} className="flex-1 text-xs py-1.5 rounded-xl text-white font-medium" style={{ background: '#0f2044' }}>Adicionar</button>
-                        <button onClick={() => setShowUrlInput(false)} className="px-3 text-xs py-1.5 rounded-xl bg-gray-100 text-gray-600">✕</button>
-                      </div>
-                    </div>
-                  ) : (
-                    ATTACH_OPTIONS.map(opt => (
-                      <button key={opt.id} onClick={() => handleAttachOption(opt.id)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-left">
-                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${opt.bg} ${opt.color} flex-shrink-0`}>{opt.icon}</div>
-                        <div>
-                          <p className="text-xs font-semibold text-gray-800">{opt.label}</p>
-                          <p className="text-[10px] text-gray-400">{opt.sub}</p>
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
-              )}
+              {attachMenuOpen && renderAttachMenu()}
             </div>
 
             <textarea
@@ -505,89 +630,26 @@ export default function EcosystemWorkspace() {
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!isLoading) sendMessage() }
               }}
-              placeholder={selectedAgent ? `Mensagem para ${selectedAgent.emoji} ${selectedAgent.name}…` : "Selecione um agente abaixo e faça sua pergunta… (Enter para enviar)"}
+              placeholder={selectedAgent
+                ? `Mensagem para ${selectedAgent.emoji} ${selectedAgent.name}… (Enter para enviar)`
+                : 'Selecione um agente acima e faça sua pergunta…'}
               rows={1}
               className="flex-1 resize-none text-sm outline-none"
-              style={{ background: 'transparent', lineHeight: '1.5', maxHeight: '180px', color: '#222222' }}
+              style={{background:'transparent', maxHeight:'160px', lineHeight:'1.5', color:'#222222'}}
             />
 
-            <button
-              onClick={sendMessage}
-              disabled={isLoading || !prompt.trim() || !selectedAgent}
+            <button onClick={sendMessage} disabled={isLoading || !prompt.trim() || !selectedAgent}
               className="w-9 h-9 flex items-center justify-center rounded-xl transition-all flex-shrink-0"
               style={{
                 background: isLoading || !prompt.trim() || !selectedAgent ? '#e5e7eb' : '#D4A017',
-                color: isLoading || !prompt.trim() || !selectedAgent ? '#aaa' : '#0f2044',
+                color:      isLoading || !prompt.trim() || !selectedAgent ? '#aaa'    : '#0f2044',
               }}>
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin"/> : <Send className="w-4 h-4"/>}
             </button>
           </div>
-        </div>
-        <p className="text-center text-[11px] mt-2" style={{ color: '#aaaaaa' }}>
-          Shift+Enter para nova linha &nbsp;·&nbsp; Enter para enviar
-        </p>
-      </div>
-
-      {/* ── Carrossel de agentes ── */}
-      <div className="mt-6 px-4 w-full max-w-4xl mx-auto flex-1 overflow-hidden">
-        {/* Filtros + navegação */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex gap-1.5">
-            {(['all','growth','juris'] as const).map(p => (
-              <button key={p}
-                onClick={() => { setFilterProject(p); setCarouselIdx(0) }}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${filterProject === p ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
-                style={filterProject === p ? { background: p === 'growth' ? '#059669' : p === 'juris' ? '#1d4ed8' : '#0f2044' } : {}}>
-                {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? `Growth (10)` : `Juris (28)`}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">{carouselIdx + 1} / {totalSlides}</span>
-            <button onClick={() => setCarouselIdx(i => Math.max(0, i-1))} disabled={carouselIdx === 0}
-              className="w-7 h-7 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{ borderColor: '#e5e7eb' }}>
-              <ChevronLeft className="w-3.5 h-3.5 text-gray-500"/>
-            </button>
-            <button onClick={() => setCarouselIdx(i => Math.min(totalSlides-1, i+1))} disabled={carouselIdx >= totalSlides-1}
-              className="w-7 h-7 flex items-center justify-center rounded-lg border disabled:opacity-30 hover:bg-gray-50 transition-colors" style={{ borderColor: '#e5e7eb' }}>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-500"/>
-            </button>
-          </div>
-        </div>
-
-        {/* Slides */}
-        <div className="grid grid-cols-5 gap-3">
-          {visibleAgents.map(agent => (
-            <button key={agent.id}
-              onClick={() => startConversation(agent)}
-              className="flex flex-col items-center p-3 rounded-2xl border hover:shadow-md transition-all text-center group"
-              style={{ background: '#ffffff', borderColor: '#e5e7eb' }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-2 transition-transform group-hover:scale-110"
-                style={{ background: agent.color + '18', border: `1.5px solid ${agent.color}35` }}>
-                {agent.emoji}
-              </div>
-              <p className="text-[11px] font-semibold leading-tight mb-1 line-clamp-2" style={{ color: '#222222' }}>{agent.name}</p>
-              <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${agent.project === 'growth' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                {agent.project === 'growth' ? 'Growth' : 'Juris'}
-              </span>
-              <span className={`mt-1 text-[9px] px-1.5 py-0.5 rounded font-medium ${agent.modelBadge}`}>
-                {agent.model.replace('Claude ', '').replace('GPT-', 'GPT-')}
-              </span>
-            </button>
-          ))}
-          {/* Preenche espaços vazios */}
-          {Array.from({ length: CARDS_PER_SLIDE - visibleAgents.length }).map((_, i) => (
-            <div key={`empty-${i}`} className="rounded-2xl" style={{ background: '#fafafa', border: '1.5px dashed #e5e7eb' }}/>
-          ))}
-        </div>
-
-        {/* Dots de navegação */}
-        <div className="flex justify-center gap-1.5 mt-4">
-          {Array.from({ length: totalSlides }).map((_, i) => (
-            <button key={i} onClick={() => setCarouselIdx(i)}
-              className={`rounded-full transition-all ${i === carouselIdx ? 'w-5 h-2' : 'w-2 h-2'}`}
-              style={{ background: i === carouselIdx ? '#D4A017' : '#d1d5db' }}/>
-          ))}
+          <p className="text-center text-[10px] mt-1.5" style={{color:'#cccccc'}}>
+            Shift+Enter nova linha &nbsp;·&nbsp; Enter enviar
+          </p>
         </div>
       </div>
 
@@ -595,220 +657,6 @@ export default function EcosystemWorkspace() {
       <input ref={fileInputRef}  type="file" multiple accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.eml" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
       <input ref={imageInputRef} type="file" multiple accept="image/*" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
       <input ref={audioInputRef} type="file" multiple accept="audio/*" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
-    </div>
-  )
-
-  // ══════════════════════════════════════════════════════════════
-  // RENDER: CHAT ATIVO (agente selecionado)
-  // ══════════════════════════════════════════════════════════════
-  const renderChat = () => {
-    const currentConv = conversations.find(c => c.id === activeConvId)
-    if (!selectedAgent || !activeConvId) return renderWelcome()
-
-    return (
-      <div className="flex-1 flex flex-col overflow-hidden bg-white">
-
-        {/* ── Header do agente ── */}
-        <div className="flex items-center gap-3 px-6 py-3 border-b" style={{ borderColor: '#f3f4f6', background: '#ffffff' }}>
-          <button onClick={() => { setSelectedAgent(null); setActiveConvId(null) }}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors text-gray-400 mr-1">
-            <ChevronLeft className="w-4 h-4"/>
-          </button>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: selectedAgent.color + '18', border: `1.5px solid ${selectedAgent.color}35` }}>
-            {selectedAgent.emoji}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold truncate" style={{ color: '#222222' }}>{selectedAgent.name}</p>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className={`text-[10px] px-1.5 py-0 rounded font-medium ${selectedAgent.modelBadge}`}>{selectedAgent.model}</span>
-              <span className={`text-[10px] px-1.5 py-0 rounded font-bold ${selectedAgent.project === 'growth' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                {selectedAgent.project === 'growth' ? 'Growth Center' : 'Juris Center'}
-              </span>
-              <StatusDot status={selectedAgent.project === 'growth' ? ecoStatus.growth : ecoStatus.juris}/>
-            </div>
-          </div>
-          <button onClick={() => startConversation(selectedAgent)} title="Nova conversa"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border hover:bg-gray-50 transition-colors"
-            style={{ borderColor: '#e5e7eb', color: '#666' }}>
-            <Plus className="w-3.5 h-3.5"/> Nova
-          </button>
-        </div>
-
-        {/* ── Mensagens ── */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6" style={{ background: '#fafafa' }}>
-          {(currentConv?.messages.length ?? 0) === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center py-12">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4"
-                style={{ background: selectedAgent.color + '15', border: `1.5px solid ${selectedAgent.color}30` }}>
-                {selectedAgent.emoji}
-              </div>
-              <p className="text-base font-semibold mb-1" style={{ color: '#222222' }}>{selectedAgent.name}</p>
-              <p className="text-sm max-w-sm" style={{ color: '#888888' }}>{selectedAgent.description}</p>
-              <p className="text-xs mt-4 px-4 py-2 rounded-full" style={{ background: '#f3f4f6', color: '#888' }}>
-                Digite sua mensagem abaixo para começar
-              </p>
-            </div>
-          )}
-
-          {(currentConv?.messages ?? []).map(msg => (
-            <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} max-w-3xl mx-auto w-full`}>
-              {msg.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base mr-3 flex-shrink-0 mt-0.5"
-                  style={{ background: selectedAgent.color + '18' }}>
-                  {selectedAgent.emoji}
-                </div>
-              )}
-              <div className={`max-w-[80%] rounded-2xl px-5 py-3.5 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm shadow-sm'}`}
-                style={msg.role === 'user'
-                  ? { background: '#0f2044', color: '#ffffff' }
-                  : { background: '#ffffff', border: '1px solid #e5e7eb', color: '#222222' }}>
-                {msg.isLoading ? (
-                  <div className="flex items-center gap-2 py-1">
-                    <Loader2 className="w-4 h-4 animate-spin" style={{ color: selectedAgent.color }}/>
-                    <span className="text-sm text-gray-400">Processando…</span>
-                  </div>
-                ) : msg.role === 'user' ? (
-                  <>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                    {msg.attachments && msg.attachments.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {msg.attachments.map(att => (
-                          <span key={att.id} className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
-                            📎 {att.name.slice(0,20)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="text-sm leading-relaxed">
-                      {msg.content.split('\n').map((line, li) => renderLine(line, li))}
-                    </div>
-                    <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100">
-                      <span className="text-[10px] text-gray-400">
-                        {msg.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      {msg.modelUsed && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">{msg.modelUsed}</span>
-                      )}
-                      {msg.elapsed_ms && msg.elapsed_ms > 0 && (
-                        <span className="text-[10px] text-gray-400 flex items-center gap-0.5">
-                          <Zap className="w-2.5 h-2.5"/>{(msg.elapsed_ms/1000).toFixed(1)}s
-                        </span>
-                      )}
-                      <div className="ml-auto flex gap-1">
-                        <button onClick={() => copyMessage(msg.id, msg.content)}
-                          className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                          {copiedMsgId === msg.id ? <Check className="w-3.5 h-3.5 text-green-500"/> : <Copy className="w-3.5 h-3.5"/>}
-                        </button>
-                        <button onClick={() => downloadDocument(msg.content, selectedAgent.name)}
-                          className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                          <Download className="w-3.5 h-3.5"/>
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-          <div ref={chatEndRef}/>
-        </div>
-
-        {/* ── Input do chat ── */}
-        <div className="px-4 py-3 border-t" style={{ borderColor: '#f3f4f6', background: '#ffffff' }}>
-          <div className="max-w-3xl mx-auto">
-            {attachments.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-2">
-                {attachments.map(att => (
-                  <span key={att.id} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                    📎 {att.name.slice(0,25)}
-                    <button onClick={() => setAttachments(p => p.filter(a => a.id !== att.id))}><X className="w-3 h-3"/></button>
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="flex items-center gap-2 mb-2">
-              <button onClick={() => setUseSearch(!useSearch)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${useSearch ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                <Globe className="w-3 h-3"/> Web
-              </button>
-              <button onClick={() => setLetterheadMode(!letterheadMode)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${letterheadMode ? 'text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                style={letterheadMode ? { background: '#0f2044' } : {}}>
-                <TrendingUp className="w-3 h-3"/> Timbre
-              </button>
-            </div>
-            <div className="flex items-end gap-2 rounded-2xl border px-4 py-3 shadow-sm" style={{ borderColor: '#e5e7eb', background: '#ffffff' }}>
-              <div className="relative flex-shrink-0" ref={attachMenuRef}>
-                <button onClick={() => setAttachMenuOpen(!attachMenuOpen)}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
-                  style={{ color: '#888' }}>
-                  <Paperclip className="w-4 h-4"/>
-                </button>
-                {attachMenuOpen && (
-                  <div className="absolute bottom-12 left-0 bg-white rounded-2xl shadow-2xl border p-2 w-60 z-50" style={{ borderColor: '#e5e7eb' }}>
-                    {showUrlInput ? (
-                      <div className="p-2">
-                        <input autoFocus value={urlInput} onChange={e => setUrlInput(e.target.value)}
-                          onKeyDown={e => e.key === 'Enter' && handleAddUrl()}
-                          placeholder="https://..." className="w-full text-xs border rounded-xl px-3 py-2 outline-none" style={{ borderColor: '#d1d5db' }}/>
-                        <div className="flex gap-1 mt-2">
-                          <button onClick={handleAddUrl} className="flex-1 text-xs py-1.5 rounded-xl text-white font-medium" style={{ background: '#0f2044' }}>Adicionar</button>
-                          <button onClick={() => setShowUrlInput(false)} className="px-3 text-xs py-1.5 rounded-xl bg-gray-100 text-gray-600">✕</button>
-                        </div>
-                      </div>
-                    ) : ATTACH_OPTIONS.map(opt => (
-                      <button key={opt.id} onClick={() => handleAttachOption(opt.id)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-left">
-                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${opt.bg} ${opt.color} flex-shrink-0`}>{opt.icon}</div>
-                        <div>
-                          <p className="text-xs font-semibold text-gray-800">{opt.label}</p>
-                          <p className="text-[10px] text-gray-400">{opt.sub}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <textarea
-                ref={textareaRef}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!isLoading) sendMessage() }
-                }}
-                placeholder={`Mensagem para ${selectedAgent.emoji} ${selectedAgent.name}… (Enter para enviar)`}
-                disabled={isLoading}
-                rows={1}
-                className="flex-1 resize-none text-sm outline-none"
-                style={{ background: 'transparent', maxHeight: '180px', lineHeight: '1.5', color: '#222222' }}
-              />
-              <button onClick={sendMessage} disabled={isLoading || !prompt.trim()}
-                className="w-9 h-9 flex items-center justify-center rounded-xl transition-all flex-shrink-0"
-                style={{ background: isLoading || !prompt.trim() ? '#e5e7eb' : '#D4A017', color: isLoading || !prompt.trim() ? '#aaa' : '#0f2044' }}>
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin"/> : <Send className="w-4 h-4"/>}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hidden inputs */}
-        <input ref={fileInputRef}  type="file" multiple accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.eml" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
-        <input ref={imageInputRef} type="file" multiple accept="image/*" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
-        <input ref={audioInputRef} type="file" multiple accept="audio/*" className="hidden" onChange={e => handleFileUpload(e.target.files)}/>
-      </div>
-    )
-  }
-
-  // ══════════════════════════════════════════════════════════════
-  // RENDER FINAL
-  // ══════════════════════════════════════════════════════════════
-  return (
-    <div className="flex h-full overflow-hidden bg-white">
-      {renderChat()}
     </div>
   )
 }

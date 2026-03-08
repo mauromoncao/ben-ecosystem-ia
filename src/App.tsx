@@ -67,8 +67,19 @@ function Sidebar() {
 
       {/* Logo */}
       <div className="h-14 flex items-center gap-2.5 px-4 border-b" style={{ borderColor: '#1a3060' }}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #D4A017, #b8860b)' }}>
+        <img
+          src="/falcone-logo.png"
+          alt="Falcone"
+          className="w-8 h-8 rounded-lg object-cover"
+          onError={(e) => {
+            const t = e.currentTarget
+            t.style.display = 'none'
+            const fb = t.nextElementSibling as HTMLElement
+            if (fb) fb.style.display = 'flex'
+          }}
+        />
+        <div className="w-8 h-8 rounded-lg items-center justify-center hidden"
+          style={{ background: 'linear-gradient(135deg, #D4A017, #b8860b)', minWidth: '2rem' }}>
           <Sparkles className="w-4 h-4 text-white" />
         </div>
         <div>
