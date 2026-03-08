@@ -11,10 +11,10 @@
 
 export const config = { maxDuration: 30 }
 
-const GROWTH_URL    = process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app'
-const JURIS_URL     = process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app'
-const VPS_URL       = process.env.VPS_LEADS_URL       || 'http://181.215.135.202:3001'
-const BRIDGE_SECRET = process.env.JWT_SECRET          || 'ben_jwt_mauro_moncao_2026_enterprise_secret_key_advogados'
+const GROWTH_URL    = (process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app').trim()
+const JURIS_URL     = (process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app').trim()
+const VPS_URL       = (process.env.VPS_LEADS_URL       || 'http://181.215.135.202:3001').trim()
+const BRIDGE_SECRET = (process.env.JWT_SECRET          || 'ben_jwt_mauro_moncao_2026_enterprise_secret_key_advogados').trim()
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*')

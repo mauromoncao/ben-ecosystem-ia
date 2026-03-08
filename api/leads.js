@@ -8,7 +8,7 @@
 
 export const config = { maxDuration: 15 }
 
-const VPS_URL = process.env.VPS_LEADS_URL || 'http://181.215.135.202:3001'
+const VPS_URL = (process.env.VPS_LEADS_URL || 'http://181.215.135.202:3001').trim()
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*')

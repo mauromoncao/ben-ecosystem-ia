@@ -11,9 +11,9 @@
 
 export const config = { maxDuration: 20 }
 
-const GROWTH_URL = process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app'
-const JURIS_URL  = process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app'
-const VPS_URL    = process.env.VPS_LEADS_URL        || 'http://181.215.135.202:3001'
+const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app').trim()
+const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app').trim()
+const VPS_URL    = (process.env.VPS_LEADS_URL        || 'http://181.215.135.202:3001').trim()
 
 async function ping(url, timeoutMs = 5000) {
   const t0 = Date.now()
