@@ -1,14 +1,27 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/agents/run",    "destination": "/api/agents/run" },
+    { "source": "/api/bridge",        "destination": "/api/bridge" },
+    { "source": "/api/leads",         "destination": "/api/leads" },
+    { "source": "/api/leads/:path*",  "destination": "/api/leads" },
+    { "source": "/api/status",        "destination": "/api/status" },
+    { "source": "/(.*)",              "destination": "/index.html" }
   ],
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PATCH,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization,X-Ben-Module" }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+        { "key": "X-Frame-Options",        "value": "SAMEORIGIN" },
+        { "key": "X-XSS-Protection",       "value": "1; mode=block" }
       ]
     }
   ]
