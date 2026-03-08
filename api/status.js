@@ -1,5 +1,5 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Status/Health Check v2.1
+// BEN ECOSYSTEM IA — Status/Health Check v3.1
 // Rota: GET /api/status
 // ============================================================
 
@@ -58,15 +58,40 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     ecosystem: 'Ben Ecosystem IA',
-    versao: '3.0',
+    versao: '3.1',
     stack: 'Claude Haiku 4.5 · GPT-4o · GPT-4o-mini · Perplexity',
+    nomenclatura: 'BEN Profissional v1.0',
     status: allOnline ? (vpsOnline ? 'online' : 'parcial') : 'degraded',
     timestamp: new Date().toISOString(),
     elapsed_ms: Date.now() - t0,
     modulos: { growth, juris, vps },
     agentes: {
-      growth: { total: 9, modelos: ['gpt-4o-mini','gpt-4o','claude-haiku-4-5'] },
-      juris:  { total: 25, modelos: ['claude-haiku-4-5','gpt-4o','perplexity'], extras: ['contador-ia','perito-ia'] },
+      growth: {
+        total: 9,
+        modelos: ['gpt-4o-mini','gpt-4o','claude-haiku-4-5'],
+        ids: [
+          'ben-atendente','ben-conteudista','ben-estrategista-campanhas',
+          'ben-estrategista-marketing','ben-analista-relatorios','ben-diretor-criativo',
+          'ben-analista-monitoramento','ben-revisor-juridico','ben-peticionista',
+        ],
+      },
+      juris: {
+        total: 25,
+        modelos: ['claude-haiku-4-5','gpt-4o','perplexity'],
+        grupos: ['juridico-core','contador-tributarista','perito-forense','engenheiro-prompt'],
+        ids: [
+          'ben-peticionista-juridico','ben-contratualista','ben-mandatario-juridico',
+          'ben-analista-processual','ben-auditor-processual','ben-gestor-juridico',
+          'ben-tributarista','ben-trabalhista','ben-previdenciarista','ben-constitucionalista',
+          'ben-especialista-compliance','ben-pesquisador-juridico','ben-relator-juridico',
+          'ben-redator-juridico','ben-engenheiro-prompt',
+          'ben-contador-tributarista','ben-contador-tributarista-planejamento',
+          'ben-contador-tributarista-creditos','ben-contador-tributarista-auditoria',
+          'ben-contador-tributarista-relatorio',
+          'ben-perito-forense','ben-perito-forense-digital','ben-perito-forense-laudo',
+          'ben-perito-forense-contestar','ben-perito-forense-relatorio',
+        ],
+      },
     },
     urls: {
       growth: GROWTH_URL,

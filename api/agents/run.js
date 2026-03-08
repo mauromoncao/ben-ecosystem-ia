@@ -1,19 +1,48 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Proxy de Agentes v2.0
+// BEN ECOSYSTEM IA — Proxy de Agentes v3.1
 // Rota: POST /api/agents/run
 //
 // Roteia automaticamente para:
 //   → Growth Center: ben-growth-center.vercel.app/api/agents/run
 //   → Juris Center:  ben-juris-center.vercel.app/api/agents/run
 //
-// Agentes Growth: dr-ben, mara-ia, lex-conteudo, lex-campanhas,
-//                 lex-relatorio, lex-monitor, lex-marketing
-// Agentes Juris:  dr-ben-peticoes, dr-ben-contratos, dr-ben-procuracoes,
-//                 dr-ben-analise-processo, dr-ben-auditoria-processual,
-//                 dr-ben-fiscal, dr-ben-trabalhista, dr-ben-previdenciario,
-//                 dr-ben-constitucional, dr-ben-compliance, dr-ben-pesquisa,
-//                 dr-ben-relatorio, dr-ben-producao, dr-ben-admin,
-//                 dr-ben-engenheiro
+// ── AGENTES GROWTH (9) ──────────────────────────────────────
+//   ben-atendente               BEN Atendente Jurídico
+//   ben-conteudista             BEN Conteudista Jurídico
+//   ben-estrategista-campanhas  BEN Estrategista de Campanhas
+//   ben-estrategista-marketing  BEN Estrategista de Marketing Jurídico
+//   ben-analista-relatorios     BEN Analista de Relatórios
+//   ben-diretor-criativo        BEN Diretor Criativo
+//   ben-analista-monitoramento  BEN Analista de Monitoramento
+//   ben-revisor-juridico        BEN Revisor Jurídico
+//   ben-peticionista            BEN Peticionista
+//
+// ── AGENTES JURIS (25) ──────────────────────────────────────
+//   ben-peticionista-juridico           BEN Peticionista Jurídico
+//   ben-contratualista                  BEN Contratualista
+//   ben-mandatario-juridico             BEN Mandatário Jurídico
+//   ben-analista-processual             BEN Analista Processual
+//   ben-auditor-processual              BEN Auditor Processual
+//   ben-gestor-juridico                 BEN Gestor Jurídico
+//   ben-tributarista                    BEN Tributarista
+//   ben-trabalhista                     BEN Trabalhista
+//   ben-previdenciarista                BEN Previdenciarista
+//   ben-constitucionalista              BEN Constitucionalista
+//   ben-especialista-compliance         BEN Especialista em Compliance
+//   ben-pesquisador-juridico            BEN Pesquisador Jurídico
+//   ben-relator-juridico                BEN Relator Jurídico
+//   ben-redator-juridico                BEN Redator Jurídico
+//   ben-engenheiro-prompt               BEN Engenheiro de Prompt
+//   ben-contador-tributarista           BEN Contador Tributarista (principal)
+//   ben-contador-tributarista-planejamento
+//   ben-contador-tributarista-creditos
+//   ben-contador-tributarista-auditoria
+//   ben-contador-tributarista-relatorio
+//   ben-perito-forense                  BEN Perito Forense (principal)
+//   ben-perito-forense-digital
+//   ben-perito-forense-laudo
+//   ben-perito-forense-contestar
+//   ben-perito-forense-relatorio
 // ============================================================
 
 export const config = { maxDuration: 65 }
@@ -24,35 +53,55 @@ const VPS_URL    = (process.env.VPS_LEADS_URL        || 'http://181.215.135.202:
 
 // ── Mapa de agentes → sistema destino ────────────────────────
 const GROWTH_AGENTS = new Set([
-  'dr-ben', 'mara-ia', 'lex-conteudo', 'lex-campanhas',
-  'lex-relatorio', 'lex-monitor', 'lex-marketing', 'lex-juridico',
-  'lex-peticoes', 'lex-criativo',
+  // Novos nomes BEN — Growth
+  'ben-atendente',
+  'ben-conteudista',
+  'ben-estrategista-campanhas',
+  'ben-estrategista-marketing',
+  'ben-analista-relatorios',
+  'ben-diretor-criativo',
+  'ben-analista-monitoramento',
+  'ben-revisor-juridico',
+  'ben-peticionista',
+  // mara-ia (especial)
+  'mara-ia',
 ])
 
 const JURIS_AGENTS = new Set([
-  'dr-ben-peticoes', 'dr-ben-contratos', 'dr-ben-procuracoes',
-  'dr-ben-analise-processo', 'dr-ben-auditoria-processual',
-  'dr-ben-fiscal', 'dr-ben-trabalhista', 'dr-ben-previdenciario',
-  'dr-ben-constitucional', 'dr-ben-compliance', 'dr-ben-pesquisa',
-  'dr-ben-relatorio', 'dr-ben-producao', 'dr-ben-admin',
-  'dr-ben-engenheiro',
-  // Contador IA (5)
-  'dr-ben-contador-fiscal', 'dr-ben-contador-planejamento',
-  'dr-ben-contador-creditos', 'dr-ben-contador-inconsistencias',
-  'dr-ben-contador-relatorio',
-  // Perito IA (5)
-  'dr-ben-perito-documentos', 'dr-ben-perito-digital',
-  'dr-ben-perito-laudo', 'dr-ben-perito-contestar',
-  'dr-ben-perito-relatorio',
-  // Aliases usados no Ecosystem UI
-  'dr-ben-auditoria', 'dr-ben-analise',
+  // Jurídicos core (15)
+  'ben-peticionista-juridico',
+  'ben-contratualista',
+  'ben-mandatario-juridico',
+  'ben-analista-processual',
+  'ben-auditor-processual',
+  'ben-gestor-juridico',
+  'ben-tributarista',
+  'ben-trabalhista',
+  'ben-previdenciarista',
+  'ben-constitucionalista',
+  'ben-especialista-compliance',
+  'ben-pesquisador-juridico',
+  'ben-relator-juridico',
+  'ben-redator-juridico',
+  'ben-engenheiro-prompt',
+  // Contador Tributarista (5)
+  'ben-contador-tributarista',
+  'ben-contador-tributarista-planejamento',
+  'ben-contador-tributarista-creditos',
+  'ben-contador-tributarista-auditoria',
+  'ben-contador-tributarista-relatorio',
+  // Perito Forense (5)
+  'ben-perito-forense',
+  'ben-perito-forense-digital',
+  'ben-perito-forense-laudo',
+  'ben-perito-forense-contestar',
+  'ben-perito-forense-relatorio',
 ])
 
-// ── Mapeamento de aliases ─────────────────────────────────────
+// ── Mapeamento de aliases (compatibilidade retroativa) ────────
 const AGENT_ALIASES = {
-  'dr-ben-auditoria': 'dr-ben-auditoria-processual',
-  'dr-ben-analise':   'dr-ben-analise-processo',
-  'mara-ia':          'mara-ia',
+  // Aliases novos → resolução interna
+  'mara-ia': 'mara-ia',
 }
 
 function resolveAgentId(agentId) {
@@ -63,8 +112,18 @@ function getDestino(agentId) {
   const id = resolveAgentId(agentId)
   if (JURIS_AGENTS.has(id)) return 'juris'
   if (GROWTH_AGENTS.has(id)) return 'growth'
-  // Heurística: prefixo "dr-ben-" sem ser dr-ben puro → juris
-  if (id.startsWith('dr-ben-')) return 'juris'
+  // Heurística: prefixo "ben-" com subárea jurídica → juris
+  if (id.startsWith('ben-peticionista-') || id.startsWith('ben-contador-') ||
+      id.startsWith('ben-perito-') || id.startsWith('ben-auditor-') ||
+      id.startsWith('ben-analista-processual') || id === 'ben-tributarista' ||
+      id === 'ben-trabalhista' || id === 'ben-previdenciarista' ||
+      id === 'ben-constitucionalista' || id.startsWith('ben-especialista-') ||
+      id.startsWith('ben-pesquisador-') || id.startsWith('ben-relator-') ||
+      id.startsWith('ben-redator-') || id.startsWith('ben-engenheiro-') ||
+      id.startsWith('ben-contratualista') || id.startsWith('ben-mandatario-') ||
+      id.startsWith('ben-gestor-')) {
+    return 'juris'
+  }
   return 'growth'
 }
 
@@ -111,7 +170,7 @@ export default async function handler(req, res) {
     const baseUrl    = destino === 'juris' ? JURIS_URL : GROWTH_URL
     const endpoint   = `${baseUrl}/api/agents/run`
 
-    console.log(`[Ecosystem] ${agentId} → ${destino} (${resolvedId})`)
+    console.log(`[Ecosystem v3.1] ${agentId} → ${destino} (${resolvedId})`)
 
     const startTime = Date.now()
 
@@ -119,7 +178,7 @@ export default async function handler(req, res) {
     const enrichedContext = {
       ...context,
       source: 'ben-ecosystem-ia',
-      ecosystemVersion: '2.0',
+      ecosystemVersion: '3.1',
     }
 
     const response = await fetch(endpoint, {
