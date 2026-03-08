@@ -23,8 +23,8 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 // Credenciais locais (fallback quando não vem token externo)
 const LOCAL_CREDENTIALS = [
-  { email: import.meta.env.VITE_AUTH_EMAIL_1 || 'admin@mauromoncao.adv.br', senha: import.meta.env.VITE_AUTH_SENHA_1 || 'ben2026', nome: 'Administrador' },
-  { email: import.meta.env.VITE_AUTH_EMAIL_2 || '', senha: import.meta.env.VITE_AUTH_SENHA_2 || '', nome: 'Usuário 2' },
+  { email: import.meta.env.VITE_AUTH_EMAIL_1 || 'mauromoncaoestudos@gmail.com', senha: import.meta.env.VITE_AUTH_SENHA_1 || 'BenHub@Center2026', nome: 'Mauro Monção' },
+  { email: import.meta.env.VITE_AUTH_EMAIL_2 || 'mauromoncaoadv.escritorio@gmail.com', senha: import.meta.env.VITE_AUTH_SENHA_2 || 'BenHub@Center2026', nome: 'Mauro Monção' },
 ].filter(c => c.email && c.senha)
 
 const STORAGE_KEY = 'ben_ecosystem_auth'
