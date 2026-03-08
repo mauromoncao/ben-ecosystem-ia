@@ -222,6 +222,25 @@ export default async function handler(req, res) {
       logVPS(agentId, input, data.output)
     }
 
+    // ── Log de custo no Monitor interno (assíncrono) ─────────
+    if (data.usage) {
+      fetch(`${process.env.ECOSYSTEM_URL || 'https://ben-ecosystem-ia.vercel.app'}/api/monitor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentId,
+          modelUsed:    data.modelUsed  || 'unknown',
+          inputTokens:  data.usage.inputTokens  || 0,
+          outputTokens: data.usage.outputTokens || 0,
+          costUsd:      data.usage.costUsd      || 0,
+          elapsed_ms:   elapsed,
+          timestamp:    new Date().toISOString(),
+          source:       destino,
+        }),
+        signal: AbortSignal.timeout(3000),
+      }).catch(() => {})
+    }
+
     return res.status(200).json({
       ...data,
       destino,

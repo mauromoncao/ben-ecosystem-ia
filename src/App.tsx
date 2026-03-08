@@ -4,6 +4,7 @@ import { Sparkles, TrendingUp, Scale, LayoutDashboard, ExternalLink, LogOut, Use
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import EcosystemWorkspace from './pages/EcosystemWorkspace'
+import MonitorCustos from './pages/MonitorCustos'
 
 // ─── PrivateRoute ─────────────────────────────────────────────
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -152,6 +153,8 @@ function AppRoutes() {
           </Layout>
         </PrivateRoute>
       } />
+      {/* Rota oculta — monitor admin privado, não aparece no menu */}
+      <Route path="/monitor-admin" element={<MonitorCustos />} />
       <Route path="*" element={<Navigate to="/workspace" replace />} />
     </Routes>
   )

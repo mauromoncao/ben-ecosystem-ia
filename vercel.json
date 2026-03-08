@@ -5,6 +5,7 @@
     { "source": "/api/leads",         "destination": "/api/leads" },
     { "source": "/api/leads/:path*",  "destination": "/api/leads" },
     { "source": "/api/status",        "destination": "/api/status" },
+    { "source": "/api/monitor",       "destination": "/api/monitor" },
     { "source": "/(.*)",              "destination": "/index.html" }
   ],
   "headers": [
