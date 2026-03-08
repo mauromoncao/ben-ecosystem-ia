@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     modulos: { growth, juris, vps },
     agentes: {
       growth: { total: 9, modelos: ['gpt-4o-mini','gpt-4o','claude-haiku-4-5'] },
-      juris:  { total: 14, modelos: ['claude-haiku-4-5','gpt-4o','perplexity'] },
+      juris:  { total: 15, modelos: ['claude-haiku-4-5','gpt-4o','perplexity'], extras: ['dr-ben-engenheiro'] },
     },
     urls: {
       growth: GROWTH_URL,

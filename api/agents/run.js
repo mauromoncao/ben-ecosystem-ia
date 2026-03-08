@@ -12,7 +12,8 @@
 //                 dr-ben-analise-processo, dr-ben-auditoria-processual,
 //                 dr-ben-fiscal, dr-ben-trabalhista, dr-ben-previdenciario,
 //                 dr-ben-constitucional, dr-ben-compliance, dr-ben-pesquisa,
-//                 dr-ben-relatorio, dr-ben-producao, dr-ben-admin
+//                 dr-ben-relatorio, dr-ben-producao, dr-ben-admin,
+//                 dr-ben-engenheiro
 // ============================================================
 
 export const config = { maxDuration: 65 }
@@ -34,6 +35,7 @@ const JURIS_AGENTS = new Set([
   'dr-ben-fiscal', 'dr-ben-trabalhista', 'dr-ben-previdenciario',
   'dr-ben-constitucional', 'dr-ben-compliance', 'dr-ben-pesquisa',
   'dr-ben-relatorio', 'dr-ben-producao', 'dr-ben-admin',
+  'dr-ben-engenheiro',
   // Aliases usados no Ecosystem UI
   'dr-ben-auditoria', 'dr-ben-analise',
 ])
