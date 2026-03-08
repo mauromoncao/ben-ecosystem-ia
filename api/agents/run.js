@@ -1,5 +1,5 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Proxy de Agentes v3.1
+// BEN ECOSYSTEM IA — Proxy de Agentes v4.0
 // Rota: POST /api/agents/run
 //
 // Roteia automaticamente para:
@@ -17,7 +17,8 @@
 //   ben-revisor-juridico        BEN Revisor Jurídico
 //   ben-peticionista            BEN Peticionista
 //
-// ── AGENTES JURIS (25) ──────────────────────────────────────
+// ── AGENTES JURIS (28) ──────────────────────────────────────
+//   ⭐ ben-super-agente-juridico        BEN Super Agente Jurídico (Claude Opus 4.6)
 //   ben-peticionista-juridico           BEN Peticionista Jurídico
 //   ben-contratualista                  BEN Contratualista
 //   ben-mandatario-juridico             BEN Mandatário Jurídico
@@ -33,12 +34,14 @@
 //   ben-relator-juridico                BEN Relator Jurídico
 //   ben-redator-juridico                BEN Redator Jurídico
 //   ben-engenheiro-prompt               BEN Engenheiro de Prompt
-//   ben-contador-tributarista           BEN Contador Tributarista (principal)
+//   ben-contador-tributarista           Triagem Haiku 4.5
+//   ben-contador-tributarista-especialista  Especialista Sonnet 4.6
 //   ben-contador-tributarista-planejamento
 //   ben-contador-tributarista-creditos
 //   ben-contador-tributarista-auditoria
 //   ben-contador-tributarista-relatorio
-//   ben-perito-forense                  BEN Perito Forense (principal)
+//   ben-perito-forense                  Padrão Sonnet 4.6 (5 módulos)
+//   ben-perito-forense-profundo         Profundo Opus 4.6 (⚠️ alerta Dr. Mauro)
 //   ben-perito-forense-digital
 //   ben-perito-forense-laudo
 //   ben-perito-forense-contestar
@@ -68,6 +71,8 @@ const GROWTH_AGENTS = new Set([
 ])
 
 const JURIS_AGENTS = new Set([
+  // ⭐ Super Agente (1)
+  'ben-super-agente-juridico',
   // Jurídicos core (15)
   'ben-peticionista-juridico',
   'ben-contratualista',
@@ -84,14 +89,16 @@ const JURIS_AGENTS = new Set([
   'ben-relator-juridico',
   'ben-redator-juridico',
   'ben-engenheiro-prompt',
-  // Contador Tributarista (5)
+  // Contador Tributarista (6) — Arquitetura 2 níveis
   'ben-contador-tributarista',
+  'ben-contador-tributarista-especialista',
   'ben-contador-tributarista-planejamento',
   'ben-contador-tributarista-creditos',
   'ben-contador-tributarista-auditoria',
   'ben-contador-tributarista-relatorio',
-  // Perito Forense (5)
+  // Perito Forense (6) — Arquitetura 2 níveis
   'ben-perito-forense',
+  'ben-perito-forense-profundo',
   'ben-perito-forense-digital',
   'ben-perito-forense-laudo',
   'ben-perito-forense-contestar',
