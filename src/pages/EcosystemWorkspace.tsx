@@ -35,8 +35,6 @@ interface EcosystemStatus {
 
 // ─── Agentes ──────────────────────────────────────────────────
 const ECOSYSTEM_AGENTS: Agent[] = [
-  { id: 'ben-atendente',              name: 'BEN Atendente Jurídico',        emoji: '🤖', description: 'Qualificação de leads, triagem e atendimento 24/7.', model: 'GPT-4o Mini',      modelBadge: 'bg-blue-100 text-blue-800',    category: 'atendimento', project: 'growth', color: '#0f2044', active: true },
-  { id: 'mara-ia',                    name: 'MARA — Secretária IA',           emoji: '👩‍💼', description: 'Agenda, notificações, triagem urgente e WhatsApp executivo.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800',    category: 'atendimento', project: 'growth', color: '#1e3470', active: true },
   { id: 'ben-conteudista',            name: 'BEN Conteudista Jurídico',       emoji: '✍️', description: 'Artigos jurídicos, posts e conteúdo institucional OAB-compliant.', model: 'GPT-4o', modelBadge: 'bg-blue-100 text-blue-800', category: 'marketing',   project: 'growth', color: '#7c3aed', active: true },
   { id: 'ben-estrategista-campanhas', name: 'BEN Estrategista Campanhas',     emoji: '📊', description: 'Análise de performance Meta Ads e Google Ads. ROI e KPIs.', model: 'GPT-4o',    modelBadge: 'bg-blue-100 text-blue-800',    category: 'marketing',   project: 'growth', color: '#059669', active: true },
   { id: 'ben-analista-relatorios',    name: 'BEN Analista de Relatórios',     emoji: '📈', description: 'Relatório semanal com insights de performance e métricas.', model: 'Claude Haiku 4.5', modelBadge: 'bg-orange-100 text-orange-800', category: 'marketing', project: 'growth', color: '#d97706', active: true },
@@ -400,7 +398,7 @@ export default function EcosystemWorkspace() {
           BEN ECOSYSTEM IA Workspace
         </h1>
         <p className="text-xs mt-0.5" style={{color:'#888'}}>
-          Mauro Monção Advogados · falcone · {ECOSYSTEM_AGENTS.length} agentes ativos
+          Mauro Monção Advogados · falcone · {ECOSYSTEM_AGENTS.length} agentes
         </p>
 
         {/* Status dots — linha de status */}
@@ -603,7 +601,7 @@ export default function EcosystemWorkspace() {
                   onClick={() => { setFilterProject(p); setCarouselIdx(0) }}
                   className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all ${filterProject === p ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
                   style={filterProject === p ? {background: p==='growth' ? '#059669' : p==='juris' ? '#1d4ed8' : '#0f2044'} : {}}>
-                  {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? 'Growth (10)' : 'Juris (28)'}
+                  {p === 'all' ? `Todos (${ECOSYSTEM_AGENTS.length})` : p === 'growth' ? 'Growth (8)' : 'Juris (28)'}
                 </button>
               ))}
               <span className="text-[10px] text-gray-400 ml-1">{carouselIdx+1}/{totalSlides}</span>
