@@ -170,7 +170,7 @@ export default function EcosystemWorkspace() {
   const filteredAgents = ECOSYSTEM_AGENTS.filter(a =>
     filterProject === 'all' || a.project === filterProject
   )
-  const CARDS = 5
+  const CARDS = 4
   const totalSlides = Math.ceil(filteredAgents.length / CARDS)
   const visibleAgents = filteredAgents.slice(carouselIdx * CARDS, (carouselIdx + 1) * CARDS)
 
