@@ -240,12 +240,12 @@ export default function MonitorCustos() {
             </div>
           )}
 
-          <p className="text-center text-xs text-gray-600 mt-5">
+          <p className="text-center text-xs mt-5" style={{color:'#9ca3af'}}>
             Painel privado · não listado no menu principal
           </p>
         </div>
 
-        <p className="text-xs text-gray-700 mt-5">
+        <p className="text-xs mt-5" style={{color:'#6b7280'}}>
           © 2026 Mauro Monção Advogados Associados · BEN Ecosystem IA
         </p>
       </div>
@@ -262,29 +262,29 @@ export default function MonitorCustos() {
     {
       icon: Zap, label: 'Chamadas Totais', sub: 'todas execuções',
       value: fmtK(s?.totalCalls || 0),
-      color: '#0f2044', bg: '#0f204408', border: '#0f204420',
+      color: '#0f2044', bg: 'rgba(15,32,68,0.06)', border: 'rgba(15,32,68,0.15)',
     },
     {
       icon: DollarSign, label: 'Custo Hoje',
       sub: `limite $${s?.limites?.dailyUsd || 10}`,
       value: showBrl ? fmtBrl(s?.dailyCostBrl || 0) : fmtUsd(s?.dailyCostUsd || 0),
       color: s && s.dailyCostUsd >= (s.limites?.dailyUsd || 10) * 0.8 ? '#dc2626' : '#059669',
-      bg:    s && s.dailyCostUsd >= (s.limites?.dailyUsd || 10) * 0.8 ? '#dc262608' : '#05906908',
-      border:s && s.dailyCostUsd >= (s.limites?.dailyUsd || 10) * 0.8 ? '#dc262630' : '#05906930',
+      bg:    s && s.dailyCostUsd >= (s.limites?.dailyUsd || 10) * 0.8 ? 'rgba(220,38,38,0.06)' : 'rgba(5,150,105,0.06)',
+      border:s && s.dailyCostUsd >= (s.limites?.dailyUsd || 10) * 0.8 ? 'rgba(220,38,38,0.2)' : 'rgba(5,150,105,0.2)',
     },
     {
       icon: TrendingUp, label: 'Custo Mensal',
       sub: `limite $${s?.limites?.monthlyUsd || 200}`,
       value: showBrl ? fmtBrl(s?.monthlyCostBrl || 0) : `$ ${(s?.monthlyCostUsd || 0).toFixed(2)}`,
       color: s && s.monthlyCostUsd >= (s.limites?.monthlyUsd || 200) * 0.8 ? '#d97706' : '#7c3aed',
-      bg:    s && s.monthlyCostUsd >= (s.limites?.monthlyUsd || 200) * 0.8 ? '#d9770608' : '#7c3aed08',
-      border:s && s.monthlyCostUsd >= (s.limites?.monthlyUsd || 200) * 0.8 ? '#d9770630' : '#7c3aed30',
+      bg:    s && s.monthlyCostUsd >= (s.limites?.monthlyUsd || 200) * 0.8 ? 'rgba(217,119,6,0.06)' : 'rgba(124,58,237,0.06)',
+      border:s && s.monthlyCostUsd >= (s.limites?.monthlyUsd || 200) * 0.8 ? 'rgba(217,119,6,0.2)' : 'rgba(124,58,237,0.2)',
     },
     {
       icon: Layers, label: 'Tokens Totais',
       sub: `in: ${fmtK(s?.totalInputTokens||0)} · out: ${fmtK(s?.totalOutputTokens||0)}`,
       value: fmtK((s?.totalInputTokens||0)+(s?.totalOutputTokens||0)),
-      color: '#1d4ed8', bg: '#1d4ed808', border: '#1d4ed830',
+      color: '#1d4ed8', bg: 'rgba(29,78,216,0.06)', border: 'rgba(29,78,216,0.2)',
     },
   ]
 
@@ -292,7 +292,7 @@ export default function MonitorCustos() {
     <div className="min-h-screen" style={{background:'#f5f6fa'}}>
 
       {/* ── HEADER ────────────────────────────────────────── */}
-      <div className="sticky top-0 z-40 border-b shadow-sm" style={{background:'#0f2044', borderColor:'#1a3060'}}>
+      <div className="sticky top-0 z-40" style={{background:'#0f2044', borderBottom:'1px solid #1a3060', boxShadow:'0 2px 8px rgba(0,0,0,0.3)'}}>
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center gap-4">
 
           {/* Logo + título */}

@@ -763,8 +763,8 @@ export default function EcosystemWorkspace() {
           {isAdmin && (
             <>
               <button onClick={() => { setShowMonitor(v => !v); if (!monitorStats) loadMonitorStats() }}
-                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium transition-all ${showMonitor ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
-                style={showMonitor ? {background:'#7f1d1d'} : {}}>
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium transition-all ${showMonitor ? '' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
+                style={showMonitor ? {background:'#0f2044', color:'#D4A017'} : {}}>
                 <BarChart3 className="w-3 h-3"/> Monitor
                 {monitorStats && monitorStats.alertas.length > 0 && (
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse ml-0.5"/>
@@ -836,45 +836,47 @@ export default function EcosystemWorkspace() {
 
       {/* ══ Item 3: Mini Monitor inline (admin) ════════════════ */}
       {showMonitor && isAdmin && (
-        <div className="flex-shrink-0 border-t border-b mx-4 my-1 rounded-xl overflow-hidden" style={{borderColor:'#f0f0f0'}}>
-          <div className="flex items-center justify-between px-3 py-2 bg-gray-900" style={{borderRadius:'12px 12px 0 0'}}>
+        <div className="flex-shrink-0 mx-4 my-1 rounded-xl overflow-hidden" style={{border:'1px solid #0f204420', boxShadow:'0 2px 8px rgba(15,32,68,0.08)'}}>
+          {/* Mini-monitor header */}
+          <div className="flex items-center justify-between px-3 py-2" style={{background:'#0f2044', borderRadius:'12px 12px 0 0'}}>
             <div className="flex items-center gap-2">
-              <Activity className="w-3.5 h-3.5 text-red-400"/>
-              <span className="text-xs font-semibold text-white">Monitor de Tokens & Custos</span>
-              {monitorLoading && <Loader2 className="w-3 h-3 text-gray-400 animate-spin"/>}
+              <Activity className="w-3.5 h-3.5" style={{color:'#D4A017'}}/>
+              <span className="text-xs font-semibold" style={{color:'#ffffff'}}>Monitor de Tokens & Custos</span>
+              {monitorLoading && <Loader2 className="w-3 h-3 animate-spin" style={{color:'#D4A017'}}/>}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <button onClick={loadMonitorStats}
-                className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                className="text-[10px] flex items-center gap-1 transition-colors" style={{color:'#D4A017'}}>
                 <RefreshCw className="w-3 h-3"/> Atualizar
               </button>
               <a href="/monitor-admin" target="_blank"
-                className="text-[10px] text-yellow-400 hover:text-yellow-300">Painel completo →</a>
-              <button onClick={() => setShowMonitor(false)} className="text-gray-400 hover:text-white">
+                className="text-[10px] transition-colors" style={{color:'#6b9fff'}}>Painel completo →</a>
+              <button onClick={() => setShowMonitor(false)} style={{color:'#6b7aaa'}}>
                 <X className="w-3.5 h-3.5"/>
               </button>
             </div>
           </div>
+          {/* KPI grid */}
           {monitorStats ? (
-            <div className="grid grid-cols-4 gap-px bg-gray-800" style={{borderRadius:'0 0 12px 12px', overflow:'hidden'}}>
+            <div className="grid grid-cols-4 divide-x" style={{background:'#ffffff', borderRadius:'0 0 12px 12px', borderTop:'1px solid #f0f2f5', divideColor:'#f0f2f5'}}>
               {[
-                { icon: Zap,        label: 'Chamadas',    value: monitorStats.totalCalls.toString(),                               color: 'text-blue-400'   },
-                { icon: Clock,      label: 'Custo Hoje',  value: `$ ${monitorStats.dailyCostUsd.toFixed(4)}`,                    color: monitorStats.dailyCostUsd > 5 ? 'text-red-400' : 'text-green-400' },
-                { icon: TrendingUp, label: 'Custo Mês',   value: `$ ${monitorStats.monthlyCostUsd.toFixed(2)}`,                  color: monitorStats.monthlyCostUsd > 100 ? 'text-yellow-400' : 'text-indigo-400' },
-                { icon: Filter,     label: 'Tokens',      value: monitorStats.totalTokens >= 1000 ? `${(monitorStats.totalTokens/1000).toFixed(1)}k` : monitorStats.totalTokens.toString(), color: 'text-purple-400' },
+                { icon: Zap,        label: 'Chamadas',   value: monitorStats.totalCalls.toString(),                                                                                              iconColor:'#0f2044', valColor:'#0f2044' },
+                { icon: Clock,      label: 'Custo Hoje', value: `$ ${monitorStats.dailyCostUsd.toFixed(4)}`,                                                                                    iconColor: monitorStats.dailyCostUsd > 5 ? '#dc2626' : '#059669', valColor: monitorStats.dailyCostUsd > 5 ? '#dc2626' : '#059669' },
+                { icon: TrendingUp, label: 'Custo Mês',  value: `$ ${monitorStats.monthlyCostUsd.toFixed(2)}`,                                                                                 iconColor: monitorStats.monthlyCostUsd > 100 ? '#d97706' : '#7c3aed', valColor: monitorStats.monthlyCostUsd > 100 ? '#d97706' : '#7c3aed' },
+                { icon: Filter,     label: 'Tokens',     value: monitorStats.totalTokens >= 1000 ? `${(monitorStats.totalTokens/1000).toFixed(1)}k` : monitorStats.totalTokens.toString(),    iconColor:'#1d4ed8', valColor:'#1d4ed8' },
               ].map((kpi, i) => (
-                <div key={i} className="flex flex-col items-center py-3 bg-gray-900 hover:bg-gray-800 transition-colors">
-                  <kpi.icon className={`w-4 h-4 mb-1 ${kpi.color}`}/>
-                  <p className={`text-sm font-bold ${kpi.color}`}>{kpi.value}</p>
-                  <p className="text-[10px] text-gray-500">{kpi.label}</p>
+                <div key={i} className="flex flex-col items-center py-3 transition-colors" style={{background:'#ffffff'}}>
+                  <kpi.icon className="w-4 h-4 mb-1" style={{color: kpi.iconColor}}/>
+                  <p className="text-sm font-bold" style={{color: kpi.valColor}}>{kpi.value}</p>
+                  <p className="text-[10px]" style={{color:'#888'}}>{kpi.label}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center py-4 bg-gray-900" style={{borderRadius:'0 0 12px 12px'}}>
+            <div className="flex items-center justify-center py-4" style={{background:'#ffffff', borderRadius:'0 0 12px 12px', borderTop:'1px solid #f0f2f5'}}>
               {monitorLoading
-                ? <Loader2 className="w-5 h-5 text-gray-500 animate-spin"/>
-                : <p className="text-xs text-gray-500">Nenhum dado disponível. Execute agentes para acumular estatísticas.</p>
+                ? <Loader2 className="w-5 h-5 animate-spin" style={{color:'#0f2044'}}/>
+                : <p className="text-xs" style={{color:'#aaa'}}>Nenhum dado disponível. Execute agentes para acumular estatísticas.</p>
               }
             </div>
           )}
