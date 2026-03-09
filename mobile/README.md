@@ -1,7 +1,13 @@
-# 📱 BEN ECOSYSTEM IA — App Mobile (Android & iOS)
+# BEN Ecosystem IA — Aplicativo Mobile
 
-> Aplicativo React Native / Expo para acesso aos 35 agentes de IA em celular e tablet.  
-> **Mauro Monção Advogados Associados** — Parnaíba-PI e Fortaleza-CE
+> **React Native + Expo** para Android e iOS  
+> Mauro Monção Advogados Associados — Parnaíba-PI e Fortaleza-CE
+
+---
+
+## 📱 Visão Geral
+
+Aplicativo mobile completo do **BEN ECOSYSTEM IA**, permitindo acesso a todos os **35 agentes de IA** diretamente pelo celular ou tablet (Android e iOS), com a mesma experiência do workspace web.
 
 ---
 
@@ -9,229 +15,197 @@
 
 ```
 mobile/
-├── App.tsx                     ← Raiz: navegação + providers
-├── app.json                    ← Configuração Expo (ícones, permissões)
-├── eas.json                    ← Configuração de build EAS
-├── babel.config.js             ← Babel com plugin Reanimated
+├── App.tsx                          # Raiz: navegação + providers
+├── app.json                         # Configuração Expo
+├── eas.json                         # Configuração EAS Build
+├── babel.config.js                  # Babel + Reanimated
 ├── src/
-│   ├── types/index.ts          ← Tipos TypeScript compartilhados
+│   ├── types/index.ts               # Tipos TypeScript compartilhados
 │   ├── context/
-│   │   └── AuthContext.tsx     ← Autenticação com AsyncStorage
+│   │   └── AuthContext.tsx          # Autenticação (login/logout/sessão)
 │   ├── lib/
-│   │   ├── agents.ts           ← Lista completa dos 35 agentes
-│   │   ├── api.ts              ← Chamadas à API + retry
-│   │   └── storage.ts          ← Persistência de conversas
+│   │   ├── agents.ts                # Lista dos 35 agentes
+│   │   ├── api.ts                   # Integração com API do Ecosystem
+│   │   └── storage.ts               # AsyncStorage (conversas + sessão)
 │   └── screens/
-│       ├── LoginScreen.tsx     ← Tela de login
-│       ├── WorkspaceScreen.tsx ← Grid de agentes + filtros
-│       ├── ChatScreen.tsx      ← Chat completo com agente
-│       └── DrawerContent.tsx   ← Sidebar: menu + histórico
-└── assets/                     ← Ícones e splash screen
+│       ├── LoginScreen.tsx          # Tela de login
+│       ├── WorkspaceScreen.tsx      # Grid de agentes com filtros
+│       ├── ChatScreen.tsx           # Chat com cada agente
+│       └── DrawerContent.tsx        # Drawer: menu + histórico
+└── assets/                          # Ícones e splash screen
 ```
 
 ---
 
-## 🚀 Formas de Usar
+## ⚙️ Pré-requisitos
 
-### Opção 1 — Testar AGORA com Expo Go (sem instalar nada)
+- **Node.js** 18+ e **npm**
+- **Expo CLI**: `npm install -g expo-cli`
+- **EAS CLI** (para builds): `npm install -g eas-cli`
+- Conta gratuita em **[expo.dev](https://expo.dev)**
+- Para iOS: macOS + Xcode OU usar EAS Build na nuvem
+- Para Android: Android Studio (emulador) OU EAS Build na nuvem
 
-Ideal para testar no celular sem gerar APK/IPA:
+---
 
-1. Instale o **Expo Go** no celular:
-   - [Android (Google Play)](https://play.google.com/store/apps/details?id=host.exp.exponent)
-   - [iOS (App Store)](https://apps.apple.com/app/expo-go/id982107779)
+## 🚀 Instalação e Execução Local
 
-2. No computador, execute:
 ```bash
+# 1. Entre na pasta do app mobile
 cd mobile
+
+# 2. Instale as dependências
 npm install
+
+# 3. Crie o arquivo de variáveis de ambiente
+cp .env.example .env
+# Edite o .env com suas senhas
+
+# 4. Inicie o servidor de desenvolvimento
+npm start
+# ou diretamente:
 npx expo start
 ```
 
-3. Escaneie o QR code com o Expo Go.
+### Testar no celular (mais fácil)
+1. Instale o app **Expo Go** no celular (Play Store / App Store)
+2. Escaneie o QR Code exibido no terminal
+3. O app abrirá instantaneamente no seu celular
+
+### Testar no emulador Android
+```bash
+npm run android
+# Requer Android Studio instalado
+```
+
+### Testar no simulador iOS (apenas macOS)
+```bash
+npm run ios
+# Requer Xcode instalado
+```
 
 ---
 
-### Opção 2 — Gerar APK para Android (via EAS Build — gratuito)
+## 📦 Gerar APK / IPA para distribuição
 
-#### Pré-requisitos
-- Conta gratuita em [expo.dev](https://expo.dev)
-- Node.js 18+
-- EAS CLI
+### Usando EAS Build (recomendado — build na nuvem, sem necessidade de Mac/Android Studio)
 
 ```bash
-# Instalar EAS CLI
-npm install -g eas-cli
-
-# Login na Expo
+# 1. Login na conta Expo
 eas login
 
-# Entrar na pasta do app
-cd mobile
+# 2. Configurar o projeto (primeira vez)
+eas build:configure
 
-# Instalar dependências
-npm install
-
-# Configurar o projeto (só na primeira vez)
-eas init --id seu-project-id
-
-# ─── GERAR APK para Android (link direto para download) ───
+# 3. Gerar APK para Android (para testes internos)
 npm run build:apk
-# ou diretamente:
+# ou
 eas build --platform android --profile preview
 
-# Após o build, você recebe um link para baixar o .apk
-# Instale direto no Android sem precisar da Play Store!
-```
-
----
-
-### Opção 3 — Build de Produção (Play Store / App Store)
-
-```bash
-# Android (.aab para Play Store)
+# 4. Gerar App Bundle para Google Play Store
 npm run build:android
-# eas build --platform android --profile production
+# ou
+eas build --platform android --profile production
 
-# iOS (.ipa para App Store — requer conta Apple Developer $99/ano)
+# 5. Gerar IPA para iOS (App Store / TestFlight)
 npm run build:ios
-# eas build --platform ios --profile production
+# ou
+eas build --platform ios --profile production
+
+# 6. Gerar ambos simultaneamente
+npm run build:preview
 ```
+
+> **💡 O EAS Build compila na nuvem**, sem precisar de Android Studio ou Mac/Xcode instalados na sua máquina.
 
 ---
 
-## ⚙️ Variáveis de Ambiente
+## 📲 Instalar APK diretamente no Android
 
-Crie o arquivo `.env` na pasta `mobile/`:
+Após o build concluir:
+1. Acesse o link gerado no terminal ou em **[expo.dev/builds](https://expo.dev/builds)**
+2. Baixe o arquivo `.apk`
+3. No Android: **Configurações → Segurança → Instalar apps desconhecidos** → ative
+4. Abra o `.apk` e instale
+
+---
+
+## 🍎 Publicar na App Store (iOS)
 
 ```bash
-cp .env.example .env
+# Após ter o build aprovado:
+eas submit --platform ios
 ```
 
-Edite `.env`:
+Requerimentos:
+- Conta Apple Developer Program ($99/ano)
+- App ID configurado no Apple Developer Portal
+- Preencher `eas.json` com `appleId`, `ascAppId` e `appleTeamId`
+
+---
+
+## 🤖 Publicar na Google Play Store
+
+```bash
+# Após ter o build (.aab) aprovado:
+eas submit --platform android
+```
+
+Requerimentos:
+- Conta Google Play Developer ($25 único)
+- Service Account JSON configurado
+- Preencher `eas.json` com `serviceAccountKeyPath`
+
+---
+
+## 🔧 Variáveis de Ambiente
+
+Crie um arquivo `.env` na pasta `mobile/`:
+
 ```env
+# URL da API principal
 EXPO_PUBLIC_API_BASE_URL=https://ecosystem.mauromoncao.adv.br
-EXPO_PUBLIC_AUTH_SENHA_1=suasenha_admin
-EXPO_PUBLIC_AUTH_SENHA_2=suasenha_gmail
-EXPO_PUBLIC_AUTH_SENHA_3=suasenha_escritorio
-EXPO_PUBLIC_AUTH_SENHA_4=suasenha_assistente
-```
 
-> **Nota:** As variáveis `EXPO_PUBLIC_*` são incorporadas no bundle em tempo de build.  
-> Nunca coloque chaves de API de terceiros com prefixo `EXPO_PUBLIC_`.
+# Senhas dos usuários (mesmas do web)
+EXPO_PUBLIC_AUTH_SENHA_1=senha_admin
+EXPO_PUBLIC_AUTH_SENHA_2=senha_gmail
+EXPO_PUBLIC_AUTH_SENHA_3=senha_escritorio
+EXPO_PUBLIC_AUTH_SENHA_4=senha_assistente
+```
 
 ---
 
-## 📱 Funcionalidades do App
+## ✨ Funcionalidades do App
 
-| Funcionalidade | Status |
-|---|---|
-| Login com credenciais do escritório | ✅ |
-| 35 agentes de IA (Growth + Juris) | ✅ |
-| Chat em tempo real com cada agente | ✅ |
-| Retry automático em caso de falha | ✅ |
-| Histórico persistido localmente | ✅ |
-| Busca no histórico | ✅ |
-| Favoritar conversas | ✅ |
-| Exportar conversa (TXT / Compartilhar) | ✅ |
-| Copiar resposta do agente | ✅ |
-| Filtros por projeto e categoria | ✅ |
-| Status dos sistemas em tempo real | ✅ |
+| Feature | Status |
+|---------|--------|
+| Login seguro (8h sessão) | ✅ |
+| 35 agentes de IA | ✅ |
+| Chat com histórico persistido | ✅ |
+| Retry automático em falha | ✅ |
+| Filtros por projeto (Growth/Juris) | ✅ |
+| Filtros por categoria | ✅ |
+| Busca de agentes | ✅ |
+| Status dos sistemas (online/offline) | ✅ |
+| Histórico de conversas | ✅ |
+| Favoritar conversas ⭐ | ✅ |
+| Exportar conversa (TXT / Share) | ✅ |
+| Copiar resposta | ✅ |
+| Modo Web Search | ✅ |
 | Modo Timbre Oficial | ✅ |
-| Pesquisa web (modo Web) | ✅ |
-| Sidebar/Drawer de navegação | ✅ |
-| Suporte a tablet (landscape) | ✅ |
-| Sessão segura (expiração 8h) | ✅ |
-| Perfil Admin com acesso total | ✅ |
+| Drawer menu lateral | ✅ |
+| Permissões Admin | ✅ |
+| Suporte tablet | ✅ |
+| Dark/Light automático | ✅ |
 
 ---
 
-## 🎨 Assets (Ícones)
+## 🔗 Links Úteis
 
-Coloque na pasta `assets/`:
-
-| Arquivo | Tamanho | Uso |
-|---|---|---|
-| `icon.png` | 1024×1024px | Ícone do app (fundo azul `#0f2044`) |
-| `splash-icon.png` | 1284×2778px | Splash screen |
-| `adaptive-icon.png` | 1024×1024px | Android adaptive icon |
-| `favicon.png` | 32×32px | Web |
-
-> Crie ícones usando o logo do escritório (Falcone) com fundo `#0f2044` e dourado `#D4A017`.
-
----
-
-## 🏪 Publicar nas Lojas
-
-### Google Play Store
-
-1. Crie uma conta de [desenvolvedor Google Play](https://play.google.com/console) (~R$125 taxa única)
-2. Gere o build de produção: `npm run build:android`
-3. Submeta: `npm run submit:android`
-
-### Apple App Store
-
-1. Crie uma conta [Apple Developer](https://developer.apple.com) (~$99/ano)
-2. Configure `eas.json` com seu `appleId` e `ascAppId`
-3. Gere o build: `npm run build:ios`
-4. Submeta: `npm run submit:ios`
-
----
-
-## 🔧 Tech Stack
-
-- **React Native 0.83** + **Expo SDK 55**
-- **TypeScript** — tipagem completa
-- **React Navigation 7** — Stack + Drawer
-- **AsyncStorage** — persistência local de conversas e sessão
-- **EAS Build** — build na nuvem sem necessidade de Xcode/Android Studio
-- **expo-file-system** — exportação de arquivos
-- **expo-sharing** — compartilhamento de conversas
-- **expo-clipboard** — copiar respostas
-
----
-
-## 🔗 Arquitetura de API
-
-O app se conecta diretamente à mesma API do web:
-
-```
-App Mobile
-    └── ecosystem.mauromoncao.adv.br
-            ├── /api/agents/run   ← Chat com agentes
-            ├── /api/bridge       ← Status dos sistemas
-            └── /api/monitor      ← Admin: custos e tokens
-```
-
----
-
-## 🐛 Solução de Problemas
-
-### "Metro bundler não inicia"
-```bash
-npx expo start --clear
-```
-
-### "Erro de SSL em desenvolvimento"
-Use HTTPS na `EXPO_PUBLIC_API_BASE_URL`. O app Android bloqueia HTTP em produção.
-
-### "Build falha no EAS"
-Verifique se as credenciais Expo estão corretas:
-```bash
-eas whoami
-eas credentials
-```
-
-### "App não conecta à API"
-Verifique se `ecosystem.mauromoncao.adv.br` está com CORS habilitado para origens mobile.
-
----
-
-## 📞 Suporte
-
-**Mauro Monção Advogados Associados**  
-Parnaíba-PI e Fortaleza-CE  
-`ecosystem.mauromoncao.adv.br`
+- [Expo Documentation](https://docs.expo.dev)
+- [EAS Build](https://docs.expo.dev/build/introduction)
+- [React Navigation](https://reactnavigation.org)
+- [Expo Go App](https://expo.dev/go)
 
 ---
 
