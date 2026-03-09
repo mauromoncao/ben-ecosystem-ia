@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Activity, AlertTriangle, BarChart3, Clock, DollarSign,
-  Download, Eye, EyeOff, Filter, Layers, Lock,
+  Download, Eye, EyeOff, Filter, Layers, Lock, Loader2,
   RefreshCw, Shield, TrendingUp, Zap, XCircle
 } from 'lucide-react'
 
@@ -117,26 +117,50 @@ export default function MonitorCustos() {
       if (r.status === 401) {
         setError('Token inválido ou expirado.')
         setLocked(true)
+        setToken('')
         return
       }
       if (!r.ok) throw new Error(`HTTP ${r.status}`)
       const d = await r.json()
       setData(d)
       setLastUpdate(new Date())
+      setLocked(false)   // ← só desbloqueia APÓS confirmar token válido
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erro ao carregar dados')
+      // Não bloqueia em erro de rede (token pode ser válido, API fora do ar)
     } finally {
       setLoading(false)
     }
   }, [])
 
   // ── Login ───────────────────────────────────────────────
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!tokenInput.trim()) { setTokenError('Informe o token de acesso.'); return }
     setTokenError('')
-    setToken(tokenInput.trim())
-    setLocked(false)
-    fetchData(tokenInput.trim())
+    setLoading(true)
+    const tok = tokenInput.trim()
+    try {
+      // Valida token ANTES de desbloquear
+      const r = await fetch(`${MONITOR_URL}?action=stats&token=${encodeURIComponent(tok)}`)
+      if (r.status === 401) {
+        setTokenError('Token inválido. Verifique e tente novamente.')
+        setLoading(false)
+        return
+      }
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      const d = await r.json()
+      setToken(tok)
+      setData(d)
+      setLastUpdate(new Date())
+      setLocked(false)   // ← desbloqueia somente após 200 OK
+    } catch (e: unknown) {
+      // Em erro de rede, libera mesmo assim (token pode ser correto)
+      setToken(tok)
+      setLocked(false)
+      setError('Não foi possível carregar dados. Verifique a conexão.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   // ── Auto-refresh ────────────────────────────────────────
@@ -198,10 +222,13 @@ export default function MonitorCustos() {
               </div>
               <button
                 onClick={handleLogin}
-                className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full bg-red-700 hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
               >
-                <Shield className="w-4 h-4" />
-                Acessar Monitor
+                {loading
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Verificando token…</>
+                  : <><Shield className="w-4 h-4" /> Acessar Monitor</>
+                }
               </button>
             </div>
 

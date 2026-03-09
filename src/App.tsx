@@ -164,8 +164,9 @@ function AppRoutes() {
           </Layout>
         </PrivateRoute>
       } />
-      {/* Rota oculta — monitor admin privado, não aparece no menu */}
+      {/* Rota oculta — monitor admin privado, sem autenticação do Ecosystem (tem seu próprio token) */}
       <Route path="/monitor-admin" element={<MonitorCustos />} />
+      {/* Catch-all: só redireciona rotas desconhecidas, NÃO /monitor-admin */}
       <Route path="*" element={<Navigate to="/workspace" replace />} />
     </Routes>
   )
