@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx'
+import { saveAs } from 'file-saver'
 import {
   Send, FileText, X, Loader2, Plus, Trash2,
   Search, Copy, Check, Download,
@@ -201,6 +203,9 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   // Input focused state for border highlight
   const [inputFocused, setInputFocused] = useState(false)
 
+  // Model override: null = default, 'opus' = Claude Opus, 'sonnet' = Claude Sonnet
+  const [modelOverride, setModelOverride] = useState<'opus' | 'sonnet' | null>(null)
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -304,6 +309,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
           agentId: selectedAgent.id,
           input: msg + (attachment ? `\n\nDocumento: ${attachment.name}\n${attachment.text}` : ''),
           useSearch,
+          modelOverride: modelOverride ?? undefined,
           context: { source: 'ecosystem-workspace-v3' },
         }),
       })
@@ -349,12 +355,64 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
     setArtifactCopied(true)
     setTimeout(() => setArtifactCopied(false), 2000)
   }
-  const downloadArtifact = () => {
-    const blob = new Blob([artifactContent], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a'); a.href = url
-    a.download = `${artifactTitle.replace(/[^a-z0-9]/gi, '_')}-${Date.now()}.txt`
-    a.click(); URL.revokeObjectURL(url)
+  const downloadArtifact = async (format: 'docx' | 'txt' = 'docx') => {
+    const filename = `${artifactTitle.replace(/[^a-z0-9áéíóúãõâêîôûçÁÉÍÓÚÃÕÂÊÎÔÛÇ ]/gi, '_').trim()}-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}`
+    if (format === 'txt') {
+      const blob = new Blob([artifactContent], { type: 'text/plain;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url
+      a.download = `${filename}.txt`
+      a.click(); URL.revokeObjectURL(url)
+      return
+    }
+    // Build .docx
+    try {
+      const lines = artifactContent.split('\n')
+      const docChildren: Paragraph[] = []
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (!trimmed) {
+          docChildren.push(new Paragraph({ text: '' }))
+          continue
+        }
+        // Detect heading lines: ALL CAPS line or numbered like 'I. ' or '1. DOS FATOS'
+        const isMainHeading = /^(I{1,3}V?|IV|VI{0,3}|IX|X{0,3}|\d{1,2})\. [A-ZÁÉÍÓÚÃÕ]/.test(trimmed) && trimmed === trimmed.toUpperCase()
+        const isSectionNum = /^\d+\.\d*\s+[A-Z]/.test(trimmed)
+        if (isMainHeading) {
+          docChildren.push(new Paragraph({
+            text: trimmed,
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 240, after: 120 },
+          }))
+        } else if (isSectionNum) {
+          docChildren.push(new Paragraph({
+            children: [new TextRun({ text: trimmed, bold: true })],
+            spacing: { before: 160, after: 80 },
+          }))
+        } else {
+          docChildren.push(new Paragraph({
+            children: [new TextRun({ text: trimmed })],
+            spacing: { after: 80 },
+            alignment: AlignmentType.JUSTIFIED,
+          }))
+        }
+      }
+      const doc = new Document({
+        creator: 'BEN Ecosystem IA — Mauro Monção Advogados',
+        title: artifactTitle,
+        description: 'Gerado por BEN Ecosystem IA',
+        sections: [{
+          properties: {},
+          children: docChildren,
+        }],
+      })
+      const buffer = await Packer.toBlob(doc)
+      saveAs(buffer, `${filename}.docx`)
+    } catch (err) {
+      console.error('Docx error:', err)
+      // fallback to txt
+      downloadArtifact('txt')
+    }
   }
 
   // ── Upload arquivo ─────────────────────────────────────────
@@ -944,16 +1002,35 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                 </div>
               )}
 
-              {/* ── Linha discreta abaixo: agente ativo + status ── */}
-              <div className="flex items-center justify-center gap-3 mt-2 text-xs" style={{ color: '#9CA3AF' }}>
+              {/* ── Linha discreta abaixo: agente ativo + status + seletor de modelo ── */}
+              <div className="flex items-center justify-center gap-3 mt-2 text-xs flex-wrap" style={{ color: '#9CA3AF' }}>
                 {selectedAgent && (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full"
                     style={{ background: selectedAgent.accentColor + '88', color: selectedAgent.color }}>
                     <span>{selectedAgent.emoji}</span>
                     <span className="font-semibold">{selectedAgent.name}</span>
                     <span style={{ color: '#D1D5DB', fontSize: '10px' }}>·</span>
-                    <ModelBadge model={selectedAgent.model} />
+                    <ModelBadge model={modelOverride === 'opus' ? 'claude-opus-4-5' : modelOverride === 'sonnet' ? 'claude-sonnet-4-5' : selectedAgent.model} />
                     {selectedAgent.premium && <span>⭐</span>}
+                  </span>
+                )}
+                {/* Seletor Opus / Sonnet — só para agentes Claude Opus ou Sonnet */}
+                {selectedAgent && /claude-(opus|sonnet)/i.test(selectedAgent.model) && (
+                  <span className="inline-flex items-center gap-1 rounded-full border px-1 py-0.5"
+                    style={{ borderColor: '#BFDBFE', background: '#F0F9FF' }}>
+                    <span className="text-xs text-gray-400 px-1">Motor:</span>
+                    {(['sonnet', 'opus'] as const).map(opt => (
+                      <button key={opt}
+                        onClick={() => setModelOverride(prev => prev === opt ? null : opt)}
+                        className="px-2 py-0.5 rounded-full text-xs font-medium transition-all"
+                        style={{
+                          background: modelOverride === opt ? (opt === 'opus' ? '#fef3c7' : '#fce7f3') : 'transparent',
+                          color: modelOverride === opt ? (opt === 'opus' ? '#92400e' : '#9d174d') : '#6B7280',
+                          fontWeight: modelOverride === opt ? 700 : 400,
+                        }}>
+                        {opt === 'opus' ? '★ Opus' : '⚡ Sonnet'}
+                      </button>
+                    ))}
                   </span>
                 )}
                 {useSearch && (
@@ -1003,10 +1080,15 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                 {artifactCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {artifactCopied ? 'Copiado!' : 'Copiar'}
               </button>
-              <button onClick={downloadArtifact}
+              <button onClick={() => downloadArtifact('docx')}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
                 style={{ background: 'rgba(255,255,255,0.1)', color: '#CBD5E1' }}>
-                <Download className="w-3.5 h-3.5" /> .txt
+                <Download className="w-3.5 h-3.5" /> .docx
+              </button>
+              <button onClick={() => downloadArtifact('txt')}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
+                style={{ background: 'rgba(255,255,255,0.1)', color: '#94A3B8' }}>
+                <FileText className="w-3.5 h-3.5" /> .txt
               </button>
               <button onClick={() => setArtifactFull(!artifactFull)}
                 className="p-1.5 rounded-lg" style={{ color: '#CBD5E1' }}>
