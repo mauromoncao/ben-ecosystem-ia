@@ -560,8 +560,8 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
 
               {/* Texto central */}
               <div className="text-center">
-                <h1 className="font-extrabold tracking-wider leading-none" style={{ color: '#E4B71E', fontSize: '15px', letterSpacing: '0.12em' }}>
-                  BEN ECOSYSTEM IA
+                <h1 className="font-extrabold tracking-wider leading-none" style={{ color: '#E4B71E', fontSize: '15px', letterSpacing: '0.10em' }}>
+                  BEN Strategic Intelligence Hub
                 </h1>
                 <p className="text-xs leading-none mt-1.5 font-semibold tracking-widest uppercase" style={{ color: '#4A6FA5', letterSpacing: '0.18em', fontSize: '9px' }}>
                   Workspace · {AGENTS.length} Agentes · {user?.nome}
@@ -603,30 +603,35 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
 
-              {/* Empty state */}
+              {/* Empty state — logo BEN + título em destaque azul */}
               {messages.length === 0 && selectedAgent && (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm"
-                    style={{ background: selectedAgent.accentColor }}>
-                    {selectedAgent.emoji}
-                  </div>
-                  <h2 className="text-base font-bold mb-1" style={{ color: '#0d1f3c' }}>{selectedAgent.name}</h2>
-                  <p className="text-sm mb-1" style={{ color: '#6B7280' }}>{selectedAgent.description}</p>
-                  <div className="flex justify-center mb-5">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1" style={{ background: '#EFF6FF', color: '#1d4ed8' }}>
-                      {CATEGORY_ICONS[selectedAgent.category]} {CATEGORY_LABEL[selectedAgent.category]}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 gap-2 max-w-md mx-auto">
-                    {suggestions.map((s, i) => (
-                      <button key={i} onClick={() => setInput(s)}
-                        className="text-left text-xs px-4 py-3 rounded-xl border hover:shadow-sm transition-all"
-                        style={{ background: '#FFFFFF', borderColor: '#E5E7EB', color: '#555' }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0d1f3c'; e.currentTarget.style.background = '#F8FAFF' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#FFFFFF' }}>
-                        {s}
-                      </button>
-                    ))}
+                <div className="flex flex-col items-center justify-center py-16">
+                  {/* Logo + título BEN Ecosystem IA Workspace */}
+                  <div className="flex flex-col items-center gap-3 mb-10">
+                    <div className="relative">
+                      <img src="/ben-logo.png" alt="BEN"
+                        className="w-16 h-16 rounded-2xl object-cover"
+                        style={{ border: '2.5px solid rgba(37,99,235,0.35)', boxShadow: '0 0 20px rgba(37,99,235,0.15)' }}
+                        onError={e => {
+                          e.currentTarget.style.display = 'none';
+                          const fb = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (fb) fb.style.display = 'flex';
+                        }} />
+                      <div className="w-16 h-16 rounded-2xl items-center justify-center hidden"
+                        style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)', border: '2.5px solid rgba(37,99,235,0.4)', boxShadow: '0 0 20px rgba(37,99,235,0.2)' }}>
+                        <Sparkles className="w-7 h-7 text-white" />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2"
+                        style={{ background: '#22c55e', borderColor: '#F2F4F8' }} />
+                    </div>
+                    <div className="text-center">
+                      <h2 className="font-extrabold tracking-wide" style={{ color: '#1d4ed8', fontSize: '22px', letterSpacing: '0.04em' }}>
+                        BEN Ecosystem IA Workspace
+                      </h2>
+                      <p className="text-xs mt-1 font-medium" style={{ color: '#6B7280' }}>
+                        {selectedAgent.name} · {selectedAgent.model}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -921,6 +926,23 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                   </div>
                 </div>
               </div>
+
+              {/* ── Sugestões abaixo da caixa (só no estado vazio) ── */}
+              {messages.length === 0 && selectedAgent && (
+                <div className="max-w-3xl mx-auto px-0 mt-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    {suggestions.map((s, i) => (
+                      <button key={i} onClick={() => setInput(s)}
+                        className="text-left text-xs px-3 py-2.5 rounded-xl border transition-all"
+                        style={{ background: '#FFFFFF', borderColor: '#DBEAFE', color: '#374151' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#3B82F6'; e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.color = '#1d4ed8' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#DBEAFE'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = '#374151' }}>
+                        <span className="block font-medium leading-snug">{s}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* ── Linha discreta abaixo: agente ativo + status ── */}
               <div className="flex items-center justify-center gap-3 mt-2 text-xs" style={{ color: '#9CA3AF' }}>
