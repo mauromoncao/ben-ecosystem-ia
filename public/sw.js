@@ -1,9 +1,9 @@
-// BEN Ecosystem IA — Service Worker v1.0
-// Cache-first para assets estáticos, network-first para API
+// BEN Ecosystem IA — Service Worker v1.1
+// start_url: /workspace | Cache-first estáticos, network-first API
 
-const CACHE_NAME = 'ben-ecosystem-v1'
+const CACHE_NAME = 'ben-ecosystem-v2'
 const STATIC_ASSETS = [
-  '/',
+  '/workspace',
   '/index.html',
   '/manifest.json',
   '/ben-logo.png',

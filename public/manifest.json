@@ -2,7 +2,7 @@
   "name": "BEN Ecosystem IA — Workspace",
   "short_name": "BEN IA",
   "description": "Workspace de Agentes de IA para Advocacia de Alto Nível — Mauro Monção Advogados Associados",
-  "start_url": "/",
+  "start_url": "/workspace",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -26,14 +26,14 @@
       "name": "Super Agente Jurídico",
       "short_name": "Super Agente",
       "description": "Abrir BEN Super Agente Jurídico",
-      "url": "/?agent=ben-super-agente-juridico",
+      "url": "/workspace?agent=ben-super-agente-juridico",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Peticionista Jurídico",
       "short_name": "Peticionista",
       "description": "Redigir petições com BEN",
-      "url": "/?agent=ben-peticionista-juridico",
+      "url": "/workspace?agent=ben-peticionista-juridico",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     }
   ]
