@@ -81,6 +81,7 @@ export type RootStackParamList = {
 }
 
 export type DrawerParamList = {
+  Dashboard: undefined
   Workspace: undefined
   History: undefined
   Monitor: undefined
