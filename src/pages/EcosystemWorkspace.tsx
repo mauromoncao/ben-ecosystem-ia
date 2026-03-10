@@ -14,7 +14,6 @@ import { useAuth } from '../context/AuthContext'
 
 // ─── Tipos ────────────────────────────────────────────────────
 type Project = 'growth' | 'juris'
-type Tab = 'all' | 'growth' | 'juris'
 
 interface Agent {
   id: string; name: string; shortName: string; emoji: string
@@ -35,48 +34,53 @@ interface Conversation {
 
 // ─── Agentes ──────────────────────────────────────────────────
 const AGENTS: Agent[] = [
-  // ── JURIS PREMIUM ──
-  { id: 'ben-super-agente-juridico',  shortName: 'Super Agente',      name: 'BEN Super Agente Jurídico',        emoji: '⭐', description: 'Coordenação estratégica multidisciplinar — máxima performance.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#92400e', accentColor: '#fef3c7', premium: true },
-  { id: 'ben-peticionista-juridico',  shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',        emoji: '⚖️', description: 'Peças processuais conforme o caso concreto e jurisprudência.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#1d4ed8', accentColor: '#dbeafe' },
-  { id: 'ben-contratualista',         shortName: 'Contratualista',     name: 'BEN Contratualista',               emoji: '📋', description: 'Contratos empresariais, NDAs, societários e negociais.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-mandatario-juridico',    shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',          emoji: '📜', description: 'Procurações, Ad Judicia, gerais e especiais.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-analista-processual',    shortName: 'Analista Proc.',     name: 'BEN Analista Processual',          emoji: '🔬', description: 'Análise estratégica de processos com avaliação de risco.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
-  { id: 'ben-tributarista',           shortName: 'Tributarista',       name: 'BEN Tributarista',                 emoji: '💰', description: 'Direito tributário, planejamento fiscal e teses avançadas.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
-  { id: 'ben-trabalhista',            shortName: 'Trabalhista',        name: 'BEN Trabalhista',                  emoji: '👷', description: 'Direito do trabalho, TST, reclamações e acordos.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
-  { id: 'ben-previdenciarista',       shortName: 'Previdenciarista',   name: 'BEN Previdenciarista',             emoji: '🏛️', description: 'Benefícios INSS, aposentadorias e revisões previdenciárias.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-constitucionalista',     shortName: 'Constitucionalista', name: 'BEN Constitucionalista',           emoji: '⚡', description: 'MS, HC, Mandado de Injunção e ações constitucionais.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#b91c1c', accentColor: '#fee2e2' },
-  { id: 'ben-especialista-compliance',shortName: 'Compliance',         name: 'BEN Especialista Compliance',      emoji: '🛡️', description: 'Conformidade LGPD, políticas de privacidade e proteção de dados.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#0f766e', accentColor: '#ccfbf1' },
-  { id: 'ben-pesquisador-juridico',   shortName: 'Pesquisador',        name: 'BEN Pesquisador Jurídico',         emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.', model: 'Perplexity', category: 'juridico', project: 'juris', color: '#6d28d9', accentColor: '#ede9fe' },
-  { id: 'ben-relator-juridico',       shortName: 'Relator',            name: 'BEN Relator Jurídico',             emoji: '📚', description: 'Artigos jurídicos, pareceres técnicos e publicações.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#1e40af', accentColor: '#dbeafe' },
-  { id: 'ben-redator-juridico',       shortName: 'Redator',            name: 'BEN Redator Jurídico',             emoji: '✒️', description: 'Redação técnica jurídica, memorandos, ofícios.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-auditor-processual',     shortName: 'Auditor',            name: 'BEN Auditor Processual',           emoji: '🔏', description: 'Auditoria de prazos críticos e conformidade OAB.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#0f766e', accentColor: '#ccfbf1' },
-  { id: 'ben-gestor-juridico',        shortName: 'Gestor',             name: 'BEN Gestor Jurídico',              emoji: '🏢', description: 'Gestão de escritório, produtividade e governança.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-engenheiro-prompt',      shortName: 'Eng. Prompt',        name: 'BEN Engenheiro de Prompt',         emoji: '🧠', description: 'Otimização de prompts e arquitetura de agentes IA.', model: 'GPT-4o', category: 'sistema', project: 'juris', color: '#4f46e5', accentColor: '#e0e7ff' },
+  // ── JURIS ──
+  { id: 'ben-super-agente-juridico',  shortName: 'Super Agente',      name: 'BEN Super Agente Jurídico',       emoji: '⭐', description: 'Coordenação estratégica multidisciplinar — máxima performance.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#92400e', accentColor: '#fef3c7', premium: true },
+  { id: 'ben-peticionista-juridico',  shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',       emoji: '⚖️', description: 'Peças processuais conforme o caso concreto e jurisprudência.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#1d4ed8', accentColor: '#dbeafe' },
+  { id: 'ben-contratualista',         shortName: 'Contratualista',     name: 'BEN Contratualista',              emoji: '📋', description: 'Contratos empresariais, NDAs, societários e negociais.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
+  { id: 'ben-mandatario-juridico',    shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',         emoji: '📜', description: 'Procurações, Ad Judicia, gerais e especiais.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-analista-processual',    shortName: 'Analista Proc.',     name: 'BEN Analista Processual',         emoji: '🔬', description: 'Análise estratégica de processos com avaliação de risco.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
+  { id: 'ben-tributarista',           shortName: 'Tributarista',       name: 'BEN Tributarista',                emoji: '💰', description: 'Direito tributário, planejamento fiscal e teses avançadas.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
+  { id: 'ben-trabalhista',            shortName: 'Trabalhista',        name: 'BEN Trabalhista',                 emoji: '👷', description: 'Direito do trabalho, TST, reclamações e acordos.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
+  { id: 'ben-previdenciarista',       shortName: 'Previdenciarista',   name: 'BEN Previdenciarista',            emoji: '🏛️', description: 'Benefícios INSS, aposentadorias e revisões previdenciárias.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
+  { id: 'ben-constitucionalista',     shortName: 'Constitucionalista', name: 'BEN Constitucionalista',          emoji: '⚡', description: 'MS, HC, Mandado de Injunção e ações constitucionais.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#b91c1c', accentColor: '#fee2e2' },
+  { id: 'ben-especialista-compliance',shortName: 'Compliance',         name: 'BEN Especialista Compliance',     emoji: '🛡️', description: 'Conformidade LGPD, políticas de privacidade e proteção de dados.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#0f766e', accentColor: '#ccfbf1' },
+  { id: 'ben-pesquisador-juridico',   shortName: 'Pesquisador',        name: 'BEN Pesquisador Jurídico',        emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.', model: 'Perplexity', category: 'juridico', project: 'juris', color: '#6d28d9', accentColor: '#ede9fe' },
+  { id: 'ben-relator-juridico',       shortName: 'Relator',            name: 'BEN Relator Jurídico',            emoji: '📚', description: 'Artigos jurídicos, pareceres técnicos e publicações.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#1e40af', accentColor: '#dbeafe' },
+  { id: 'ben-redator-juridico',       shortName: 'Redator',            name: 'BEN Redator Jurídico',            emoji: '✒️', description: 'Redação técnica jurídica, memorandos, ofícios.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
+  { id: 'ben-auditor-processual',     shortName: 'Auditor',            name: 'BEN Auditor Processual',          emoji: '🔏', description: 'Auditoria de prazos críticos e conformidade OAB.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'juris', color: '#0f766e', accentColor: '#ccfbf1' },
+  { id: 'ben-gestor-juridico',        shortName: 'Gestor',             name: 'BEN Gestor Jurídico',             emoji: '🏢', description: 'Gestão de escritório, produtividade e governança.', model: 'GPT-4o', category: 'juridico', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
+  { id: 'ben-revisor-juridico',       shortName: 'Revisor',            name: 'BEN Revisor Jurídico',            emoji: '📝', description: 'Revisão técnica e linguística de peças jurídicas.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'growth', color: '#374151', accentColor: '#f3f4f6' },
+  { id: 'ben-peticionista',           shortName: 'Peticionista',       name: 'BEN Peticionista',                emoji: '⚖️', description: 'Petições iniciais, recursos e peças de urgência.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'growth', color: '#1d4ed8', accentColor: '#dbeafe' },
+  // ── ENGENHEIRO (sistema) ──
+  { id: 'ben-engenheiro-prompt',      shortName: 'Eng. Prompt',        name: 'BEN Engenheiro de Prompt',        emoji: '🧠', description: 'Otimização de prompts e arquitetura de agentes IA.', model: 'GPT-4o', category: 'sistema', project: 'juris', color: '#4f46e5', accentColor: '#e0e7ff' },
   // ── CONTADOR ──
-  { id: 'ben-contador-tributarista',              shortName: 'Contador Triagem',  name: 'BEN Contador — Triagem',       emoji: '🧮', description: 'Triagem fiscal: classifica e encaminha ao especialista.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#92400e', accentColor: '#fef3c7' },
-  { id: 'ben-contador-tributarista-especialista', shortName: 'Contador Esp.',     name: 'BEN Contador — Especialista',  emoji: '📊', description: 'Análise fiscal profunda e planejamento avançado.', model: 'Claude Sonnet', category: 'contador', project: 'juris', color: '#b45309', accentColor: '#fef9c3' },
-  { id: 'ben-contador-tributarista-planejamento', shortName: 'Planejamento',      name: 'BEN Contador — Planejamento',  emoji: '🗺️', description: 'Planejamento tributário estratégico.', model: 'Claude Sonnet', category: 'contador', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
-  { id: 'ben-contador-tributarista-creditos',     shortName: 'Créditos',          name: 'BEN Contador — Créditos',      emoji: '💳', description: 'Recuperação de créditos tributários.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-contador-tributarista-auditoria',    shortName: 'Auditoria Fisc.',   name: 'BEN Contador — Auditoria',     emoji: '🔍', description: 'Auditoria fiscal e conformidade tributária.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
-  { id: 'ben-contador-tributarista-relatorio',    shortName: 'Relatório Fisc.',   name: 'BEN Contador — Relatório',     emoji: '📋', description: 'Relatórios fiscais executivos e dashboards.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
+  { id: 'ben-contador-tributarista',              shortName: 'Triagem',       name: 'BEN Contador — Triagem',      emoji: '🧮', description: 'Triagem fiscal: classifica e encaminha ao especialista.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#92400e', accentColor: '#fef3c7' },
+  { id: 'ben-contador-tributarista-especialista', shortName: 'Especialista',  name: 'BEN Contador — Especialista', emoji: '📊', description: 'Análise fiscal profunda e planejamento avançado.', model: 'Claude Sonnet', category: 'contador', project: 'juris', color: '#b45309', accentColor: '#fef9c3' },
+  { id: 'ben-contador-tributarista-planejamento', shortName: 'Planejamento',  name: 'BEN Contador — Planejamento', emoji: '🗺️', description: 'Planejamento tributário estratégico.', model: 'Claude Sonnet', category: 'contador', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
+  { id: 'ben-contador-tributarista-creditos',     shortName: 'Créditos',      name: 'BEN Contador — Créditos',     emoji: '💳', description: 'Recuperação de créditos tributários.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-contador-tributarista-auditoria',    shortName: 'Auditoria',     name: 'BEN Contador — Auditoria',    emoji: '🔍', description: 'Auditoria fiscal e conformidade tributária.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
+  { id: 'ben-contador-tributarista-relatorio',    shortName: 'Relatório',     name: 'BEN Contador — Relatório',    emoji: '📋', description: 'Relatórios fiscais executivos e dashboards.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
   // ── PERITO ──
-  { id: 'ben-perito-forense',          shortName: 'Perito Padrão',   name: 'BEN Perito Forense — Padrão',    emoji: '🔬', description: 'Laudos e pareceres técnicos periciais.', model: 'Claude Sonnet', category: 'perito', project: 'juris', color: '#4f46e5', accentColor: '#e0e7ff' },
-  { id: 'ben-perito-forense-profundo', shortName: 'Perito Profundo', name: 'BEN Perito Forense — Profundo',  emoji: '🧬', description: 'Análise pericial profunda — alto custo, máxima precisão.', model: 'Claude Opus 4', category: 'perito', project: 'juris', color: '#b91c1c', accentColor: '#fee2e2', premium: true },
-  { id: 'ben-perito-forense-digital',  shortName: 'Perito Digital',  name: 'BEN Perito Forense Digital',     emoji: '💻', description: 'Perícia digital e análise de evidências eletrônicas.', model: 'Claude Sonnet', category: 'perito', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-perito-forense-laudo',    shortName: 'Laudo Pericial',  name: 'BEN Perito Forense — Laudo',     emoji: '📄', description: 'Elaboração de laudos periciais técnicos.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
-  { id: 'ben-perito-forense-contestar',shortName: 'Contraditório',   name: 'BEN Perito — Contraditório',     emoji: '🛡️', description: 'Contestação de laudos adversariais.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-perito-forense-relatorio',shortName: 'Rel. Pericial',   name: 'BEN Perito Forense — Relatório', emoji: '📊', description: 'Relatórios periciais executivos.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
+  { id: 'ben-perito-forense',          shortName: 'Padrão',       name: 'BEN Perito Forense — Padrão',    emoji: '🔬', description: 'Laudos e pareceres técnicos periciais.', model: 'Claude Sonnet', category: 'perito', project: 'juris', color: '#4f46e5', accentColor: '#e0e7ff' },
+  { id: 'ben-perito-forense-profundo', shortName: 'Profundo',     name: 'BEN Perito Forense — Profundo',  emoji: '🧬', description: 'Análise pericial profunda — alto custo, máxima precisão.', model: 'Claude Opus 4', category: 'perito', project: 'juris', color: '#b91c1c', accentColor: '#fee2e2', premium: true },
+  { id: 'ben-perito-forense-digital',  shortName: 'Digital',      name: 'BEN Perito Forense Digital',     emoji: '💻', description: 'Perícia digital e análise de evidências eletrônicas.', model: 'Claude Sonnet', category: 'perito', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
+  { id: 'ben-perito-forense-laudo',    shortName: 'Laudo',        name: 'BEN Perito Forense — Laudo',     emoji: '📄', description: 'Elaboração de laudos periciais técnicos.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
+  { id: 'ben-perito-forense-contestar',shortName: 'Contraditório',name: 'BEN Perito — Contraditório',     emoji: '🛡️', description: 'Contestação de laudos adversariais.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-perito-forense-relatorio',shortName: 'Relatório',    name: 'BEN Perito Forense — Relatório', emoji: '📊', description: 'Relatórios periciais executivos.', model: 'Claude Haiku 4.5', category: 'perito', project: 'juris', color: '#374151', accentColor: '#f3f4f6' },
   // ── GROWTH ──
-  { id: 'ben-atendente',              shortName: 'Dr. Ben',          name: 'Dr. Ben — Atendente',            emoji: '🤝', description: 'Atendimento jurídico digital 24/7 e qualificação de leads.', model: 'GPT-4o Mini', category: 'atendimento', project: 'growth', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-conteudista',            shortName: 'Conteudista',      name: 'BEN Conteudista Jurídico',       emoji: '✍️', description: 'Artigos, posts e conteúdo institucional OAB-compliant.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-estrategista-campanhas', shortName: 'Estrateg. Camp.',  name: 'BEN Estrategista Campanhas',     emoji: '📊', description: 'Meta Ads e Google Ads — ROI e KPIs jurídicos.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-estrategista-marketing', shortName: 'Marketing',        name: 'BEN Estrategista Marketing',     emoji: '📣', description: 'Redes sociais, Instagram, Reels e conteúdo OAB-compliant.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#0369a1', accentColor: '#e0f2fe' },
-  { id: 'ben-analista-relatorios',    shortName: 'Relatórios',       name: 'BEN Analista de Relatórios',     emoji: '📈', description: 'Relatório semanal com insights de performance.', model: 'Claude Haiku 4.5', category: 'marketing', project: 'growth', color: '#d97706', accentColor: '#fef3c7' },
-  { id: 'ben-diretor-criativo',       shortName: 'Dir. Criativo',    name: 'BEN Diretor Criativo',           emoji: '🎨', description: 'Identidade visual, branding jurídico e direção criativa.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-revisor-juridico',       shortName: 'Revisor',          name: 'BEN Revisor Jurídico',           emoji: '📝', description: 'Revisão técnica e linguística de peças jurídicas.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'growth', color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-peticionista',           shortName: 'Peticionista G.',  name: 'BEN Peticionista',               emoji: '⚖️', description: 'Petições iniciais, recursos e peças de urgência.', model: 'Claude Haiku 4.5', category: 'juridico', project: 'growth', color: '#1d4ed8', accentColor: '#dbeafe' },
-  { id: 'ben-analista-monitoramento', shortName: 'Monitoramento',    name: 'BEN Analista Monitoramento',     emoji: '🔍', description: 'Monitoramento de saúde do sistema e alertas críticos.', model: 'GPT-4o Mini', category: 'sistema', project: 'growth', color: '#dc2626', accentColor: '#fee2e2' },
+  { id: 'ben-atendente',              shortName: 'Atendente',      name: 'BEN Atendente',                  emoji: '🤝', description: 'Atendimento jurídico digital 24/7 e qualificação de leads.', model: 'GPT-4o Mini', category: 'atendimento', project: 'growth', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-conteudista',            shortName: 'Conteudista',    name: 'BEN Conteudista Jurídico',       emoji: '✍️', description: 'Artigos, posts e conteúdo institucional OAB-compliant.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#7c3aed', accentColor: '#ede9fe' },
+  { id: 'ben-estrategista-campanhas', shortName: 'Campanhas',      name: 'BEN Estrategista Campanhas',     emoji: '📊', description: 'Meta Ads e Google Ads — ROI e KPIs jurídicos.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-estrategista-marketing', shortName: 'Marketing',      name: 'BEN Estrategista Marketing',     emoji: '📣', description: 'Redes sociais, Instagram, Reels e conteúdo OAB-compliant.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#0369a1', accentColor: '#e0f2fe' },
+  { id: 'ben-analista-relatorios',    shortName: 'Relatórios',     name: 'BEN Analista de Relatórios',     emoji: '📈', description: 'Relatório semanal com insights de performance.', model: 'Claude Haiku 4.5', category: 'marketing', project: 'growth', color: '#d97706', accentColor: '#fef3c7' },
+  { id: 'ben-diretor-criativo',       shortName: 'Dir. Criativo',  name: 'BEN Diretor Criativo',           emoji: '🎨', description: 'Identidade visual, branding jurídico e direção criativa.', model: 'GPT-4o', category: 'marketing', project: 'growth', color: '#7c3aed', accentColor: '#ede9fe' },
+  // ── SISTEMA ──
+  { id: 'ben-analista-monitoramento', shortName: 'Monitoramento',  name: 'BEN Analista Monitoramento',     emoji: '🔍', description: 'Monitoramento de saúde do sistema e alertas críticos.', model: 'GPT-4o Mini', category: 'sistema', project: 'growth', color: '#dc2626', accentColor: '#fee2e2' },
 ]
+
+// Agente padrão ao entrar no sistema
+const DEFAULT_AGENT_ID = 'ben-redator-juridico'
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   juridico:    <Scale className="w-3 h-3" />,
@@ -188,12 +192,18 @@ function ModelBadge({ model }: { model: string }) {
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
-export default function EcosystemWorkspace() {
+interface EcosystemWorkspaceProps {
+  pendingAgentId?: string | null
+  onAgentOpened?: (id: string) => void
+}
+
+export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: EcosystemWorkspaceProps) {
   const { user } = useAuth()
 
   // ── Estado principal ──────────────────────────────────────
-  const [view, setView] = useState<'home' | 'chat'>('home')
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(() => {
+    return AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[12] || null
+  })
   const [conversations, setConversations] = useState<Conversation[]>(loadConvs)
   const [activeConvId, setActiveConvId] = useState<string | null>(null)
   const [input, setInput] = useState('')
@@ -212,15 +222,30 @@ export default function EcosystemWorkspace() {
   const [artifactCopied, setArtifactCopied] = useState(false)
   const [artifactFull, setArtifactFull] = useState(false)
 
-  // ── Filtros na home ───────────────────────────────────────
-  const [tab, setTab] = useState<Tab>('all')
-  const [search, setSearch] = useState('')
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const activeConv = conversations.find(c => c.id === activeConvId)
+
+  // ── Inicializa com conversa do agente padrão ──────────────
+  useEffect(() => {
+    const defaultAgent = AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[0]
+    if (!defaultAgent) return
+    openAgent(defaultAgent)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // ── Reage ao agente selecionado via sidebar ───────────────
+  useEffect(() => {
+    if (!pendingAgentId) return
+    const agent = AGENTS.find(a => a.id === pendingAgentId)
+    if (agent) {
+      openAgent(agent)
+      onAgentOpened?.(agent.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingAgentId])
 
   useEffect(() => { if (conversations.length) saveConvs(conversations) }, [conversations])
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [activeConv?.messages])
@@ -243,7 +268,6 @@ export default function EcosystemWorkspace() {
     setConversations(prev => [conv, ...prev])
     setSelectedAgent(agent)
     setActiveConvId(convId)
-    setView('chat')
     setArtifactOpen(false)
     setInput('')
     setTimeout(() => textareaRef.current?.focus(), 150)
@@ -253,7 +277,6 @@ export default function EcosystemWorkspace() {
     const agent = AGENTS.find(a => a.id === conv.agentId)
     if (agent) setSelectedAgent(agent)
     setActiveConvId(conv.id)
-    setView('chat')
   }, [])
 
   // ── Enviar mensagem ───────────────────────────────────────
@@ -308,14 +331,13 @@ export default function EcosystemWorkspace() {
           : c
       ))
 
-      // Auto-abre artifact se resposta longa ou jurídica
       if (data.success && shouldOpenArtifact(content)) {
         setArtifactContent(content)
         setArtifactTitle(`${selectedAgent.emoji} ${selectedAgent.shortName}`)
         setArtifactOpen(true)
       }
 
-    } catch (e: unknown) {
+    } catch {
       const errMsg: Message = {
         id: `e-${Date.now()}`, role: 'assistant',
         content: '❌ Erro de conexão. Tente novamente.',
@@ -368,194 +390,84 @@ export default function EcosystemWorkspace() {
     e.target.value = ''
   }
 
-  // ── Agentes filtrados ──────────────────────────────────────
-  const filteredAgents = AGENTS.filter(a => {
-    const matchTab = tab === 'all' || a.project === tab
-    const matchSearch = !search || a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.description.toLowerCase().includes(search.toLowerCase())
-    return matchTab && matchSearch
-  })
-
   // ── Histórico filtrado ─────────────────────────────────────
   const filteredHistory = conversations
     .filter(c => c.messages.filter(m => !m.isLoading).length > 0)
     .filter(c => !histSearch || c.title.toLowerCase().includes(histSearch.toLowerCase()))
     .slice(0, 40)
 
-  // ── Agrupar agentes por categoria ─────────────────────────
-  const grouped = filteredAgents.reduce((acc, a) => {
-    if (!acc[a.category]) acc[a.category] = []
-    acc[a.category].push(a)
-    return acc
-  }, {} as Record<string, Agent[]>)
-
-  const categoryOrder = ['juridico', 'contador', 'perito', 'atendimento', 'marketing', 'sistema']
+  // ─── Agentes disponíveis agrupados por categoria (para seleção rápida no chat) ──
   const categoryLabel: Record<string, string> = {
-    juridico: 'Jurídico', contador: 'Contador Tributarista',
-    perito: 'Perito Forense', marketing: 'Marketing & Growth',
+    juridico: 'Jurídico', contador: 'Contador',
+    perito: 'Perito', marketing: 'Growth',
     atendimento: 'Atendimento', sistema: 'Sistema',
   }
 
   // ═══════════════════════════════════════════════════════════
-  // VIEW: HOME — Seleção de Agente
-  // ═══════════════════════════════════════════════════════════
-  if (view === 'home') {
-    return (
-      <div className="flex flex-col h-full overflow-hidden" style={{ background: '#FAFBFC' }}>
-
-        {/* ── Hero ───────────────────────────────────────────── */}
-        <div className="px-8 pt-8 pb-6" style={{ background: '#FFFFFF', borderBottom: '1px solid #F0F0F0' }}>
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #0f2044, #1a3a6e)' }}>
-                <Sparkles className="w-5 h-5 text-yellow-400" />
-              </div>
-              <div className="text-left">
-                <h1 className="text-xl font-bold" style={{ color: '#0f2044' }}>BEN ECOSYSTEM IA</h1>
-                <p className="text-xs" style={{ color: '#6B7280' }}>Workspace · {AGENTS.length} agentes · {user?.nome}</p>
-              </div>
-            </div>
-            <p className="text-sm mb-5" style={{ color: '#6B7280' }}>
-              Selecione um agente para iniciar. Respostas longas abrem automaticamente no painel lateral.
-            </p>
-
-            {/* Busca + Tabs */}
-            <div className="flex items-center gap-3 max-w-2xl mx-auto">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9CA3AF' }} />
-                <input
-                  value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="Buscar agente..."
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2"
-                  style={{ background: '#F9FAFB', border: '1.5px solid #E5E7EB', color: '#222', '--tw-ring-color': '#0f2044' } as React.CSSProperties}
-                />
-              </div>
-              <div className="flex rounded-xl overflow-hidden border" style={{ borderColor: '#E5E7EB' }}>
-                {(['all', 'juris', 'growth'] as Tab[]).map(t => (
-                  <button key={t} onClick={() => setTab(t)}
-                    className="px-4 py-2.5 text-xs font-semibold transition-all"
-                    style={tab === t
-                      ? { background: '#0f2044', color: '#D4A017' }
-                      : { background: '#FFFFFF', color: '#6B7280' }}>
-                    {t === 'all' ? `Todos (${AGENTS.length})` : t === 'juris' ? `Juris (${AGENTS.filter(a => a.project === 'juris').length})` : `Growth (${AGENTS.filter(a => a.project === 'growth').length})`}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Grade de agentes ───────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
-          <div className="max-w-6xl mx-auto space-y-8">
-            {categoryOrder.filter(cat => grouped[cat]?.length > 0).map(cat => (
-              <div key={cat}>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                    style={{ background: '#0f2044', color: '#D4A017' }}>
-                    {CATEGORY_ICONS[cat]} {categoryLabel[cat]}
-                  </span>
-                  <span className="text-xs" style={{ color: '#9CA3AF' }}>
-                    {grouped[cat].length} agente{grouped[cat].length > 1 ? 's' : ''}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                  {grouped[cat].map(agent => (
-                    <button key={agent.id} onClick={() => openAgent(agent)}
-                      className="text-left p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-0.5 group"
-                      style={{ background: '#FFFFFF', borderColor: '#EEEEEE' }}>
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="text-2xl">{agent.emoji}</span>
-                        {agent.premium && (
-                          <span className="text-xs px-1.5 py-0.5 rounded-full font-bold"
-                            style={{ background: '#fef3c7', color: '#92400e' }}>⭐</span>
-                        )}
-                      </div>
-                      <p className="text-xs font-bold mb-1 group-hover:text-blue-800 transition-colors"
-                        style={{ color: '#1A1A1A', lineHeight: '1.3' }}>
-                        {agent.shortName}
-                      </p>
-                      <p className="text-xs line-clamp-2 mb-2" style={{ color: '#9CA3AF', lineHeight: '1.4' }}>
-                        {agent.description}
-                      </p>
-                      <ModelBadge model={agent.model} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {filteredAgents.length === 0 && (
-              <div className="text-center py-16">
-                <Search className="w-10 h-10 mx-auto mb-3" style={{ color: '#D1D5DB' }} />
-                <p style={{ color: '#9CA3AF' }}>Nenhum agente encontrado para "{search}"</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* ── Histórico recente ─────────────────────────────── */}
-        {filteredHistory.length > 0 && (
-          <div className="px-8 py-4 border-t" style={{ background: '#FFFFFF', borderColor: '#F0F0F0' }}>
-            <p className="text-xs font-semibold mb-3 flex items-center gap-1.5" style={{ color: '#9CA3AF' }}>
-              <Clock className="w-3.5 h-3.5" /> Conversas recentes
-            </p>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {filteredHistory.slice(0, 8).map(c => (
-                <button key={c.id} onClick={() => openConv(c)}
-                  className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl border text-xs transition-all hover:border-blue-300 hover:shadow-sm"
-                  style={{ background: '#F9FAFB', borderColor: '#E5E7EB', color: '#374151' }}>
-                  <span>{c.agentEmoji}</span>
-                  <span className="max-w-[100px] truncate font-medium">{c.title}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  // ═══════════════════════════════════════════════════════════
-  // VIEW: CHAT
+  // RENDER: CHAT (interface única — sem tela home)
   // ═══════════════════════════════════════════════════════════
   const messages = activeConv?.messages || []
 
   return (
     <div className="flex h-full overflow-hidden" style={{ background: '#F8F9FA' }}>
 
-      {/* ── Sidebar esquerda: histórico ─────────────────────── */}
+      {/* ── Sidebar esquerda: histórico de conversas ─────────── */}
       {showHistory && (
         <div className="w-60 flex-shrink-0 flex flex-col border-r"
           style={{ background: '#FFFFFF', borderColor: '#EEEEEE' }}>
+
+          {/* Topo da sidebar de histórico */}
           <div className="p-3 border-b" style={{ borderColor: '#F0F0F0' }}>
-            <button onClick={() => { setView('home'); setSelectedAgent(null) }}
-              className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl mb-2 transition-all hover:bg-gray-50"
-              style={{ color: '#0f2044', border: '1.5px solid #E5E7EB' }}>
-              <LayoutGrid className="w-3.5 h-3.5" />
-              Todos os agentes
-            </button>
-            <div className="relative">
+            {/* Logo/contexto do agente atual */}
+            {selectedAgent && (
+              <div className="flex items-center gap-2.5 mb-3 px-2 py-2 rounded-xl"
+                style={{ background: selectedAgent.accentColor }}>
+                <span className="text-xl">{selectedAgent.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold truncate" style={{ color: selectedAgent.color }}>
+                    {selectedAgent.name}
+                  </p>
+                  <p className="text-xs truncate" style={{ color: '#6B7280' }}>
+                    {selectedAgent.model}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Busca no histórico */}
+            <div className="relative mb-2">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9CA3AF' }} />
               <input value={histSearch} onChange={e => setHistSearch(e.target.value)}
                 placeholder="Buscar conversa..."
                 className="w-full pl-8 pr-3 py-2 rounded-lg text-xs border focus:outline-none"
                 style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#222' }} />
             </div>
+
+            {/* Botão nova conversa com agente atual */}
+            <button
+              onClick={() => selectedAgent && openAgent(selectedAgent)}
+              className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl transition-all hover:bg-gray-50"
+              style={{ color: '#0f2044', border: '1.5px solid #E5E7EB' }}>
+              <Plus className="w-3.5 h-3.5" />
+              Nova conversa
+            </button>
           </div>
 
+          {/* Lista de conversas */}
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
             {filteredHistory.length === 0 && (
-              <p className="text-xs text-center py-8" style={{ color: '#D1D5DB' }}>Sem conversas</p>
+              <div className="text-center py-10">
+                <Sparkles className="w-6 h-6 mx-auto mb-2" style={{ color: '#D1D5DB' }} />
+                <p className="text-xs" style={{ color: '#D1D5DB' }}>Sem conversas ainda</p>
+                <p className="text-xs mt-1" style={{ color: '#E5E7EB' }}>Selecione um agente no menu lateral</p>
+              </div>
             )}
             {filteredHistory.map(c => (
               <button key={c.id}
                 onClick={() => openConv(c)}
                 className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all group flex items-start gap-2 ${c.id === activeConvId ? 'ring-1' : 'hover:bg-gray-50'}`}
                 style={c.id === activeConvId
-                  ? { background: 'rgba(15,32,68,0.08)', color: '#0f2044', ringColor: '#0f2044' }
+                  ? { background: 'rgba(15,32,68,0.08)', color: '#0f2044' }
                   : { color: '#374151' }}>
                 <span className="mt-0.5 flex-shrink-0">{c.agentEmoji}</span>
                 <div className="flex-1 min-w-0">
@@ -564,12 +476,27 @@ export default function EcosystemWorkspace() {
                     {c.messages.filter(m => !m.isLoading).length} msg
                   </p>
                 </div>
-                <button onClick={e => { e.stopPropagation(); setConversations(prev => prev.filter(cv => cv.id !== c.id)); if (activeConvId === c.id) { setView('home'); setSelectedAgent(null) } }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                <button onClick={e => {
+                  e.stopPropagation()
+                  setConversations(prev => prev.filter(cv => cv.id !== c.id))
+                  if (activeConvId === c.id) {
+                    // Abrir default
+                    const def = AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[0]
+                    if (def) openAgent(def)
+                  }
+                }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5">
                   <Trash2 className="w-3 h-3" style={{ color: '#EF4444' }} />
                 </button>
               </button>
             ))}
+          </div>
+
+          {/* Rodapé da sidebar com atalho de agentes */}
+          <div className="p-3 border-t" style={{ borderColor: '#F0F0F0' }}>
+            <p className="text-xs px-2 mb-2" style={{ color: '#9CA3AF' }}>
+              💡 Selecione um agente no menu azul
+            </p>
           </div>
         </div>
       )}
@@ -582,8 +509,11 @@ export default function EcosystemWorkspace() {
           style={{ background: '#FFFFFF', borderColor: '#EEEEEE' }}>
           <div className="flex items-center gap-3">
             <button onClick={() => setShowHistory(!showHistory)}
-              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-              <ChevronLeft className="w-4 h-4" style={{ color: '#6B7280' }} />
+              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+              title={showHistory ? 'Ocultar histórico' : 'Mostrar histórico'}>
+              {showHistory
+                ? <ChevronLeft className="w-4 h-4" style={{ color: '#6B7280' }} />
+                : <LayoutGrid className="w-4 h-4" style={{ color: '#6B7280' }} />}
             </button>
             {selectedAgent && (
               <div className="flex items-center gap-2.5">
@@ -592,27 +522,31 @@ export default function EcosystemWorkspace() {
                   {selectedAgent.emoji}
                 </div>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: '#0f2044' }}>{selectedAgent.shortName}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold" style={{ color: '#0f2044' }}>{selectedAgent.name}</p>
+                    {selectedAgent.premium && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-full font-bold"
+                        style={{ background: '#fef3c7', color: '#92400e' }}>⭐ Premium</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5">
                     <ModelBadge model={selectedAgent.model} />
                     <span className="text-xs" style={{ color: '#9CA3AF' }}>
-                      {messages.filter(m => m.role === 'user').length} consultas
+                      · {categoryLabel[selectedAgent.category] || selectedAgent.category}
+                      · {messages.filter(m => m.role === 'user').length} consultas
                     </span>
                   </div>
                 </div>
               </div>
             )}
           </div>
+
+          {/* Ações do header */}
           <div className="flex items-center gap-2">
-            <button onClick={() => openAgent(selectedAgent!)}
+            <button onClick={() => selectedAgent && openAgent(selectedAgent)}
               className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border hover:bg-gray-50 transition-colors"
               style={{ color: '#6B7280', borderColor: '#E5E7EB' }}>
-              <Plus className="w-3.5 h-3.5" /> Nova conversa
-            </button>
-            <button onClick={() => setView('home')}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border hover:bg-gray-50 transition-colors"
-              style={{ color: '#6B7280', borderColor: '#E5E7EB' }}>
-              <LayoutGrid className="w-3.5 h-3.5" /> Agentes
+              <Plus className="w-3.5 h-3.5" /> Nova
             </button>
             <button
               onClick={() => {
@@ -622,9 +556,13 @@ export default function EcosystemWorkspace() {
                 }
               }}
               className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border hover:bg-gray-50 transition-colors"
-              style={{ color: artifactOpen ? '#0f2044' : '#6B7280', borderColor: artifactOpen ? '#0f2044' : '#E5E7EB', background: artifactOpen ? 'rgba(15,32,68,0.06)' : '' }}>
+              style={{
+                color: artifactOpen ? '#0f2044' : '#6B7280',
+                borderColor: artifactOpen ? '#0f2044' : '#E5E7EB',
+                background: artifactOpen ? 'rgba(15,32,68,0.06)' : '',
+              }}>
               {artifactOpen ? <PanelRightClose className="w-3.5 h-3.5" /> : <PanelRight className="w-3.5 h-3.5" />}
-              {artifactOpen ? 'Fechar painel' : 'Abrir painel'}
+              {artifactOpen ? 'Fechar painel' : 'Painel'}
             </button>
           </div>
         </div>
@@ -637,11 +575,14 @@ export default function EcosystemWorkspace() {
                 style={{ background: selectedAgent.accentColor }}>
                 {selectedAgent.emoji}
               </div>
-              <h2 className="text-base font-bold mb-2" style={{ color: '#0f2044' }}>{selectedAgent.name}</h2>
-              <p className="text-sm mb-6" style={{ color: '#6B7280' }}>{selectedAgent.description}</p>
-              <div className="grid grid-cols-1 gap-2">
+              <h2 className="text-base font-bold mb-1" style={{ color: '#0f2044' }}>{selectedAgent.name}</h2>
+              <p className="text-sm mb-1" style={{ color: '#6B7280' }}>{selectedAgent.description}</p>
+              <div className="flex justify-center mb-6">
+                <ModelBadge model={selectedAgent.model} />
+              </div>
+              <div className="grid grid-cols-1 gap-2 text-left">
                 {[
-                  'Faça uma pergunta jurídica em linguagem natural',
+                  'Faça uma pergunta em linguagem natural',
                   'Solicite uma peça processual com os dados do caso',
                   'Envie um documento PDF para análise',
                 ].map((s, i) => (
@@ -674,7 +615,7 @@ export default function EcosystemWorkspace() {
                       ))}
                     </div>
                     <span className="text-sm" style={{ color: '#6B7280' }}>
-                      {selectedAgent?.shortName} gerando resposta...
+                      {selectedAgent?.shortName} processando...
                     </span>
                   </div>
                 ) : (
@@ -697,17 +638,26 @@ export default function EcosystemWorkspace() {
                           {msg.elapsed_ms && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{fmtTime(msg.elapsed_ms)}</span>}
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => { navigator.clipboard.writeText(msg.content) }}
+                          <button onClick={() => navigator.clipboard.writeText(msg.content)}
                             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" title="Copiar">
                             <Copy className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
                           </button>
                           {msg.content.length > 400 && (
-                            <button onClick={() => { setArtifactContent(msg.content); setArtifactTitle(selectedAgent?.shortName || 'Resposta'); setArtifactOpen(true) }}
+                            <button onClick={() => {
+                              setArtifactContent(msg.content)
+                              setArtifactTitle(selectedAgent?.shortName || 'Resposta')
+                              setArtifactOpen(true)
+                            }}
                               className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" title="Abrir no painel">
                               <PanelRight className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
                             </button>
                           )}
-                          <button onClick={() => { const b = new Blob([msg.content], { type: 'text/plain' }); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = `ben-${Date.now()}.txt`; a.click() }}
+                          <button onClick={() => {
+                            const b = new Blob([msg.content], { type: 'text/plain' })
+                            const u = URL.createObjectURL(b)
+                            const a = document.createElement('a')
+                            a.href = u; a.download = `ben-${Date.now()}.txt`; a.click()
+                          }}
                             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" title="Baixar">
                             <Download className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
                           </button>
@@ -745,7 +695,7 @@ export default function EcosystemWorkspace() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
-                placeholder={`Mensagem para ${selectedAgent?.shortName || 'agente'}... (Enter para enviar, Shift+Enter nova linha)`}
+                placeholder={`Mensagem para ${selectedAgent?.shortName || 'agente'}... (Enter para enviar)`}
                 rows={1}
                 disabled={loading}
                 className="w-full px-4 py-3 text-sm bg-transparent resize-none focus:outline-none pr-24"
