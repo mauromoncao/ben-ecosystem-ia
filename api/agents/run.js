@@ -48,7 +48,7 @@
 //   ben-perito-forense-relatorio
 // ============================================================
 
-export const config = { maxDuration: 65 }
+export const config = { maxDuration: 120 }
 
 const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app').trim()
 const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app').trim()
@@ -199,7 +199,7 @@ export default async function handler(req, res) {
         useMemory,
         clientId,
       }),
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(110000),
     })
 
     const elapsed = Date.now() - startTime
