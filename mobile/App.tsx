@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { AuthProvider, useAuth } from './src/context/AuthContext'
 import LoginScreen from './src/screens/LoginScreen'
+import DashboardScreen from './src/screens/DashboardScreen'
 import WorkspaceScreen from './src/screens/WorkspaceScreen'
 import ChatScreen from './src/screens/ChatScreen'
 import DrawerContent from './src/screens/DrawerContent'
@@ -17,6 +18,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>()
 function MainDrawer() {
   return (
     <Drawer.Navigator
+      initialRouteName="Dashboard"
       drawerContent={() => <DrawerContent />}
       screenOptions={{
         headerShown: false,
@@ -25,6 +27,7 @@ function MainDrawer() {
         swipeEnabled: true,
       }}
     >
+      <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="Workspace" component={WorkspaceScreen} />
     </Drawer.Navigator>
   )

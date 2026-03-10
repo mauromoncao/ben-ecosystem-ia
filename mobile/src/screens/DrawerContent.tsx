@@ -155,6 +155,19 @@ export default function DrawerContent() {
                 navigation.navigate('MainDrawer')
               }}
             >
+              <View style={[styles.navItemIcon, { backgroundColor: '#1d4ed820' }]}>
+                <MaterialCommunityIcons name="view-dashboard" size={18} color="#1d4ed8" />
+              </View>
+              <Text style={styles.navItemText}>Dashboard</Text>
+              <MaterialCommunityIcons name="chevron-right" size={18} color="#d1d5db" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navItem}
+              onPress={() => {
+                navigation.dispatch(DrawerActions.closeDrawer())
+                navigation.navigate('MainDrawer')
+              }}
+            >
               <View style={[styles.navItemIcon, { backgroundColor: '#D4A01720' }]}>
                 <MaterialCommunityIcons name="robot-outline" size={18} color="#D4A017" />
               </View>
