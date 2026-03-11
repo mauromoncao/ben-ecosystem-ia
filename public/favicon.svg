@@ -1,4 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#0f2044"/>
-  <text x="16" y="22" font-size="18" text-anchor="middle" fill="#D4A017" font-family="serif" font-weight="bold">B</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABhElEQVR4nO2VwU4bMRCGvxmbDVVCCQhRJFDVoj4FZ56aQ58ACc5FVAK1F1IaLUm6m8X2cFgqAc2hRkS57Nw80uj/PPN7LJufjo0Vhq5SvAPoADqADgDAv6Lm2eaUl4k2tRyAZj5NyYKAYNbKmoFzgll7UPWp6A3+u7NZAMmCpBgEEbw6kiWcj1R1xKlHlX/a8aYAIkpIxv5wg6PDLwQPH/fe82P8k5PTS2a14TRrAnkmNDOcwna/x+7QU9YlX8+v+LxzwOHeFjECkteCTBMaqo7RpOb76Jbh+hr9XeFXeUcTIpsDz5/5QmO+DYCZUvjIRrGDzD/w+/4b45njnRr9XkE1n6CqWTbIAlCB6j4wqyOjsuHOKpKtEZuGuoo0wVjvLdEDAJgybUpup9DU+xwMPRc3Yy5uSrxvn2VO5I0AQ1FmYUIVz0iWuJ4a0QQn8riBlmhCVWetgggY7rHcy9+bm6k6yNiGWQBFMXiyahZ6XXLEswGeiCwSf1Ws/DfsADqADqADeAAexpobrQ0CxwAAAABJRU5ErkJggg==" width="32" height="32"/>
 </svg>
