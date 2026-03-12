@@ -30,10 +30,11 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'juridico', label: 'Jurídico', icon: <Scale className="w-3.5 h-3.5" />, color: '#93C5FD',
     agents: [
-      { id: 'ben-super-agente-juridico',   emoji: '⭐', shortName: 'Agente Maximus',      name: 'AGENTE OPERACIONAL MAXIMUS',     model: 'Claude Opus 4' },
-      { id: 'ben-agente-operacional-premium',  emoji: '🔷', shortName: 'Agente Premium',   name: 'AGENTE OPERACIONAL PREMIUM',  model: 'Claude Sonnet 4' },
-      { id: 'ben-agente-operacional-standard', emoji: '🟢', shortName: 'Agente Standard', name: 'AGENTE OPERACIONAL STANDARD', model: 'Claude Haiku 4' },
-      { id: 'ben-peticionista-juridico',   emoji: '⚖️', shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',     model: 'Claude Haiku 4.5' },
+      { id: 'ben-super-agente-juridico',        emoji: '⭐', shortName: 'Agente Maximus',      name: 'AGENTE OPERACIONAL MAXIMUS',       model: 'Claude Opus 4' },
+      { id: 'ben-agente-operacional-premium',   emoji: '🔷', shortName: 'Agente Premium',      name: 'AGENTE OPERACIONAL PREMIUM',      model: 'Claude Sonnet 4' },
+      { id: 'ben-agente-operacional-standard',  emoji: '🟢', shortName: 'Agente Standard',     name: 'AGENTE OPERACIONAL STANDARD',     model: 'Claude Haiku 4' },
+      { id: 'ben-tributarista-estrategista',    emoji: '⚖️', shortName: 'Tributarista Estrat.', name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', model: 'Claude Opus 4' },
+      { id: 'ben-peticionista-juridico',        emoji: '⚖️', shortName: 'Peticionista',         name: 'BEN Peticionista Jurídico',        model: 'Claude Haiku 4.5' },
       { id: 'ben-contratualista',          emoji: '📋', shortName: 'Contratualista',     name: 'BEN Contratualista',            model: 'Claude Haiku 4.5' },
       { id: 'ben-mandatario-juridico',     emoji: '📜', shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',       model: 'Claude Haiku 4.5' },
       { id: 'ben-analista-processual',     emoji: '🔬', shortName: 'Analista Proc.',     name: 'BEN Analista Processual',       model: 'GPT-4o' },
