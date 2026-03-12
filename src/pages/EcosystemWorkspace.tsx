@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { downloadDocx } from '../lib/generateDocx'
+// timbreFile salvo na sessão para não precisar reanexa a cada download
+let _sessionTimbreFile: File | null = null
 import {
   Send, FileText, X, Loader2, Plus, Trash2,
   Search, Copy, Check, Download,
@@ -200,8 +202,11 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   const [artifactFull, setArtifactFull] = useState(false)
 
   // Modal de timbre: null = fechado, 'pending' = aguardando escolha
+  type TimbreChoice = 'com' | 'sem' | 'cancel'
   const [timbreModal, setTimbreModal] = useState<null | 'pending'>(null)
-  const [timbreResolve, setTimbreResolve] = useState<null | ((v: boolean) => void)>(null)
+  const [timbreResolve, setTimbreResolve] = useState<null | ((v: TimbreChoice) => void)>(null)
+  const [savedTimbreFile, setSavedTimbreFile] = useState<File | null>(_sessionTimbreFile)
+  const timbreFileRef = useRef<HTMLInputElement>(null)
 
   // Toolbar de anexos expandida
   const [showAttachMenu, setShowAttachMenu] = useState(false)
@@ -287,9 +292,15 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
       ? `\n\n📎 **${attachment.name}** (${attachment.type})\n${attachment.text}`
       : ''
 
+    // Problema 4: se o painel de artefato estiver aberto, injetar o
+    // conteúdo gerado anteriormente no contexto para o agente poder revisar
+    const artifactContext = artifactOpen && artifactContent
+      ? `\n\n[CONTEXTO — TEXTO QUE VOCÊ GEROU ANTERIORMENTE — REVISE/AJUSTE CONFORME SOLICITADO]\n${artifactContent}\n[/CONTEXTO]\n\nInstrução de revisão/ajuste: `
+      : ''
+
     const userMsg: Message = {
       id: `u-${Date.now()}`, role: 'user',
-      content: msg + attachNote,
+      content: msg + attachNote + (artifactContext ? '\n📎 Contexto do artefato ativo' : ''),
       timestamp: new Date().toISOString(),
     }
     const loadingMsg: Message = {
@@ -313,10 +324,10 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           agentId: selectedAgent.id,
-          input: msg + (attachment ? `\n\nDocumento: ${attachment.name}\n${attachment.text}` : ''),
+          input: artifactContext + msg + (attachment ? `\n\nDocumento: ${attachment.name}\n${attachment.text}` : ''),
           useSearch,
           modelOverride: modelOverride ?? undefined,
-          context: { source: 'ecosystem-workspace-v3' },
+          context: { source: 'ecosystem-workspace-v4' },
         }),
         signal: AbortSignal.timeout(115000),
       })
@@ -362,17 +373,30 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
     setArtifactCopied(true)
     setTimeout(() => setArtifactCopied(false), 2000)
   }
-  // Pergunta ao usuário: com timbre ou sem timbre?
-  const askTimbre = (): Promise<boolean> =>
+
+  // Pergunta ao usuário: com timbre / sem timbre / cancelar
+  type TimbreChoice = 'com' | 'sem' | 'cancel'
+  const askTimbre = (): Promise<TimbreChoice> =>
     new Promise(resolve => {
       setTimbreModal('pending')
       setTimbreResolve(() => resolve)
     })
 
-  const handleTimbreChoice = (withTimbre: boolean) => {
+  const handleTimbreChoice = (choice: TimbreChoice) => {
     setTimbreModal(null)
-    timbreResolve?.(withTimbre)
+    timbreResolve?.(choice)
     setTimbreResolve(null)
+  }
+
+  // Upload do .docx do timbre pelo usuário
+  const handleTimbreFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    _sessionTimbreFile = file
+    setSavedTimbreFile(file)
+    e.target.value = ''
+    // Após selecionar, confirmar automaticamente com timbre
+    handleTimbreChoice('com')
   }
 
   const downloadArtifact = async (format: 'docx' | 'txt' = 'docx') => {
@@ -385,13 +409,14 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
       a.click(); URL.revokeObjectURL(url)
       return
     }
-    // Pergunta sobre timbre antes de gerar o .docx
-    const withTimbre = await askTimbre()
+    // Pergunta sobre timbre
+    const choice = await askTimbre()
+    if (choice === 'cancel') return
     try {
-      await downloadDocx(artifactContent, artifactTitle, selectedAgent?.shortName || 'BEN Agente', withTimbre)
+      const timbreFile = choice === 'com' ? (savedTimbreFile || _sessionTimbreFile) : null
+      await downloadDocx(artifactContent, artifactTitle, selectedAgent?.shortName || 'BEN Agente', timbreFile)
     } catch (err) {
       console.error('Docx error:', err)
-      // fallback txt
       const blob = new Blob([artifactContent], { type: 'text/plain;charset=utf-8' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a'); a.href = url
@@ -1025,6 +1050,12 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                     <Globe className="w-3 h-3" /> Web ativa
                   </span>
                 )}
+                {artifactOpen && artifactContent && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+                    style={{ background: 'rgba(228,183,30,0.15)', color: '#D4A017', border: '1px solid rgba(228,183,30,0.3)' }}>
+                    📎 Contexto do artefato ativo — agente revisará o texto gerado
+                  </span>
+                )}
                 {attachment && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
                     style={{ background: '#F5F3FF', color: '#7c3aed' }}>
@@ -1116,36 +1147,48 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
           style={{ background: 'rgba(0,0,0,0.55)' }}>
           <div className="rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-5 max-w-sm w-full mx-4"
             style={{ background: '#0d1f3c', border: '1px solid #1e3a60' }}>
-            {/* Ícone */}
             <div className="w-12 h-12 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(228,183,30,0.2)' }}>
               <FileText className="w-6 h-6" style={{ color: '#E4B71E' }} />
             </div>
-            {/* Título */}
             <div className="text-center">
               <p className="text-white font-bold text-base mb-1">Gerar documento Word</p>
               <p className="text-sm" style={{ color: '#94A3B8' }}>
                 Deseja incluir o timbre oficial do escritório?
               </p>
+              {savedTimbreFile && (
+                <p className="text-xs mt-1 px-2 py-1 rounded-lg" style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80' }}>
+                  ✓ Timbre salvo: <strong>{savedTimbreFile.name}</strong>
+                </p>
+              )}
             </div>
-            {/* Botões */}
-            <div className="flex gap-3 w-full">
+            <div className="flex flex-col gap-2 w-full">
+              {/* Com Timbre salvo (se já foi carregado) */}
+              {savedTimbreFile && (
+                <button
+                  onClick={() => handleTimbreChoice('com')}
+                  className="w-full py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                  style={{ background: '#E4B71E', color: '#0d1f3c' }}>
+                  📋 Com Timbre ({savedTimbreFile.name.slice(0, 20)}…)
+                </button>
+              )}
+              {/* Carregar novo .docx de timbre */}
               <button
-                onClick={() => handleTimbreChoice(true)}
-                className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
-                style={{ background: '#E4B71E', color: '#0d1f3c' }}>
-                📋 Com Timbre
+                onClick={() => timbreFileRef.current?.click()}
+                className="w-full py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                style={{ background: savedTimbreFile ? 'rgba(228,183,30,0.15)' : '#E4B71E', color: savedTimbreFile ? '#E4B71E' : '#0d1f3c', border: savedTimbreFile ? '1px solid rgba(228,183,30,0.4)' : 'none' }}>
+                📂 {savedTimbreFile ? 'Trocar arquivo de timbre (.docx)' : 'Anexar Timbre (.docx do escritório)'}
               </button>
+              {/* Sem Timbre */}
               <button
-                onClick={() => handleTimbreChoice(false)}
-                className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                onClick={() => handleTimbreChoice('sem')}
+                className="w-full py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
                 style={{ background: 'rgba(255,255,255,0.1)', color: '#E2E8F0', border: '1px solid rgba(255,255,255,0.15)' }}>
                 📄 Sem Timbre
               </button>
             </div>
-            {/* Cancelar */}
             <button
-              onClick={() => handleTimbreChoice(false)}
+              onClick={() => handleTimbreChoice('cancel')}
               className="text-xs transition-colors"
               style={{ color: '#64748B' }}>
               Cancelar
@@ -1153,6 +1196,15 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
           </div>
         </div>
       )}
+
+      {/* Input oculto para o .docx do timbre */}
+      <input
+        ref={timbreFileRef}
+        type="file"
+        accept=".docx"
+        className="hidden"
+        onChange={handleTimbreFileUpload}
+      />
     </div>
   )
 }
