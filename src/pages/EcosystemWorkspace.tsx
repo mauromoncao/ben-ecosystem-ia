@@ -626,7 +626,7 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                   BEN Strategic Intelligence Hub
                 </h1>
                 <p className="text-xs leading-none mt-1.5 font-semibold tracking-widest uppercase" style={{ color: '#4A6FA5', letterSpacing: '0.18em', fontSize: '9px' }}>
-                  Workspace · {AGENTS.length} Agentes · {user?.nome}
+                  Workspace · {AGENTS.length} Agentes · Mauro Monção
                 </p>
               </div>
             </div>
