@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx'
-import { saveAs } from 'file-saver'
+import { downloadDocx } from '../lib/generateDocx'
 import {
   Send, FileText, X, Loader2, Plus, Trash2,
   Search, Copy, Check, Download,
@@ -369,52 +368,11 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
       a.click(); URL.revokeObjectURL(url)
       return
     }
-    // Build .docx
+    // Build .docx com gerador profissional Palatino Linotype 12pt
     try {
-      const lines = artifactContent.split('\n')
-      const docChildren: Paragraph[] = []
-      for (const line of lines) {
-        const trimmed = line.trim()
-        if (!trimmed) {
-          docChildren.push(new Paragraph({ text: '' }))
-          continue
-        }
-        // Detect heading lines: ALL CAPS line or numbered like 'I. ' or '1. DOS FATOS'
-        const isMainHeading = /^(I{1,3}V?|IV|VI{0,3}|IX|X{0,3}|\d{1,2})\. [A-ZÁÉÍÓÚÃÕ]/.test(trimmed) && trimmed === trimmed.toUpperCase()
-        const isSectionNum = /^\d+\.\d*\s+[A-Z]/.test(trimmed)
-        if (isMainHeading) {
-          docChildren.push(new Paragraph({
-            text: trimmed,
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 240, after: 120 },
-          }))
-        } else if (isSectionNum) {
-          docChildren.push(new Paragraph({
-            children: [new TextRun({ text: trimmed, bold: true })],
-            spacing: { before: 160, after: 80 },
-          }))
-        } else {
-          docChildren.push(new Paragraph({
-            children: [new TextRun({ text: trimmed })],
-            spacing: { after: 80 },
-            alignment: AlignmentType.JUSTIFIED,
-          }))
-        }
-      }
-      const doc = new Document({
-        creator: 'BEN Ecosystem IA — Mauro Monção Advogados',
-        title: artifactTitle,
-        description: 'Gerado por BEN Ecosystem IA',
-        sections: [{
-          properties: {},
-          children: docChildren,
-        }],
-      })
-      const buffer = await Packer.toBlob(doc)
-      saveAs(buffer, `${filename}.docx`)
+      await downloadDocx(artifactContent, artifactTitle, selectedAgent?.shortName || 'BEN Agente')
     } catch (err) {
       console.error('Docx error:', err)
-      // fallback to txt
       downloadArtifact('txt')
     }
   }
