@@ -1,8 +1,9 @@
-// BEN Ecosystem IA — Service Worker v2.0
+// BEN Ecosystem IA — Service Worker v3.0
+// BUILD: 2026-03-12T00:00:00Z
 // ESTRATÉGIA: network-first para HTML/index, cache-first para assets hashed (JS/CSS/img)
-// CACHE v3 invalida o v2 automaticamente no activate
+// CACHE v4 invalida o v3/v2/v1 automaticamente no activate
 
-const CACHE_NAME = 'ben-ecosystem-v3'
+const CACHE_NAME = 'ben-ecosystem-v4'
 
 // Assets com hash no nome (Vite): sempre cache-first após 1ª carga (imutáveis)
 const isHashedAsset = url =>
@@ -14,21 +15,31 @@ const isNavigationRequest = req =>
 
 // ─── Install ──────────────────────────────────────────────────
 self.addEventListener('install', event => {
+  console.log('[SW v3.0] Installing — cache: ' + CACHE_NAME)
   // Ativa imediatamente sem esperar fechar abas antigas
   self.skipWaiting()
 })
 
 // ─── Activate: apaga TODOS os caches antigos ─────────────────
 self.addEventListener('activate', event => {
+  console.log('[SW v3.0] Activating — clearing old caches')
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
-        console.log('[SW] Removendo cache antigo:', k)
+        console.log('[SW v3.0] Removendo cache antigo:', k)
         return caches.delete(k)
       }))
     ).then(() => {
+      console.log('[SW v3.0] Old caches cleared — claiming clients')
       // Assume controle imediato de TODAS as abas abertas
       return self.clients.claim()
+    }).then(() => {
+      // Notifica todos os clientes para recarregar a página
+      return self.clients.matchAll({ type: 'window' }).then(clients => {
+        clients.forEach(client => {
+          client.postMessage({ type: 'SW_UPDATED', version: '3.0', cache: CACHE_NAME })
+        })
+      })
     })
   )
 })
@@ -93,7 +104,7 @@ self.addEventListener('fetch', event => {
 
 // ─── postMessage: suporte a skipWaiting sob demanda ──────────
 self.addEventListener('message', event => {
-  if (event.data === 'skipWaiting') {
+  if (event.data === 'skipWaiting' || event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting()
   }
 })
