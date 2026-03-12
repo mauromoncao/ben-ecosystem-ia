@@ -43,13 +43,32 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- ── Registro do Service Worker ───────────────────────── -->
+    <!-- ── Registro do Service Worker v2 ─────────────────────── -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('[BEN SW] Registered:', reg.scope))
+          navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+            .then(reg => {
+              console.log('[BEN SW] Registered:', reg.scope)
+              // Detecta novo SW esperando e força reload imediato
+              reg.addEventListener('updatefound', () => {
+                const newSW = reg.installing
+                if (!newSW) return
+                newSW.addEventListener('statechange', () => {
+                  if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Novo SW pronto — força skipWaiting e reload
+                    newSW.postMessage('skipWaiting')
+                    window.location.reload()
+                  }
+                })
+              })
+            })
             .catch(err => console.warn('[BEN SW] Registration failed:', err))
+
+          // Se o controlador muda (novo SW assumiu), recarrega a página
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            window.location.reload()
+          })
         })
       }
     </script>
