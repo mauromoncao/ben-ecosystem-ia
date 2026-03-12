@@ -315,6 +315,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
           modelOverride: modelOverride ?? undefined,
           context: { source: 'ecosystem-workspace-v3' },
         }),
+        signal: AbortSignal.timeout(115000),
       })
       const data = await res.json()
       const elapsed = Date.now() - start
