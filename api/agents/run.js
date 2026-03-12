@@ -79,6 +79,8 @@ const JURIS_AGENTS = new Set([
   'ben-agente-operacional-premium',
   // 🟢 Agente Operacional Standard (1)
   'ben-agente-operacional-standard',
+  // ⚖️ Agente Tributarista Estrategista (1)
+  'ben-tributarista-estrategista',
   // Jurídicos core (15)
   'ben-peticionista-juridico',
   'ben-contratualista',

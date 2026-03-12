@@ -42,6 +42,7 @@ const AGENTS: Agent[] = [
   { id: 'ben-super-agente-juridico',      shortName: 'Agente Maximus',  name: 'AGENTE OPERACIONAL MAXIMUS',   emoji: '⭐', description: 'Análise jurídica de máxima profundidade — última instância, análise final e vinculante.', model: 'Claude Opus 4',    category: 'juridico',    project: 'juris',  color: '#92400e', accentColor: '#fef3c7', premium: true },
   { id: 'ben-agente-operacional-premium',  shortName: 'Agente Premium',  name: 'AGENTE OPERACIONAL PREMIUM',  emoji: '🔷', description: 'Análise jurídica moderada a profunda. Thinking adaptativo automático. Sinaliza casos para o Maximus.', model: 'Claude Sonnet 4',  category: 'juridico', project: 'juris', color: '#1d4ed8', accentColor: '#dbeafe', premium: true },
   { id: 'ben-agente-operacional-standard', shortName: 'Agente Standard', name: 'AGENTE OPERACIONAL STANDARD', emoji: '🟢', description: 'Execução operacional rápida. Extração, resumo, classificação, checklist. Thinking OFF — resposta em 0,3–0,8s.', model: 'Claude Haiku 4', category: 'juridico', project: 'juris', color: '#16a34a', accentColor: '#dcfce7', premium: false },
+  { id: 'ben-tributarista-estrategista',   shortName: 'Tributarista Estrat.', name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', emoji: '⚖️', description: 'Especialista em Direito Tributário Puro. Thinking sempre ativo. Raciocínio em 7 camadas tributárias. Defesa no CARF, TJ, STJ e STF.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#b45309', accentColor: '#fef3c7', premium: true },
   { id: 'ben-peticionista-juridico',  shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',       emoji: '⚖️', description: 'Peças processuais conforme o caso concreto e jurisprudência.',  model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#1d4ed8', accentColor: '#dbeafe' },
   { id: 'ben-contratualista',         shortName: 'Contratualista',     name: 'BEN Contratualista',              emoji: '📋', description: 'Contratos empresariais, NDAs, societários e negociais.',         model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#7c3aed', accentColor: '#ede9fe' },
   { id: 'ben-mandatario-juridico',    shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',         emoji: '📜', description: 'Procurações, Ad Judicia, gerais e especiais.',                   model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#059669', accentColor: '#d1fae5' },
@@ -477,10 +478,11 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
 
   // ── Sugestões de abertura ──────────────────────────────────
   const SUGGESTIONS: Record<string, string[]> = {
-    'ben-redator-juridico':      ['Redigir ofício ao Tribunal de Justiça', 'Elaborar memorando interno', 'Criar notificação extrajudicial'],
-    'ben-peticionista-juridico': ['Petição inicial de ação ordinária', 'Recurso de apelação com razões', 'Agravo regimental urgente'],
-    'ben-tributarista':          ['Análise de tese tributária ICMS', 'Planejamento fiscal para empresa', 'Exceção de pré-executividade'],
-    'default':                   ['Faça uma pergunta em linguagem natural', 'Solicite uma peça processual com os dados do caso', 'Envie um documento para análise'],
+    'ben-redator-juridico':           ['Redigir ofício ao Tribunal de Justiça', 'Elaborar memorando interno', 'Criar notificação extrajudicial'],
+    'ben-peticionista-juridico':      ['Petição inicial de ação ordinária', 'Recurso de apelação com razões', 'Agravo regimental urgente'],
+    'ben-tributarista':               ['Análise de tese tributária ICMS', 'Planejamento fiscal para empresa', 'Exceção de pré-executividade'],
+    'ben-tributarista-estrategista':  ['Impugnação ao auto de infração por IRPJ', 'Estratégia multi-instância CARF → STJ', 'Nulidade de autuação fiscal por vício de intimação'],
+    'default':                        ['Faça uma pergunta em linguagem natural', 'Solicite uma peça processual com os dados do caso', 'Envie um documento para análise'],
   }
   const suggestions = SUGGESTIONS[selectedAgent?.id || ''] || SUGGESTIONS['default']
 
