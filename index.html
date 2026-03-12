@@ -43,31 +43,68 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- ── Registro do Service Worker v2 ─────────────────────── -->
+    <!-- ── Registro do Service Worker v3 ─────────────────────── -->
     <script>
       if ('serviceWorker' in navigator) {
+        // Guard: evita reload em loop (max 1 reload por 10s)
+        let _swReloading = false
+        function _swReload() {
+          if (_swReloading) return
+          _swReloading = true
+          window.location.reload()
+        }
+
+        // Força skipWaiting em um SW que está esperando
+        function _activateSW(sw) {
+          sw.postMessage({ type: 'SKIP_WAITING' })
+        }
+
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
             .then(reg => {
               console.log('[BEN SW] Registered:', reg.scope)
-              // Detecta novo SW esperando e força reload imediato
+
+              // Caso 1: já existe um SW esperando no momento do registro
+              if (reg.waiting) {
+                console.log('[BEN SW] SW waiting found on registration — activating')
+                _activateSW(reg.waiting)
+              }
+
+              // Caso 2: novo SW encontrado durante a vida da página
               reg.addEventListener('updatefound', () => {
                 const newSW = reg.installing
                 if (!newSW) return
+                console.log('[BEN SW] Update found — monitoring installation')
                 newSW.addEventListener('statechange', () => {
-                  if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                    // Novo SW pronto — força skipWaiting e reload
-                    newSW.postMessage('skipWaiting')
-                    window.location.reload()
+                  console.log('[BEN SW] SW state:', newSW.state)
+                  if (newSW.state === 'installed') {
+                    if (navigator.serviceWorker.controller) {
+                      // Novo SW pronto — força skipWaiting
+                      console.log('[BEN SW] New SW installed — forcing activation')
+                      _activateSW(newSW)
+                    } else {
+                      // Primeira instalação — recarrega para usar o SW
+                      console.log('[BEN SW] First install — reloading')
+                      _swReload()
+                    }
                   }
                 })
               })
             })
             .catch(err => console.warn('[BEN SW] Registration failed:', err))
 
-          // Se o controlador muda (novo SW assumiu), recarrega a página
+          // Quando o controlador muda (novo SW assumiu o controle), recarrega
           navigator.serviceWorker.addEventListener('controllerchange', () => {
-            window.location.reload()
+            console.log('[BEN SW] Controller changed — reloading page')
+            _swReload()
+          })
+
+          // Mensagem do SW informando atualização
+          navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data?.type === 'SW_UPDATED') {
+              console.log('[BEN SW] SW updated to', event.data.version, '— reloading')
+              _swReload()
+            }
           })
         })
       }
