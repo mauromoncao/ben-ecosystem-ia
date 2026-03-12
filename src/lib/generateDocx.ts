@@ -382,8 +382,8 @@ async function loadTimbreDocx(file: File): Promise<ArrayBuffer> {
 }
 
 // ── Injeta conteúdo no .docx do timbre (preserva cabeçalho) ──
-// O timbre é um ARQUIVO WORD SEPARADO — o sistema extrai o header
-// do timbre e injeta no documento gerado. Se falhar, gera sem timbre.
+// ESTRATÉGIA CORRETA: clonar o timbre como base e substituir APENAS o <w:body>
+// Isso preserva todos os rels, Content_Types, styles, header — sem quebrar rIds.
 async function injectContentIntoTimbre(
   timbreBuffer: ArrayBuffer,
   contentParagraphs: Paragraph[],
@@ -391,30 +391,8 @@ async function injectContentIntoTimbre(
   agentName: string,
 ): Promise<Blob> {
   try {
-    const zip = new PizZip(timbreBuffer)
-
-    // 1. Extrair todos os headers do timbre (header1, header2, header3)
-    const headers: { name: string; xml: string; relsName: string; relsXml: string }[] = []
-    for (const n of ['1', '2', '3']) {
-      const hXml  = zip.file(`word/header${n}.xml`)?.asText() || ''
-      const hRels = zip.file(`word/_rels/header${n}.xml.rels`)?.asText() || ''
-      if (hXml) headers.push({ name: `header${n}`, xml: hXml, relsName: `header${n}.xml.rels`, relsXml: hRels })
-    }
-    const hasHeader = headers.length > 0
-
-    // 2. Extrair todas as imagens do timbre (media/)
-    const mediaFiles: { name: string; data: Uint8Array }[] = []
-    const mediaKeys = Object.keys((zip as any).files || {}).filter(k => k.startsWith('word/media/'))
-    for (const key of mediaKeys) {
-      const f = zip.file(key)
-      if (f) {
-        const name = key.replace('word/media/', '')
-        mediaFiles.push({ name, data: f.asUint8Array() })
-      }
-    }
-
-    // 3. Construir o novo documento com conteúdo
-    const newDoc = new Document({
+    // 1. Gerar o documento de conteúdo (sem timbre) para extrair o body XML
+    const contentDoc = new Document({
       creator: `BEN Ecosystem IA — ${agentName}`,
       title,
       description: `Gerado por ${agentName} — Mauro Monção Advogados Associados`,
@@ -430,7 +408,7 @@ async function injectContentIntoTimbre(
         properties: {
           page: {
             margin: {
-              top:    convertMillimetersToTwip(35),
+              top:    convertMillimetersToTwip(35), // margem generosa para o timbre
               bottom: M_BOTTOM,
               left:   M_LEFT,
               right:  M_RIGHT,
@@ -442,60 +420,64 @@ async function injectContentIntoTimbre(
       }],
     })
 
-    const newBlob   = await Packer.toBlob(newDoc)
-    const newBuffer = await newBlob.arrayBuffer()
-    const newZip    = new PizZip(newBuffer)
+    const contentBlob   = await Packer.toBlob(contentDoc)
+    const contentBuffer = await contentBlob.arrayBuffer()
+    const contentZip    = new PizZip(contentBuffer)
 
-    if (hasHeader) {
-      // Copiar imagens
-      for (const m of mediaFiles) {
-        newZip.file(`word/media/${m.name}`, m.data)
+    // 2. Extrair o <w:body> do documento de conteúdo gerado
+    const contentDocXml = contentZip.file('word/document.xml')?.asText() || ''
+    // Capturar tudo entre <w:body> e </w:body> inclusive
+    const bodyMatch = contentDocXml.match(/<w:body>([\s\S]*?)<\/w:body>/)
+    if (!bodyMatch) throw new Error('Não foi possível extrair w:body do conteúdo gerado')
+    const newBodyInner = bodyMatch[1]
+
+    // 3. Clonar o timbre como base (preserva header, rels, styles, Content_Types)
+    const timbreZip = new PizZip(timbreBuffer)
+
+    // 4. Substituir APENAS o <w:body> no document.xml do timbre
+    let timbreDocXml = timbreZip.file('word/document.xml')?.asText() || ''
+    if (!timbreDocXml) throw new Error('document.xml não encontrado no timbre')
+
+    // Substituir o body inteiro mantendo o sectPr do timbre (que já referencia o header)
+    // Extrair o sectPr original do timbre para preservar margens e headerReference
+    const timbreSectPrMatch = timbreDocXml.match(/<w:sectPr[\s\S]*?<\/w:sectPr>/)
+    const timbreSectPr = timbreSectPrMatch ? timbreSectPrMatch[0] : ''
+
+    // Extrair o sectPr do conteúdo gerado (tem as margens corretas com espaço para timbre)
+    const contentSectPrMatch = contentDocXml.match(/<w:sectPr[\s\S]*?<\/w:sectPr>/)
+    const contentSectPr = contentSectPrMatch ? contentSectPrMatch[0] : ''
+
+    // Montar novo body: parágrafos gerados + sectPr mesclado (margens do conteúdo + header do timbre)
+    let mergedSectPr = contentSectPr
+    if (timbreSectPr && contentSectPr) {
+      // Inserir headerReference do timbre no sectPr do conteúdo
+      const hRefMatch = timbreSectPr.match(/<w:headerReference[^/]*/g)
+      if (hRefMatch) {
+        const hRefs = hRefMatch.map(r => r + '/>').join('')
+        mergedSectPr = contentSectPr.replace(/<w:sectPr([^>]*)>/, `<w:sectPr$1>${hRefs}`)
       }
-
-      // Copiar headers e seus rels
-      for (const h of headers) {
-        newZip.file(`word/${h.name}.xml`, h.xml)
-        if (h.relsXml) newZip.file(`word/_rels/${h.relsName}`, h.relsXml)
-      }
-
-      // Atualizar document.xml.rels para incluir todos os headers
-      const docRelsPath = 'word/_rels/document.xml.rels'
-      let docRels = newZip.file(docRelsPath)?.asText() || ''
-      const typeHdr = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/header'
-      for (const h of headers) {
-        const rid = `rId${h.name.charAt(0).toUpperCase()}${h.name.slice(1)}`
-        if (!docRels.includes(`Target="${h.name}.xml"`)) {
-          docRels = docRels.replace(
-            '</Relationships>',
-            `<Relationship Id="${rid}" Type="${typeHdr}" Target="${h.name}.xml"/>\n</Relationships>`
-          )
-        }
-      }
-      newZip.file(docRelsPath, docRels)
-
-      // Atualizar document.xml para referenciar os headers
-      let docXml = newZip.file('word/document.xml')?.asText() || ''
-      if (docXml) {
-        // Construir headerReference para cada header encontrado
-        const hrefs = headers.map(h => {
-          const rid = `rId${h.name.charAt(0).toUpperCase()}${h.name.slice(1)}`
-          return `<w:headerReference w:type="default" r:id="${rid}"/>`
-        }).join('')
-
-        // Inserir antes do fechamento de sectPr
-        if (!docXml.includes('headerReference')) {
-          docXml = docXml.replace(/<w:sectPr>/, `<w:sectPr>${hrefs}`)
-          newZip.file('word/document.xml', docXml)
-        }
-      }
+    } else if (timbreSectPr) {
+      mergedSectPr = timbreSectPr
     }
 
-    const finalBuffer = newZip.generate({ type: 'arraybuffer' })
+    // Remover sectPr do inner body (ele já está no newBodyInner possivelmente)
+    const bodyWithoutSectPr = newBodyInner.replace(/<w:sectPr[\s\S]*?<\/w:sectPr>/, '')
+
+    // Novo body completo
+    const newBody = `<w:body>${bodyWithoutSectPr}${mergedSectPr}</w:body>`
+
+    // Substituir w:body no document.xml do timbre
+    const updatedDocXml = timbreDocXml.replace(/<w:body>[\s\S]*?<\/w:body>/, newBody)
+    timbreZip.file('word/document.xml', updatedDocXml)
+
+    // 5. Gerar blob final a partir do timbre modificado
+    const finalBuffer = timbreZip.generate({ type: 'arraybuffer', compression: 'DEFLATE' })
     return new Blob([finalBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     })
   } catch (err) {
     console.error('[BEN] Erro ao injetar timbre:', err)
+    // Fallback seguro: gerar documento sem timbre
     return generateDocxBlob(contentParagraphs, title, agentName)
   }
 }
