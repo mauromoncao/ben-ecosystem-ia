@@ -199,6 +199,10 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   const [artifactCopied, setArtifactCopied] = useState(false)
   const [artifactFull, setArtifactFull] = useState(false)
 
+  // Modal de timbre: null = fechado, 'pending' = aguardando escolha
+  const [timbreModal, setTimbreModal] = useState<null | 'pending'>(null)
+  const [timbreResolve, setTimbreResolve] = useState<null | ((v: boolean) => void)>(null)
+
   // Toolbar de anexos expandida
   const [showAttachMenu, setShowAttachMenu] = useState(false)
 
@@ -358,6 +362,19 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
     setArtifactCopied(true)
     setTimeout(() => setArtifactCopied(false), 2000)
   }
+  // Pergunta ao usuário: com timbre ou sem timbre?
+  const askTimbre = (): Promise<boolean> =>
+    new Promise(resolve => {
+      setTimbreModal('pending')
+      setTimbreResolve(() => resolve)
+    })
+
+  const handleTimbreChoice = (withTimbre: boolean) => {
+    setTimbreModal(null)
+    timbreResolve?.(withTimbre)
+    setTimbreResolve(null)
+  }
+
   const downloadArtifact = async (format: 'docx' | 'txt' = 'docx') => {
     const filename = `${artifactTitle.replace(/[^a-z0-9áéíóúãõâêîôûçÁÉÍÓÚÃÕÂÊÎÔÛÇ ]/gi, '_').trim()}-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}`
     if (format === 'txt') {
@@ -368,12 +385,18 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
       a.click(); URL.revokeObjectURL(url)
       return
     }
-    // Build .docx com gerador profissional Palatino Linotype 12pt
+    // Pergunta sobre timbre antes de gerar o .docx
+    const withTimbre = await askTimbre()
     try {
-      await downloadDocx(artifactContent, artifactTitle, selectedAgent?.shortName || 'BEN Agente')
+      await downloadDocx(artifactContent, artifactTitle, selectedAgent?.shortName || 'BEN Agente', withTimbre)
     } catch (err) {
       console.error('Docx error:', err)
-      downloadArtifact('txt')
+      // fallback txt
+      const blob = new Blob([artifactContent], { type: 'text/plain;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url
+      a.download = `${filename}.txt`
+      a.click(); URL.revokeObjectURL(url)
     }
   }
 
@@ -1086,6 +1109,50 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
 
       {/* Input oculto para arquivos */}
       <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg" className="hidden" onChange={e => handleFile(e)} />
+
+      {/* ── Modal: Com timbre ou Sem timbre? ─────────────────── */}
+      {timbreModal === 'pending' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.55)' }}>
+          <div className="rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-5 max-w-sm w-full mx-4"
+            style={{ background: '#0d1f3c', border: '1px solid #1e3a60' }}>
+            {/* Ícone */}
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(228,183,30,0.2)' }}>
+              <FileText className="w-6 h-6" style={{ color: '#E4B71E' }} />
+            </div>
+            {/* Título */}
+            <div className="text-center">
+              <p className="text-white font-bold text-base mb-1">Gerar documento Word</p>
+              <p className="text-sm" style={{ color: '#94A3B8' }}>
+                Deseja incluir o timbre oficial do escritório?
+              </p>
+            </div>
+            {/* Botões */}
+            <div className="flex gap-3 w-full">
+              <button
+                onClick={() => handleTimbreChoice(true)}
+                className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                style={{ background: '#E4B71E', color: '#0d1f3c' }}>
+                📋 Com Timbre
+              </button>
+              <button
+                onClick={() => handleTimbreChoice(false)}
+                className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                style={{ background: 'rgba(255,255,255,0.1)', color: '#E2E8F0', border: '1px solid rgba(255,255,255,0.15)' }}>
+                📄 Sem Timbre
+              </button>
+            </div>
+            {/* Cancelar */}
+            <button
+              onClick={() => handleTimbreChoice(false)}
+              className="text-xs transition-colors"
+              style={{ color: '#64748B' }}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
