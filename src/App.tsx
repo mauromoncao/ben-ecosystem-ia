@@ -30,7 +30,7 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'juridico', label: 'Jurídico', icon: <Scale className="w-3.5 h-3.5" />, color: '#93C5FD',
     agents: [
-      { id: 'ben-super-agente-juridico',   emoji: '⭐', shortName: 'Super Agente',      name: 'BEN Super Agente Jurídico',     model: 'Claude Opus 4' },
+      { id: 'ben-super-agente-juridico',   emoji: '⭐', shortName: 'Agente Maximus',      name: 'AGENTE OPERACIONAL MAXIMUS',     model: 'Claude Opus 4' },
       { id: 'ben-peticionista-juridico',   emoji: '⚖️', shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',     model: 'Claude Haiku 4.5' },
       { id: 'ben-contratualista',          emoji: '📋', shortName: 'Contratualista',     name: 'BEN Contratualista',            model: 'Claude Haiku 4.5' },
       { id: 'ben-mandatario-juridico',     emoji: '📜', shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',       model: 'Claude Haiku 4.5' },
