@@ -17,8 +17,9 @@
 //   ben-revisor-juridico        BEN Revisor Jurídico
 //   ben-peticionista            BEN Peticionista
 //
-// ── AGENTES JURIS (28) ──────────────────────────────────────
+// ── AGENTES JURIS (29) ──────────────────────────────────────
 //   ⭐ ben-super-agente-juridico        AGENTE OPERACIONAL MAXIMUS (Claude Opus 4.6)
+//   🔷 ben-agente-operacional-premium   AGENTE OPERACIONAL PREMIUM (Claude Sonnet 4.6)
 //   ben-peticionista-juridico           BEN Peticionista Jurídico
 //   ben-contratualista                  BEN Contratualista
 //   ben-mandatario-juridico             BEN Mandatário Jurídico
@@ -73,6 +74,8 @@ const GROWTH_AGENTS = new Set([
 const JURIS_AGENTS = new Set([
   // ⭐ Agente Operacional Maximus (1)
   'ben-super-agente-juridico',
+  // 🔷 Agente Operacional Premium (1)
+  'ben-agente-operacional-premium',
   // Jurídicos core (15)
   'ben-peticionista-juridico',
   'ben-contratualista',
