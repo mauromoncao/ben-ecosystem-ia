@@ -19,7 +19,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 // ─── Tipos ────────────────────────────────────────────────────
 interface SidebarAgent {
-  id: string; emoji: string; shortName: string; name: string; model: string
+  id: string; emoji: string; shortName: string; name: string; model: string; badge?: string; badgeColor?: string
 }
 interface AgentCategory {
   key: string; label: string; icon: React.ReactNode; color: string; agents: SidebarAgent[]
@@ -30,10 +30,10 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'juridico', label: 'Jurídico', icon: <Scale className="w-3.5 h-3.5" />, color: '#93C5FD',
     agents: [
-      { id: 'ben-super-agente-juridico',        emoji: '⭐', shortName: 'Agente Maximus',      name: 'AGENTE OPERACIONAL MAXIMUS',       model: 'Claude Opus 4' },
-      { id: 'ben-agente-operacional-premium',   emoji: '🔷', shortName: 'Agente Premium',      name: 'AGENTE OPERACIONAL PREMIUM',      model: 'Claude Sonnet 4' },
-      { id: 'ben-agente-operacional-standard',  emoji: '🟢', shortName: 'Agente Standard',     name: 'AGENTE OPERACIONAL STANDARD',     model: 'Claude Haiku 4' },
-      { id: 'ben-tributarista-estrategista',    emoji: '⚖️', shortName: 'Tributarista Estrat.', name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', model: 'Claude Opus 4' },
+      { id: 'ben-super-agente-juridico',        emoji: '⭐', shortName: 'Agente Maximus',      name: 'AGENTE OPERACIONAL MAXIMUS',       model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#92400e' },
+      { id: 'ben-agente-operacional-premium',   emoji: '🔷', shortName: 'Agente Premium',      name: 'AGENTE OPERACIONAL PREMIUM',      model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-agente-operacional-standard',  emoji: '🟢', shortName: 'Agente Standard',     name: 'AGENTE OPERACIONAL STANDARD',     model: 'Claude Haiku 4',  badge: 'HAIKU',  badgeColor: '#16a34a' },
+      { id: 'ben-tributarista-estrategista',    emoji: '⚖️', shortName: 'Tributarista Estrat.', name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#b45309' },
       { id: 'ben-peticionista-juridico',        emoji: '⚖️', shortName: 'Peticionista',         name: 'BEN Peticionista Jurídico',        model: 'Claude Haiku 4.5' },
       { id: 'ben-contratualista',          emoji: '📋', shortName: 'Contratualista',     name: 'BEN Contratualista',            model: 'Claude Haiku 4.5' },
       { id: 'ben-mandatario-juridico',     emoji: '📜', shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',       model: 'Claude Haiku 4.5' },
@@ -234,6 +234,11 @@ function Sidebar({
                         >
                           <span className="text-sm flex-shrink-0">{agent.emoji}</span>
                           <span className="flex-1 text-left truncate font-medium">{agent.shortName}</span>
+                          {agent.badge && (
+                            <span className="text-xs rounded font-bold flex-shrink-0" style={{ background: `${agent.badgeColor}28`, color: agent.badgeColor, fontSize: '7px', padding: '1px 4px', letterSpacing: '0.04em' }}>
+                              {agent.badge}
+                            </span>
+                          )}
                           {isActive && <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#E4B71E' }} />}
                         </button>
                       )
