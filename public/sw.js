@@ -1,56 +1,99 @@
-// BEN Ecosystem IA — Service Worker v1.1
-// start_url: /workspace | Cache-first estáticos, network-first API
+// BEN Ecosystem IA — Service Worker v2.0
+// ESTRATÉGIA: network-first para HTML/index, cache-first para assets hashed (JS/CSS/img)
+// CACHE v3 invalida o v2 automaticamente no activate
 
-const CACHE_NAME = 'ben-ecosystem-v2'
-const STATIC_ASSETS = [
-  '/workspace',
-  '/index.html',
-  '/manifest.json',
-  '/ben-logo.png',
-  '/apple-touch-icon.png',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-]
+const CACHE_NAME = 'ben-ecosystem-v3'
 
-// Install: pré-cache dos assets estáticos
+// Assets com hash no nome (Vite): sempre cache-first após 1ª carga (imutáveis)
+const isHashedAsset = url =>
+  /\/assets\/[^/]+-[A-Za-z0-9]{8}\.(js|css|woff2?|png|svg|ico)$/.test(url.pathname)
+
+// HTML navigation routes: sempre network-first
+const isNavigationRequest = req =>
+  req.mode === 'navigate' || req.destination === 'document'
+
+// ─── Install ──────────────────────────────────────────────────
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
-  )
+  // Ativa imediatamente sem esperar fechar abas antigas
   self.skipWaiting()
 })
 
-// Activate: limpa caches antigos
+// ─── Activate: apaga TODOS os caches antigos ─────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
+        console.log('[SW] Removendo cache antigo:', k)
+        return caches.delete(k)
+      }))
+    ).then(() => {
+      // Assume controle imediato de TODAS as abas abertas
+      return self.clients.claim()
+    })
   )
-  self.clients.claim()
 })
 
-// Fetch: network-first para /api/, cache-first para estáticos
+// ─── Fetch ────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url)
 
-  // API calls: sempre network (nunca cache)
+  // 1. API calls: SEMPRE network, nunca cache
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(fetch(event.request))
     return
   }
 
-  // Assets estáticos: cache-first com fallback network
+  // 2. index.html / rotas de navegação: SEMPRE network-first
+  //    Garante que o browser sempre carrega o HTML mais recente
+  if (isNavigationRequest(event.request) || url.pathname === '/index.html') {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-cache' })
+        .then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => caches.match(event.request))
+    )
+    return
+  }
+
+  // 3. Assets com hash (JS/CSS Vite): cache-first — são imutáveis pelo hash
+  if (isHashedAsset(url)) {
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        if (cached) return cached
+        return fetch(event.request).then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+          }
+          return response
+        })
+      })
+    )
+    return
+  }
+
+  // 4. Demais assets (imagens, manifest, icons): network-first com fallback cache
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200 && response.type === 'basic') {
+    fetch(event.request, { cache: 'no-cache' })
+      .then(response => {
+        if (response && response.status === 200) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
         }
         return response
-      }).catch(() => caches.match('/index.html'))
-    })
+      })
+      .catch(() => caches.match(event.request))
   )
+})
+
+// ─── postMessage: suporte a skipWaiting sob demanda ──────────
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting()
+  }
 })
