@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import {
   TrendingUp, Scale, LayoutDashboard,
   ExternalLink, LogOut, User, ChevronDown, ChevronRight,
   BarChart3, FlaskConical, Cpu, Users, Megaphone, Sparkles,
-  ChevronsLeft, ChevronsRight,
+  ChevronsLeft, ChevronsRight, Activity, Radio,
 } from 'lucide-react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
@@ -56,23 +56,24 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'contador', label: 'Contador', icon: <BarChart3 className="w-3.5 h-3.5" />, color: '#FCD34D',
     agents: [
-      { id: 'ben-contador-tributarista',              emoji: '🧮', shortName: 'Triagem',      name: 'BEN Contador — Triagem',      model: 'Claude Haiku 4.5' },
-      { id: 'ben-contador-tributarista-especialista', emoji: '📊', shortName: 'Especialista', name: 'BEN Contador — Especialista', model: 'Claude Sonnet' },
-      { id: 'ben-contador-tributarista-planejamento', emoji: '🗺️', shortName: 'Planejamento', name: 'BEN Contador — Planejamento', model: 'Claude Sonnet' },
-      { id: 'ben-contador-tributarista-creditos',     emoji: '💳', shortName: 'Créditos',     name: 'BEN Contador — Créditos',     model: 'Claude Haiku 4.5' },
-      { id: 'ben-contador-tributarista-auditoria',    emoji: '🔍', shortName: 'Auditoria',    name: 'BEN Contador — Auditoria',    model: 'Claude Haiku 4.5' },
-      { id: 'ben-contador-tributarista-relatorio',    emoji: '📋', shortName: 'Relatório',    name: 'BEN Contador — Relatório',    model: 'Claude Haiku 4.5' },
+      { id: 'ben-contador-tributarista',              emoji: '🧮', shortName: 'Triagem',      name: 'BEN Contador — Triagem',      model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-contador-especialista',              emoji: '📊', shortName: 'Especialista', name: 'BEN Contador — Especialista', model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-contador-planejamento',              emoji: '🗺️', shortName: 'Planejamento', name: 'BEN Contador — Planejamento', model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-contador-creditos',                  emoji: '💳', shortName: 'Créditos',     name: 'BEN Contador — Créditos',     model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-contador-auditoria',                 emoji: '🔍', shortName: 'Auditoria',    name: 'BEN Contador — Auditoria',    model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-contador-relatorio',                 emoji: '📋', shortName: 'Relatório',    name: 'BEN Contador — Relatório',    model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
     ],
   },
   {
     key: 'perito', label: 'Perito Forense', icon: <FlaskConical className="w-3.5 h-3.5" />, color: '#C4B5FD',
     agents: [
-      { id: 'ben-perito-forense',           emoji: '🔬', shortName: 'Padrão',        name: 'BEN Perito Forense — Padrão',    model: 'Claude Sonnet' },
-      { id: 'ben-perito-forense-profundo',  emoji: '🧬', shortName: 'Profundo',      name: 'BEN Perito Forense — Profundo',  model: 'Claude Opus 4' },
-      { id: 'ben-perito-forense-digital',   emoji: '💻', shortName: 'Digital',       name: 'BEN Perito Forense Digital',     model: 'Claude Sonnet' },
-      { id: 'ben-perito-forense-laudo',     emoji: '📄', shortName: 'Laudo',         name: 'BEN Perito Forense — Laudo',     model: 'Claude Haiku 4.5' },
-      { id: 'ben-perito-forense-contestar', emoji: '🛡️', shortName: 'Contraditório', name: 'BEN Perito — Contraditório',     model: 'Claude Haiku 4.5' },
-      { id: 'ben-perito-forense-relatorio', emoji: '📊', shortName: 'Relatório',     name: 'BEN Perito Forense — Relatório', model: 'Claude Haiku 4.5' },
+      { id: 'ben-perito-forense',           emoji: '🔬', shortName: 'Padrão',        name: 'BEN Perito Forense — Padrão',     model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-perito-forense-profundo',  emoji: '🧬', shortName: 'Profundo',       name: 'BEN Perito Forense — Profundo',   model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#b45309' },
+      { id: 'ben-perito-forense-digital',   emoji: '💻', shortName: 'Digital',        name: 'BEN Perito Forense Digital',      model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-perito-forense-laudo',     emoji: '📄', shortName: 'Laudo',          name: 'BEN Perito Forense — Laudo',      model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-perito-forense-contestar', emoji: '🛡️', shortName: 'Contraditório',  name: 'BEN Perito — Contraditório',      model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-perito-forense-relatorio', emoji: '📊', shortName: 'Relatório',      name: 'BEN Perito Forense — Relatório',  model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
+      { id: 'ben-perito-imobiliario',       emoji: '🏠', shortName: 'Imobiliário',    name: 'BEN Perito Imobiliário — ABNT',   model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
     ],
   },
   {
@@ -89,8 +90,11 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'sistema', label: 'Sistema', icon: <Cpu className="w-3.5 h-3.5" />, color: '#A5B4FC',
     agents: [
-      { id: 'ben-engenheiro-prompt',      emoji: '🧠', shortName: 'Eng. Prompt',   name: 'BEN Engenheiro de Prompt',    model: 'GPT-4o' },
-      { id: 'ben-analista-monitoramento', emoji: '🔍', shortName: 'Monitoramento', name: 'BEN Analista Monitoramento',  model: 'GPT-4o Mini' },
+      { id: 'ben-assistente-geral',       emoji: '🤖', shortName: 'Assistente Geral',  name: 'BEN Assistente Geral (Copiloto)', model: 'GPT-4o',      badge: 'FIXO',   badgeColor: '#6d28d9' },
+      { id: 'ben-engenheiro-prompt',      emoji: '🧠', shortName: 'Eng. Prompt',       name: 'BEN Engenheiro de Prompt',       model: 'GPT-4o' },
+      { id: 'ben-analista-monitoramento', emoji: '🔍', shortName: 'Monitoramento',     name: 'BEN Analista Monitoramento',     model: 'GPT-4o Mini' },
+      { id: 'ben-monitor-juridico',       emoji: '📡', shortName: 'Monitor Jurídico',  name: 'BEN Monitor Jurídico DJe + CNJ', model: 'Claude Sonnet 4', badge: 'NEW', badgeColor: '#0e7490' },
+      { id: 'ben-assistente-cnj',         emoji: '⚖️', shortName: 'Assistente CNJ',    name: 'BEN Assistente CNJ DataJud',     model: 'Claude Sonnet 4', badge: 'NEW', badgeColor: '#0e7490' },
     ],
   },
 ]
@@ -110,11 +114,15 @@ function Sidebar({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ juridico: true })
   const { user, logout } = useAuth()
 
+  const navigate = useNavigate()
+
   const EXTERNAL = [
-    { href: 'https://bengrowth.mauromoncao.adv.br', icon: TrendingUp,      label: 'Growth Center',   color: '#6EE7B7' },
-    { href: 'https://juris.mauromoncao.adv.br',     icon: Scale,           label: 'Juris Center',    color: '#93C5FD' },
-    { href: 'https://hub.mauromoncao.adv.br',        icon: LayoutDashboard, label: 'HUB Estratégico', color: '#C4B5FD' },
+    { href: 'https://bengrowth.mauromoncao.adv.br', icon: TrendingUp,      label: 'Growth Center',   color: '#6EE7B7', internal: false },
+    { href: 'https://juris.mauromoncao.adv.br',     icon: Scale,           label: 'Juris Center',    color: '#93C5FD', internal: false },
+    { href: 'https://hub.mauromoncao.adv.br',        icon: LayoutDashboard, label: 'HUB Estratégico', color: '#C4B5FD', internal: false },
   ]
+
+  const MONITOR_ITEM = { path: '/monitor-admin', icon: Activity, label: 'Monitor de Tokens', color: '#FCA5A5' }
 
   return (
     <aside
@@ -279,7 +287,6 @@ function Sidebar({
           )}
           {EXTERNAL.map(({ href, icon: Icon, label, color }) => (
             collapsed ? (
-              /* Modo recolhido: só ícone + tooltip */
               <div key={href} className="relative group mb-1">
                 <a href={href} target="_blank" rel="noopener noreferrer"
                   className="flex items-center justify-center py-2 rounded-lg transition-all"
@@ -307,6 +314,37 @@ function Sidebar({
               </a>
             )
           ))}
+
+          {/* ── Monitor de Tokens — link interno ─────────── */}
+          {collapsed ? (
+            <div className="relative group mb-1 mt-1">
+              <button
+                onClick={() => navigate(MONITOR_ITEM.path)}
+                className="w-full flex items-center justify-center py-2 rounded-lg transition-all"
+                style={{ color: MONITOR_ITEM.color }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(252,165,165,0.12)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                <Activity className="w-3.5 h-3.5" />
+              </button>
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 rounded-lg text-xs font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50"
+                style={{ background: '#0d1f3c', color: '#FCA5A5', border: '1px solid #1a3560', boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}>
+                Monitor de Tokens
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate(MONITOR_ITEM.path)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all group mb-0.5 mt-1"
+              style={{ color: '#A8C4E0' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(252,165,165,0.1)'; e.currentTarget.style.color = '#FCA5A5' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#A8C4E0' }}
+            >
+              <Activity className="w-3.5 h-3.5 flex-shrink-0" style={{ color: MONITOR_ITEM.color }} />
+              <span>Monitor de Tokens</span>
+              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(252,165,165,0.15)', color: '#FCA5A5' }}>ADMIN</span>
+            </button>
+          )}
         </div>
       </nav>
 
