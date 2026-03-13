@@ -6,7 +6,7 @@
 //   → Growth Center: ben-growth-center.vercel.app/api/agents/run
 //   → Juris Center:  ben-juris-center.vercel.app/api/agents/run
 //
-// ── AGENTES GROWTH (9) ──────────────────────────────────────
+// ── AGENTES GROWTH (7) ──────────────────────────────────────
 //   ben-atendente               BEN Atendente Jurídico
 //   ben-conteudista             BEN Conteudista Jurídico
 //   ben-estrategista-campanhas  BEN Estrategista de Campanhas
@@ -14,28 +14,14 @@
 //   ben-analista-relatorios     BEN Analista de Relatórios
 //   ben-diretor-criativo        BEN Diretor Criativo
 //   ben-analista-monitoramento  BEN Analista de Monitoramento
-//   ben-revisor-juridico        BEN Revisor Jurídico
-//   ben-peticionista            BEN Peticionista
 //
-// ── AGENTES JURIS (30) ──────────────────────────────────────
-//   ⭐ ben-super-agente-juridico        AGENTE OPERACIONAL MAXIMUS (Claude Opus 4.6)
-//   🔷 ben-agente-operacional-premium   AGENTE OPERACIONAL PREMIUM (Claude Sonnet 4.6)
-//   🟢 ben-agente-operacional-standard  AGENTE OPERACIONAL STANDARD (Claude Haiku 4.5)
-//   ben-peticionista-juridico           BEN Peticionista Jurídico
-//   ben-contratualista                  BEN Contratualista
-//   ben-mandatario-juridico             BEN Mandatário Jurídico
-//   ben-analista-processual             BEN Analista Processual
-//   ben-auditor-processual              BEN Auditor Processual
-//   ben-gestor-juridico                 BEN Gestor Jurídico
-//   ben-tributarista                    BEN Tributarista
-//   ben-trabalhista                     BEN Trabalhista
-//   ben-previdenciarista                BEN Previdenciarista
-//   ben-constitucionalista              BEN Constitucionalista
-//   ben-especialista-compliance         BEN Especialista em Compliance
-//   ben-pesquisador-juridico            BEN Pesquisador Jurídico
-//   ben-relator-juridico                BEN Relator Jurídico
-//   ben-redator-juridico                BEN Redator Jurídico
-//   ben-engenheiro-prompt               BEN Engenheiro de Prompt
+// ── AGENTES JURIS (17) ──────────────────────────────────────
+//   🔷 ben-agente-operacional-premium   AGENTE OPERACIONAL PREMIUM (Claude Opus)
+//   🟢 ben-agente-operacional-standard  AGENTE OPERACIONAL STANDARD (Claude Haiku)
+//   ⚖️  ben-tributarista-estrategista    TRIBUTARISTA ESTRATEGISTA (Claude Opus, thinking)
+//   🏛️  ben-processualista-estrategico  PROCESSUALISTA ESTRATÉGICO (Claude Opus, thinking)
+//   ben-pesquisador-juridico            BEN Pesquisador Jurídico (Perplexity)
+//   ben-engenheiro-prompt               BEN Engenheiro de Prompt (GPT-4o)
 //   ben-contador-tributarista           Triagem Haiku 4.5
 //   ben-contador-tributarista-especialista  Especialista Sonnet 4.6
 //   ben-contador-tributarista-planejamento
@@ -66,36 +52,21 @@ const GROWTH_AGENTS = new Set([
   'ben-analista-relatorios',
   'ben-diretor-criativo',
   'ben-analista-monitoramento',
-  'ben-revisor-juridico',
-  'ben-peticionista',
   // mara-ia (especial)
   'mara-ia',
 ])
 
 const JURIS_AGENTS = new Set([
-  // ⭐ Agente Operacional Maximus (1)
-  'ben-super-agente-juridico',
   // 🔷 Agente Operacional Premium (1)
   'ben-agente-operacional-premium',
   // 🟢 Agente Operacional Standard (1)
   'ben-agente-operacional-standard',
   // ⚖️ Agente Tributarista Estrategista (1)
   'ben-tributarista-estrategista',
-  // Jurídicos core (15)
-  'ben-peticionista-juridico',
-  'ben-contratualista',
-  'ben-mandatario-juridico',
-  'ben-analista-processual',
-  'ben-auditor-processual',
-  'ben-gestor-juridico',
-  'ben-tributarista',
-  'ben-trabalhista',
-  'ben-previdenciarista',
-  'ben-constitucionalista',
-  'ben-especialista-compliance',
+  // 🏛️ Agente Processualista Estratégico (1)
+  'ben-processualista-estrategico',
+  // Pesquisa & Engenharia (2)
   'ben-pesquisador-juridico',
-  'ben-relator-juridico',
-  'ben-redator-juridico',
   'ben-engenheiro-prompt',
   // Contador Tributarista (6) — Arquitetura 2 níveis
   'ben-contador-tributarista',
@@ -128,15 +99,12 @@ function getDestino(agentId) {
   if (JURIS_AGENTS.has(id)) return 'juris'
   if (GROWTH_AGENTS.has(id)) return 'growth'
   // Heurística: prefixo "ben-" com subárea jurídica → juris
-  if (id.startsWith('ben-peticionista-') || id.startsWith('ben-contador-') ||
-      id.startsWith('ben-perito-') || id.startsWith('ben-auditor-') ||
-      id.startsWith('ben-analista-processual') || id === 'ben-tributarista' ||
-      id === 'ben-trabalhista' || id === 'ben-previdenciarista' ||
-      id === 'ben-constitucionalista' || id.startsWith('ben-especialista-') ||
-      id.startsWith('ben-pesquisador-') || id.startsWith('ben-relator-') ||
-      id.startsWith('ben-redator-') || id.startsWith('ben-engenheiro-') ||
-      id.startsWith('ben-contratualista') || id.startsWith('ben-mandatario-') ||
-      id.startsWith('ben-gestor-')) {
+  if (id.startsWith('ben-contador-') ||
+      id.startsWith('ben-perito-') ||
+      id.startsWith('ben-pesquisador-') ||
+      id.startsWith('ben-engenheiro-') ||
+      id.startsWith('ben-processualista-') ||
+      id.startsWith('ben-tributarista-')) {
     return 'juris'
   }
   return 'growth'
