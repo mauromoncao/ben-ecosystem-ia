@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import EcosystemWorkspace from './pages/EcosystemWorkspace'
 import MonitorCustos from './pages/MonitorCustos'
+import AssistenteGeral from './components/AssistenteGeral'
 
 // ─── PrivateRoute ─────────────────────────────────────────────
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -411,6 +412,8 @@ function Layout({ children }: { children: React.ReactNode }) {
           }
         )}
       </main>
+      {/* ── BEN Assistente Geral — Copiloto fixo em todas as telas ── */}
+      <AssistenteGeral />
     </div>
   )
 }
