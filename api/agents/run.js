@@ -1,5 +1,5 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Proxy de Agentes v4.0
+// BEN ECOSYSTEM IA — Proxy de Agentes v5.1
 // Rota: POST /api/agents/run
 //
 // Roteia automaticamente para:
@@ -15,25 +15,39 @@
 //   ben-diretor-criativo        BEN Diretor Criativo
 //   ben-analista-monitoramento  BEN Analista de Monitoramento
 //
-// ── AGENTES JURIS (18) ──────────────────────────────────────
-//   🔶 ben-agente-operacional-maximus  AGENTE OPERACIONAL MAXIMUS (Claude Opus, thinking)
-//   🔷 ben-agente-operacional-premium   AGENTE OPERACIONAL PREMIUM (Claude Opus)
-//   🟢 ben-agente-operacional-standard  AGENTE OPERACIONAL STANDARD (Claude Haiku)
-//   ⚖️  ben-tributarista-estrategista    TRIBUTARISTA ESTRATEGISTA (Claude Opus, thinking)
-//   🏛️  ben-processualista-estrategico  PROCESSUALISTA ESTRATÉGICO (Claude Opus, thinking)
-//   ben-pesquisador-juridico            BEN Pesquisador Jurídico (Perplexity)
-//   ben-engenheiro-prompt               BEN Engenheiro de Prompt (GPT-4o)
-//   ben-contador-tributarista           Triagem Haiku 4.5
+// ── AGENTES JURIS (29) ──────────────────────────────────────
+//   🔶 ben-agente-operacional-maximus   Claude Opus (thinking)
+//   🔷 ben-agente-operacional-premium   Claude Sonnet
+//   🟢 ben-agente-operacional-standard  Claude Haiku
+//   ⚖️  ben-tributarista-estrategista   Claude Opus (thinking)
+//   🏛️  ben-processualista-estrategico  Claude Opus (thinking)
+//   ben-pesquisador-juridico            Perplexity
+//   ben-engenheiro-prompt               GPT-4o
+//   — Contador nível 1 (6) —
+//   ben-contador-tributarista           Claude Haiku
+//   ben-contador-especialista           Claude Sonnet
+//   ben-contador-planejamento           Claude Sonnet
+//   ben-contador-creditos               Claude Sonnet
+//   ben-contador-auditoria              Claude Sonnet
+//   ben-contador-relatorio              Claude Sonnet
+//   — Contador Tributarista nível 2 (4) —
 //   ben-contador-tributarista-planejamento
 //   ben-contador-tributarista-creditos
 //   ben-contador-tributarista-auditoria
 //   ben-contador-tributarista-relatorio
-//   ben-perito-forense                  Padrão Sonnet 4.6 (5 módulos)
-//   ben-perito-forense-profundo         Profundo Opus 4.6 (⚠️ alerta Dr. Mauro)
+//   — Perito Forense (7) —
+//   ben-perito-forense                  Claude Sonnet
+//   ben-perito-forense-profundo         Claude Opus (⚠️ alerta Dr. Mauro)
 //   ben-perito-forense-digital
 //   ben-perito-forense-laudo
 //   ben-perito-forense-contestar
 //   ben-perito-forense-relatorio
+//   ben-perito-imobiliario
+//   — Sistema / Suporte (5) —
+//   ben-assistente-geral                GPT-4o (BEN Copilot)
+//   ben-assistente-cnj                  Claude Sonnet
+//   ben-assistente-voz                  Claude Haiku + ElevenLabs
+//   ben-monitor-juridico                Claude Sonnet
 // ============================================================
 
 export const config = { maxDuration: 120 }
@@ -57,32 +71,41 @@ const GROWTH_AGENTS = new Set([
 ])
 
 const JURIS_AGENTS = new Set([
-  // 🔶 Agente Operacional Maximus (1)
+  // 🔶 Agentes Operacionais (3)
   'ben-agente-operacional-maximus',
-  // 🔷 Agente Operacional Premium (1)
   'ben-agente-operacional-premium',
-  // 🟢 Agente Operacional Standard (1)
   'ben-agente-operacional-standard',
-  // ⚖️ Agente Tributarista Estrategista (1)
+  // ⚖️ Estrategistas (2)
   'ben-tributarista-estrategista',
-  // 🏛️ Agente Processualista Estratégico (1)
   'ben-processualista-estrategico',
   // Pesquisa & Engenharia (2)
   'ben-pesquisador-juridico',
   'ben-engenheiro-prompt',
-  // Contador Tributarista (5) — Arquitetura 2 níveis
+  // Contador — nível 1 (6)
   'ben-contador-tributarista',
+  'ben-contador-especialista',
+  'ben-contador-planejamento',
+  'ben-contador-creditos',
+  'ben-contador-auditoria',
+  'ben-contador-relatorio',
+  // Contador Tributarista — nível 2 (4)
   'ben-contador-tributarista-planejamento',
   'ben-contador-tributarista-creditos',
   'ben-contador-tributarista-auditoria',
   'ben-contador-tributarista-relatorio',
-  // Perito Forense (6) — Arquitetura 2 níveis
+  // Perito Forense (7)
   'ben-perito-forense',
   'ben-perito-forense-profundo',
   'ben-perito-forense-digital',
   'ben-perito-forense-laudo',
   'ben-perito-forense-contestar',
   'ben-perito-forense-relatorio',
+  'ben-perito-imobiliario',
+  // Sistema / Suporte (5)
+  'ben-assistente-geral',
+  'ben-assistente-cnj',
+  'ben-assistente-voz',
+  'ben-monitor-juridico',
 ])
 
 // ── Mapeamento de aliases (compatibilidade retroativa) ────────
