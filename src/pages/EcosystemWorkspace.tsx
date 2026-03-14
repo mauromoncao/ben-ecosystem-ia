@@ -36,6 +36,11 @@ interface Conversation {
 }
 interface AttachmentItem {
   name: string; text: string; type: string
+  namespace?: string   // Pinecone namespace quando indexado via VPS
+  pages?: number       // Nº de páginas do documento
+  chars?: number       // Tamanho do texto extraído
+  rag_ready?: boolean  // Se foi indexado no Pinecone para RAG
+  parsing?: boolean    // Estado de carregamento do parser
 }
 
 // ─── Agentes ──────────────────────────────────────────────────
@@ -301,9 +306,17 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   const sendMessage = useCallback(async (overrideInput?: string) => {
     const msg = overrideInput || input
     if (!msg.trim() || loading || !selectedAgent || !activeConvId) return
+    if (attachment?.parsing) return // aguarda parser terminar
 
+    // Nota do anexo mostrada no histórico de mensagens do usuário
     const attachNote = attachment
-      ? `\n\n📎 **${attachment.name}** (${attachment.type})\n${attachment.text}`
+      ? `\n\n📎 **${attachment.name}** (${attachment.type})${attachment.pages ? ` — ${attachment.pages} pág.` : ''}${attachment.rag_ready ? ' ✅ RAG' : ''}`
+      : ''
+
+    // Contexto do documento para o backend: usa preview_text (primeiros 8k chars)
+    // + pdfNamespace para RAG via Pinecone quando disponível
+    const attachContext = attachment
+      ? `\n\nDocumento anexado: **${attachment.name}**\n${attachment.namespace ? `[RAG habilitado — namespace: ${attachment.namespace}]\n` : ''}${attachment.text.slice(0, 8000)}`
       : ''
 
     // Problema 4: se o painel de artefato estiver aberto, injetar o
@@ -338,9 +351,11 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           agentId: selectedAgent.id,
-          input: artifactContext + msg + (attachment ? `\n\nDocumento: ${attachment.name}\n${attachment.text}` : ''),
+          input: artifactContext + msg + attachContext,
           useSearch,
           modelOverride: modelOverride ?? undefined,
+          // Passa namespace Pinecone para RAG no backend
+          pdfNamespace: attachment?.namespace || undefined,
           context: { source: 'ecosystem-workspace-v4' },
         }),
         signal: AbortSignal.timeout(115000),
@@ -439,24 +454,130 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
     }
   }
 
-  // ── Upload arquivo ─────────────────────────────────────────
+  // ── Upload arquivo — VPS Parser (PDF/DOCX/XLSX/IMG) ───────────
+  const VPS_PARSER = 'http://181.215.135.202:3010'
+  const PARSER_TOKEN = 'ben-parser-2026'
+
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, type = 'documento') => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const raw = ev.target?.result as string
-      try {
-        const bin = atob(raw.split(',')[1] || raw)
-        const text = (bin.match(/[\x20-\x7E]{4,}/g) || []).join('\n').slice(0, 12000)
-        setAttachment({ name: file.name, text: text || `[${file.name}]`, type })
-      } catch {
-        setAttachment({ name: file.name, text: `[${file.name} - ${file.size} bytes]`, type })
-      }
-    }
-    reader.readAsDataURL(file)
     e.target.value = ''
     setShowAttachMenu(false)
+
+    // Mostra estado de "processando"
+    setAttachment({ name: file.name, text: '⏳ Processando documento...', type, parsing: true })
+
+    try {
+      // Lê arquivo como base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload  = (ev) => resolve((ev.target?.result as string).split(',')[1] || '')
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      // Tenta primeiro via endpoint Vercel /api/upload (HTTPS seguro)
+      // Se falhar (VPS offline), tenta diretamente no VPS
+      let data: Record<string, unknown> | null = null
+
+      try {
+        const resp = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            base64,
+            filename: file.name,
+            mimetype: file.type || '',
+            index_rag: true,
+            agent_id: selectedAgent?.id || 'ecosystem',
+          }),
+          signal: AbortSignal.timeout(120000),
+        })
+        if (resp.ok) {
+          data = await resp.json()
+        }
+      } catch {
+        // Fallback direto para VPS (pode falhar em HTTPS por Mixed Content)
+        try {
+          const resp2 = await fetch(`${VPS_PARSER}/extract`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-parser-token': PARSER_TOKEN,
+            },
+            body: JSON.stringify({
+              base64,
+              filename: file.name,
+              mimetype: file.type || '',
+              index_rag: true,
+              agent_id: selectedAgent?.id || 'ecosystem',
+            }),
+            signal: AbortSignal.timeout(120000),
+          })
+          if (resp2.ok) data = await resp2.json()
+        } catch { /* ambos falharam */ }
+      }
+
+      if (data?.success) {
+        const pages    = (data.pages    as number) || 0
+        const chars    = (data.chars    as number) || 0
+        const chunks   = (data.chunks   as number) || 0
+        const ragReady = (data.rag_ready as boolean) || false
+        const ns       = (data.namespace as string) || ''
+        const preview  = (data.preview_text as string) || (data.full_text as string) || ''
+
+        setAttachment({
+          name:      file.name,
+          text:      preview,
+          type,
+          namespace: ns,
+          pages,
+          chars,
+          rag_ready: ragReady,
+          parsing:   false,
+        })
+        return
+      }
+
+      // Se chegou aqui, o parser retornou mas sem sucesso — usa fallback
+      throw new Error(data ? String(data.error || 'Parser retornou falha') : 'Parser indisponível')
+
+    } catch (err: unknown) {
+      // Fallback: extração de texto básica via FileReader (funciona para TXT/CSV)
+      console.warn('[handleFile] VPS parser indisponível, usando fallback:', (err as Error).message)
+      try {
+        const textContent = await new Promise<string>((resolve) => {
+          const reader = new FileReader()
+          reader.onload = (ev) => {
+            const result = ev.target?.result as string
+            resolve(result || '')
+          }
+          reader.onerror = () => resolve('')
+          if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+            reader.readAsText(file, 'utf-8')
+          } else {
+            reader.readAsBinaryString(file)
+          }
+        })
+        const cleanText = file.type.startsWith('text/')
+          ? textContent.slice(0, 20000)
+          : (textContent.match(/[\x20-\x7E\n]{4,}/g) || []).join('\n').slice(0, 12000)
+
+        setAttachment({
+          name:    file.name,
+          text:    cleanText || `[${file.name} — ${(file.size/1024).toFixed(0)}KB — parser VPS offline, envie via texto]`,
+          type,
+          parsing: false,
+        })
+      } catch {
+        setAttachment({
+          name:    file.name,
+          text:    `[${file.name} — ${(file.size/1024).toFixed(0)}KB — falha na leitura]`,
+          type,
+          parsing: false,
+        })
+      }
+    }
   }
 
   // ── Inserir timbrado padrão ────────────────────────────────
@@ -801,14 +922,24 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
               {/* Preview de anexo */}
               {attachment && (
                 <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl text-xs"
-                  style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-                  <FileText className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#1d4ed8' }} />
-                  <span className="flex-1 truncate font-medium" style={{ color: '#1e40af' }}>
-                    {attachment.type === 'timbrado' ? '📋 Timbrado padrão inserido' : `📎 ${attachment.name}`}
+                  style={{ background: attachment.parsing ? '#FFFBEB' : '#EFF6FF', border: `1px solid ${attachment.parsing ? '#FCD34D' : '#BFDBFE'}` }}>
+                  {attachment.parsing
+                    ? <Loader2 className="w-3.5 h-3.5 flex-shrink-0 animate-spin" style={{ color: '#D97706' }} />
+                    : <FileText className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#1d4ed8' }} />
+                  }
+                  <span className="flex-1 truncate font-medium" style={{ color: attachment.parsing ? '#92400e' : '#1e40af' }}>
+                    {attachment.type === 'timbrado'
+                      ? '📋 Timbrado padrão inserido'
+                      : attachment.parsing
+                        ? `⏳ Processando ${attachment.name}...`
+                        : `📎 ${attachment.name}${attachment.pages ? ` (${attachment.pages} pág.)` : ''}${attachment.rag_ready ? ' ✅ RAG' : ''}`
+                    }
                   </span>
-                  <button onClick={() => setAttachment(null)}>
-                    <X className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
-                  </button>
+                  {!attachment.parsing && (
+                    <button onClick={() => setAttachment(null)}>
+                      <X className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -1056,8 +1187,8 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                 )}
                 {attachment && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
-                    style={{ background: '#F5F3FF', color: '#7c3aed' }}>
-                    📎 {attachment.name}
+                    style={{ background: attachment.parsing ? '#FFFBEB' : '#F5F3FF', color: attachment.parsing ? '#92400e' : '#7c3aed' }}>
+                    {attachment.parsing ? '⏳' : '📎'} {attachment.name}{attachment.rag_ready ? ' ✅' : ''}
                   </span>
                 )}
               </div>
@@ -1137,7 +1268,7 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
       )}
 
       {/* Input oculto para arquivos */}
-      <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg" className="hidden" onChange={e => handleFile(e)} />
+      <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.png,.jpg,.jpeg,.webp,.gif,.tiff" className="hidden" onChange={e => handleFile(e)} />
 
       {/* ── Modal: Com timbre ou Sem timbre? ─────────────────── */}
       {timbreModal === 'pending' && (

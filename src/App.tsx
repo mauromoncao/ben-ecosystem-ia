@@ -30,7 +30,7 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'juridico', label: 'Jurídico', icon: <Scale className="w-3.5 h-3.5" />, color: '#93C5FD',
     agents: [
-      { id: 'ben-super-agente-juridico',           emoji: '⭐', shortName: 'Agente Maximus',         name: 'AGENTE OPERACIONAL MAXIMUS',       model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#92400e' },
+      { id: 'ben-agente-operacional-maximus',           emoji: '⭐', shortName: 'Agente Maximus',         name: 'AGENTE OPERACIONAL MAXIMUS',       model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#92400e' },
       { id: 'ben-agente-operacional-premium',      emoji: '🔷', shortName: 'Agente Premium',         name: 'AGENTE OPERACIONAL PREMIUM',       model: 'Claude Sonnet 4', badge: 'SONNET', badgeColor: '#1d4ed8' },
       { id: 'ben-agente-operacional-standard',     emoji: '🟢', shortName: 'Agente Standard',        name: 'AGENTE OPERACIONAL STANDARD',      model: 'Claude Haiku 4',  badge: 'HAIKU',  badgeColor: '#16a34a' },
       { id: 'ben-tributarista-estrategista',       emoji: '🔱', shortName: 'Tributarista Estrat.',   name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', model: 'Claude Opus 4',   badge: 'OPUS',   badgeColor: '#b45309' },
