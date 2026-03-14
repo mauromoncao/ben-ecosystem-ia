@@ -1,5 +1,5 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Status/Health Check v3.1
+// BEN ECOSYSTEM IA — Status/Health Check v5.0
 // Rota: GET /api/status
 // ============================================================
 
@@ -58,8 +58,8 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     ecosystem: 'Ben Ecosystem IA',
-    versao: '4.0',
-    stack: 'Claude Opus 4.6 · Claude Sonnet 4.6 · Claude Haiku 4.5 · GPT-4o · Perplexity',
+    versao: '5.0',
+    stack: 'Claude Opus 4.5 · Claude Sonnet 4.5 · Claude Haiku 4.5 · GPT-4o · Perplexity',
     nomenclatura: 'BEN Profissional v2.0',
     status: allOnline ? (vpsOnline ? 'online' : 'parcial') : 'degraded',
     timestamp: new Date().toISOString(),
@@ -67,36 +67,41 @@ export default async function handler(req, res) {
     modulos: { growth, juris, vps },
     agentes: {
       growth: {
-        total: 9,
+        total: 7,
         modelos: ['gpt-4o-mini','gpt-4o','claude-haiku-4-5'],
         ids: [
           'ben-atendente','ben-conteudista','ben-estrategista-campanhas',
           'ben-estrategista-marketing','ben-analista-relatorios','ben-diretor-criativo',
-          'ben-analista-monitoramento','ben-revisor-juridico','ben-peticionista',
+          'ben-analista-monitoramento',
         ],
       },
       juris: {
-        total: 28,
+        total: 18,
         modelos: ['claude-opus-4-5','claude-sonnet-4-5','claude-haiku-4-5','gpt-4o','perplexity'],
-        grupos: ['super-agente','juridico-core','contador-tributarista','perito-forense','engenheiro-prompt'],
+        grupos: ['operacional','juridico-core','contador-tributarista','perito-forense','engenheiro-prompt'],
         ids: [
-          'ben-super-agente-juridico',
-          'ben-peticionista-juridico','ben-contratualista','ben-mandatario-juridico',
-          'ben-analista-processual','ben-auditor-processual','ben-gestor-juridico',
-          'ben-tributarista','ben-trabalhista','ben-previdenciarista','ben-constitucionalista',
-          'ben-especialista-compliance','ben-pesquisador-juridico','ben-relator-juridico',
-          'ben-redator-juridico','ben-engenheiro-prompt',
-          'ben-contador-tributarista','ben-contador-tributarista-especialista',
-          'ben-contador-tributarista-planejamento','ben-contador-tributarista-creditos',
-          'ben-contador-tributarista-auditoria','ben-contador-tributarista-relatorio',
-          'ben-perito-forense','ben-perito-forense-profundo','ben-perito-forense-digital',
-          'ben-perito-forense-laudo','ben-perito-forense-contestar','ben-perito-forense-relatorio',
+          'ben-agente-operacional-maximus',
+          'ben-agente-operacional-premium',
+          'ben-agente-operacional-standard',
+          'ben-tributarista-estrategista',
+          'ben-processualista-estrategico',
+          'ben-pesquisador-juridico',
+          'ben-engenheiro-prompt',
+          'ben-contador-tributarista',
+          'ben-contador-tributarista-planejamento',
+          'ben-contador-tributarista-creditos',
+          'ben-contador-tributarista-auditoria',
+          'ben-contador-tributarista-relatorio',
+          'ben-perito-forense',
+          'ben-perito-forense-profundo',
+          'ben-perito-forense-digital',
+          'ben-perito-forense-laudo',
+          'ben-perito-forense-contestar',
+          'ben-perito-forense-relatorio',
         ],
-        novos_v2: [
-          'ben-super-agente-juridico (Claude Opus 4.6)',
-          'ben-contador-tributarista-especialista (Sonnet 4.6 — Nível 2)',
-          'ben-perito-forense-profundo (Opus 4.6 — Nível 2, alerta Dr. Mauro)',
-        ],
+        aliases: {
+          'ben-super-agente-juridico': 'ben-agente-operacional-maximus',
+        },
       },
     },
     urls: {

@@ -15,7 +15,8 @@
 //   ben-diretor-criativo        BEN Diretor Criativo
 //   ben-analista-monitoramento  BEN Analista de Monitoramento
 //
-// ── AGENTES JURIS (17) ──────────────────────────────────────
+// ── AGENTES JURIS (18) ──────────────────────────────────────
+//   🔶 ben-agente-operacional-maximus  AGENTE OPERACIONAL MAXIMUS (Claude Opus, thinking)
 //   🔷 ben-agente-operacional-premium   AGENTE OPERACIONAL PREMIUM (Claude Opus)
 //   🟢 ben-agente-operacional-standard  AGENTE OPERACIONAL STANDARD (Claude Haiku)
 //   ⚖️  ben-tributarista-estrategista    TRIBUTARISTA ESTRATEGISTA (Claude Opus, thinking)
@@ -23,7 +24,6 @@
 //   ben-pesquisador-juridico            BEN Pesquisador Jurídico (Perplexity)
 //   ben-engenheiro-prompt               BEN Engenheiro de Prompt (GPT-4o)
 //   ben-contador-tributarista           Triagem Haiku 4.5
-//   ben-contador-tributarista-especialista  Especialista Sonnet 4.6
 //   ben-contador-tributarista-planejamento
 //   ben-contador-tributarista-creditos
 //   ben-contador-tributarista-auditoria
@@ -57,6 +57,8 @@ const GROWTH_AGENTS = new Set([
 ])
 
 const JURIS_AGENTS = new Set([
+  // 🔶 Agente Operacional Maximus (1)
+  'ben-agente-operacional-maximus',
   // 🔷 Agente Operacional Premium (1)
   'ben-agente-operacional-premium',
   // 🟢 Agente Operacional Standard (1)
@@ -68,9 +70,8 @@ const JURIS_AGENTS = new Set([
   // Pesquisa & Engenharia (2)
   'ben-pesquisador-juridico',
   'ben-engenheiro-prompt',
-  // Contador Tributarista (6) — Arquitetura 2 níveis
+  // Contador Tributarista (5) — Arquitetura 2 níveis
   'ben-contador-tributarista',
-  'ben-contador-tributarista-especialista',
   'ben-contador-tributarista-planejamento',
   'ben-contador-tributarista-creditos',
   'ben-contador-tributarista-auditoria',
@@ -86,6 +87,8 @@ const JURIS_AGENTS = new Set([
 
 // ── Mapeamento de aliases (compatibilidade retroativa) ────────
 const AGENT_ALIASES = {
+  // Aliases legados → agente atual
+  'ben-super-agente-juridico': 'ben-agente-operacional-maximus',
   // Aliases novos → resolução interna
   'mara-ia': 'mara-ia',
 }
