@@ -82,7 +82,8 @@ const AGENTS: Agent[] = [
   { id: 'ben-assistente-voz',         shortName: 'Assistente Voz',   name: 'BEN Assistente Voz — TTS',       emoji: '🎙️', description: 'Converte textos dos agentes em áudio via ElevenLabs.',     model: 'Claude Haiku 4',   category: 'sistema',     project: 'juris',  color: '#7c3aed', accentColor: '#ede9fe' },
 ]
 
-const DEFAULT_AGENT_ID = 'ben-agente-operacional-standard'
+const DEFAULT_AGENT_ID = 'ben-assistente-geral'
+const COPILOT_AGENT_ID  = 'ben-assistente-geral'
 
 const CATEGORY_LABEL: Record<string, string> = {
   juridico: 'Jurídico', contador: 'Contador', perito: 'Perito',
@@ -183,8 +184,10 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   const { user } = useAuth()
 
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(() =>
-    AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[12] || null
+    AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[0] || null
   )
+  // Rastreia o agente anterior para retorno ao BEN Copilot
+  const prevAgentIdRef = useRef<string | null>(null)
   const [conversations, setConversations] = useState<Conversation[]>(loadConvs)
   const [activeConvId, setActiveConvId] = useState<string | null>(null)
   const [input, setInput] = useState('')
@@ -224,10 +227,14 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
 
   const activeConv = conversations.find(c => c.id === activeConvId)
 
-  // ── Init agente padrão ────────────────────────────────────
+  // ── Init: abre BEN Copilot ao carregar ──────────────────
   useEffect(() => {
-    const def = AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[0]
-    if (def) openAgent(def)
+    const copilot = AGENTS.find(a => a.id === COPILOT_AGENT_ID) || AGENTS[0]
+    if (copilot) {
+      openAgent(copilot)
+      // Notifica o Layout para que o sidebar destaque o BEN Copilot
+      onAgentOpened?.(copilot.id)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -235,7 +242,14 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   useEffect(() => {
     if (!pendingAgentId) return
     const agent = AGENTS.find(a => a.id === pendingAgentId)
-    if (agent) { openAgent(agent); onAgentOpened?.(agent.id) }
+    if (agent) {
+      // Registra agente anterior antes de trocar
+      if (selectedAgent && selectedAgent.id !== pendingAgentId) {
+        prevAgentIdRef.current = selectedAgent.id
+      }
+      openAgent(agent)
+      onAgentOpened?.(agent.id)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingAgentId])
 
@@ -564,8 +578,12 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                   e.stopPropagation()
                   setConversations(prev => prev.filter(cv => cv.id !== c.id))
                   if (activeConvId === c.id) {
-                    const def = AGENTS.find(a => a.id === DEFAULT_AGENT_ID) || AGENTS[0]
-                    if (def) openAgent(def)
+                    // Ao fechar conversa de especialista, retorna ao BEN Copilot
+                    const copilot = AGENTS.find(a => a.id === COPILOT_AGENT_ID) || AGENTS[0]
+                    if (copilot) {
+                      openAgent(copilot)
+                      onAgentOpened?.(copilot.id)
+                    }
                   }
                 }} className="opacity-0 group-hover:opacity-100 transition-opacity mt-0.5">
                   <Trash2 className="w-3 h-3" style={{ color: '#EF4444' }} />

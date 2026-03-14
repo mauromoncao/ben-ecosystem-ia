@@ -10,7 +10,6 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import EcosystemWorkspace from './pages/EcosystemWorkspace'
 import MonitorCustos from './pages/MonitorCustos'
-import AssistenteGeral from './components/AssistenteGeral'
 
 // ─── PrivateRoute ─────────────────────────────────────────────
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -102,7 +101,7 @@ function Sidebar({
   collapsed: boolean
   onToggleCollapse: () => void
 }) {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({ juridico: true })
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ juridico: true, sistema: true })
   const { user, logout } = useAuth()
 
   const navigate = useNavigate()
@@ -375,8 +374,12 @@ function Sidebar({
 }
 
 // ─── Layout ───────────────────────────────────────────────────
+// ID do BEN Copilot — agente fixo e padrão do Ecosystem
+const COPILOT_ID = 'ben-assistente-geral'
+
 function Layout({ children }: { children: React.ReactNode }) {
-  const [activeAgentId, setActiveAgentId] = useState<string | null>(null)
+  // Inicia com BEN Copilot já ativo na sidebar
+  const [activeAgentId, setActiveAgentId] = useState<string | null>(COPILOT_ID)
   const [pendingAgentId, setPendingAgentId] = useState<string | null>(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
@@ -402,8 +405,6 @@ function Layout({ children }: { children: React.ReactNode }) {
           }
         )}
       </main>
-      {/* ── BEN Copilot — Copiloto fixo em todas as telas ── */}
-      <AssistenteGeral />
     </div>
   )
 }
