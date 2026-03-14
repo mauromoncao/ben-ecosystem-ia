@@ -91,7 +91,7 @@ const SIDEBAR_CATEGORIES: AgentCategory[] = [
   {
     key: 'sistema', label: 'Sistema', icon: <Cpu className="w-3.5 h-3.5" />, color: '#A5B4FC',
     agents: [
-      { id: 'ben-assistente-geral',       emoji: '🤖', shortName: 'Assistente Geral',  name: 'BEN Assistente Geral (Copiloto)', model: 'GPT-4o',      badge: 'FIXO',   badgeColor: '#6d28d9' },
+      { id: 'ben-assistente-geral',       emoji: '🤖', shortName: 'BEN Copilot',       name: 'BEN Copilot — Universal',        model: 'GPT-4o',      badge: 'FIXO',   badgeColor: '#6d28d9' },
       { id: 'ben-engenheiro-prompt',      emoji: '🧠', shortName: 'Eng. Prompt',       name: 'BEN Engenheiro de Prompt',       model: 'GPT-4o' },
       { id: 'ben-analista-monitoramento', emoji: '🔍', shortName: 'Monitoramento',     name: 'BEN Analista Monitoramento',     model: 'GPT-4o Mini' },
       { id: 'ben-monitor-juridico',       emoji: '📡', shortName: 'Monitor Jurídico',  name: 'BEN Monitor Jurídico DJe + CNJ', model: 'Claude Sonnet 4', badge: 'NEW', badgeColor: '#0e7490' },
@@ -412,7 +412,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           }
         )}
       </main>
-      {/* ── BEN Assistente Geral — Copiloto fixo em todas as telas ── */}
+      {/* ── BEN Copilot — Copiloto fixo em todas as telas ── */}
       <AssistenteGeral />
     </div>
   )

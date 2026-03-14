@@ -40,34 +40,20 @@ interface AttachmentItem {
 
 // ─── Agentes ──────────────────────────────────────────────────
 const AGENTS: Agent[] = [
-  { id: 'ben-super-agente-juridico',      shortName: 'Agente Maximus',  name: 'AGENTE OPERACIONAL MAXIMUS',   emoji: '⭐', description: 'Análise jurídica de máxima profundidade — última instância, análise final e vinculante.', model: 'Claude Opus 4',    category: 'juridico',    project: 'juris',  color: '#92400e', accentColor: '#fef3c7', premium: true },
+  { id: 'ben-agente-operacional-maximus',  shortName: 'Agente Maximus',  name: 'AGENTE OPERACIONAL MAXIMUS',   emoji: '⭐', description: 'Análise jurídica de máxima profundidade — última instância, análise final e vinculante.', model: 'Claude Opus 4',    category: 'juridico',    project: 'juris',  color: '#92400e', accentColor: '#fef3c7', premium: true },
   { id: 'ben-agente-operacional-premium',  shortName: 'Agente Premium',  name: 'AGENTE OPERACIONAL PREMIUM',  emoji: '🔷', description: 'Análise jurídica moderada a profunda. Thinking adaptativo automático. Sinaliza casos para o Maximus.', model: 'Claude Sonnet 4',  category: 'juridico', project: 'juris', color: '#1d4ed8', accentColor: '#dbeafe', premium: true },
   { id: 'ben-agente-operacional-standard', shortName: 'Agente Standard', name: 'AGENTE OPERACIONAL STANDARD', emoji: '🟢', description: 'Execução operacional rápida. Extração, resumo, classificação, checklist. Thinking OFF — resposta em 0,3–0,8s.', model: 'Claude Haiku 4', category: 'juridico', project: 'juris', color: '#16a34a', accentColor: '#dcfce7', premium: false },
   { id: 'ben-tributarista-estrategista',   shortName: 'Tributarista Estrat.', name: 'AGENTE TRIBUTARISTA ESTRATEGISTA', emoji: '⚖️', description: 'Especialista em Direito Tributário Puro. Thinking sempre ativo. Raciocínio em 7 camadas tributárias. Defesa no CARF, TJ, STJ e STF.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#b45309', accentColor: '#fef3c7', premium: true },
   { id: 'ben-processualista-estrategico',  shortName: 'Processualista Estrat.', name: 'AGENTE PROCESSUALISTA ESTRATÉGICO', emoji: '📋', description: 'Estrategista processual de nível STF/STJ. Thinking sempre ativo. Análise em 6 camadas. Todos os ramos: Civil, Penal, Constitucional, Trabalhista, Administrativo. Pipeline RAG para PDFs.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#1e3a5f', accentColor: '#dbeafe', premium: true },
-  { id: 'ben-peticionista-juridico',  shortName: 'Peticionista',       name: 'BEN Peticionista Jurídico',       emoji: '⚖️', description: 'Peças processuais conforme o caso concreto e jurisprudência.',  model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#1d4ed8', accentColor: '#dbeafe' },
-  { id: 'ben-contratualista',         shortName: 'Contratualista',     name: 'BEN Contratualista',              emoji: '📋', description: 'Contratos empresariais, NDAs, societários e negociais.',         model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-mandatario-juridico',    shortName: 'Mandatário',         name: 'BEN Mandatário Jurídico',         emoji: '📜', description: 'Procurações, Ad Judicia, gerais e especiais.',                   model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-analista-processual',    shortName: 'Analista Proc.',     name: 'BEN Analista Processual',         emoji: '🔬', description: 'Análise estratégica de processos com avaliação de risco.',       model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#dc2626', accentColor: '#fee2e2' },
-  { id: 'ben-tributarista',           shortName: 'Tributarista',       name: 'BEN Tributarista',                emoji: '💰', description: 'Direito tributário, planejamento fiscal e teses avançadas.',     model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#d97706', accentColor: '#fef3c7' },
-  { id: 'ben-trabalhista',            shortName: 'Trabalhista',        name: 'BEN Trabalhista',                 emoji: '👷', description: 'Direito do trabalho, TST, reclamações e acordos.',               model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#0369a1', accentColor: '#e0f2fe' },
-  { id: 'ben-previdenciarista',       shortName: 'Previdenciarista',   name: 'BEN Previdenciarista',            emoji: '🏛️', description: 'Benefícios INSS, aposentadorias e revisões previdenciárias.',   model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#7c3aed', accentColor: '#ede9fe' },
-  { id: 'ben-constitucionalista',     shortName: 'Constitucionalista', name: 'BEN Constitucionalista',          emoji: '⚡', description: 'MS, HC, Mandado de Injunção e ações constitucionais.',           model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#b91c1c', accentColor: '#fee2e2' },
-  { id: 'ben-especialista-compliance',shortName: 'Compliance',         name: 'BEN Especialista Compliance',     emoji: '🛡️', description: 'Conformidade LGPD, políticas de privacidade e proteção de dados.', model: 'GPT-4o',        category: 'juridico',    project: 'juris',  color: '#0f766e', accentColor: '#ccfbf1' },
   { id: 'ben-pesquisador-juridico',   shortName: 'Pesquisador',        name: 'BEN Pesquisador Jurídico',        emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.',       model: 'Perplexity',       category: 'juridico',    project: 'juris',  color: '#6d28d9', accentColor: '#ede9fe' },
-  { id: 'ben-relator-juridico',       shortName: 'Relator',            name: 'BEN Relator Jurídico',            emoji: '📚', description: 'Artigos jurídicos, pareceres técnicos e publicações.',            model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#1e40af', accentColor: '#dbeafe' },
-  { id: 'ben-redator-juridico',       shortName: 'Redator',            name: 'BEN Redator Jurídico',            emoji: '✒️', description: 'Redação técnica jurídica, memorandos, ofícios.',                  model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-auditor-processual',     shortName: 'Auditor',            name: 'BEN Auditor Processual',          emoji: '🔏', description: 'Auditoria de prazos críticos e conformidade OAB.',                model: 'Claude Haiku 4.5', category: 'juridico',    project: 'juris',  color: '#0f766e', accentColor: '#ccfbf1' },
-  { id: 'ben-gestor-juridico',        shortName: 'Gestor',             name: 'BEN Gestor Jurídico',             emoji: '🏢', description: 'Gestão de escritório, produtividade e governança.',               model: 'GPT-4o',           category: 'juridico',    project: 'juris',  color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-revisor-juridico',       shortName: 'Revisor',            name: 'BEN Revisor Jurídico',            emoji: '📝', description: 'Revisão técnica e linguística de peças jurídicas.',               model: 'Claude Haiku 4.5', category: 'juridico',    project: 'growth', color: '#374151', accentColor: '#f3f4f6' },
-  { id: 'ben-peticionista',           shortName: 'Peticionista',       name: 'BEN Peticionista',                emoji: '⚖️', description: 'Petições iniciais, recursos e peças de urgência.',               model: 'Claude Haiku 4.5', category: 'juridico',    project: 'growth', color: '#1d4ed8', accentColor: '#dbeafe' },
+  { id: 'ben-pesquisador-juridico',   shortName: 'Pesquisador',        name: 'BEN Pesquisador Jurídico',        emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.',       model: 'Perplexity',       category: 'juridico',    project: 'juris',  color: '#6d28d9', accentColor: '#ede9fe' },
   { id: 'ben-engenheiro-prompt',      shortName: 'Eng. Prompt',        name: 'BEN Engenheiro de Prompt',        emoji: '🧠', description: 'Otimização de prompts e arquitetura de agentes IA.',               model: 'GPT-4o',           category: 'sistema',     project: 'juris',  color: '#4f46e5', accentColor: '#e0e7ff' },
   { id: 'ben-contador-tributarista',              shortName: 'Triagem',      name: 'BEN Contador — Triagem',      emoji: '🧮', description: 'Triagem fiscal.',                     model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#92400e', accentColor: '#fef3c7' },
-  { id: 'ben-contador-tributarista-especialista', shortName: 'Especialista', name: 'BEN Contador — Especialista', emoji: '📊', description: 'Análise fiscal profunda.',             model: 'Claude Sonnet',    category: 'contador', project: 'juris', color: '#b45309', accentColor: '#fef9c3' },
-  { id: 'ben-contador-tributarista-planejamento', shortName: 'Planejamento', name: 'BEN Contador — Planejamento', emoji: '🗺️', description: 'Planejamento tributário estratégico.', model: 'Claude Sonnet',    category: 'contador', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
-  { id: 'ben-contador-tributarista-creditos',     shortName: 'Créditos',     name: 'BEN Contador — Créditos',     emoji: '💳', description: 'Recuperação de créditos tributários.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
-  { id: 'ben-contador-tributarista-auditoria',    shortName: 'Auditoria',    name: 'BEN Contador — Auditoria',    emoji: '🔍', description: 'Auditoria fiscal.',                   model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
-  { id: 'ben-contador-tributarista-relatorio',    shortName: 'Relatório',    name: 'BEN Contador — Relatório',    emoji: '📋', description: 'Relatórios fiscais.',                 model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
+  { id: 'ben-contador-especialista', shortName: 'Especialista', name: 'BEN Contador — Especialista', emoji: '📊', description: 'Análise fiscal profunda.',             model: 'Claude Sonnet',    category: 'contador', project: 'juris', color: '#b45309', accentColor: '#fef9c3' },
+  { id: 'ben-contador-planejamento',   shortName: 'Planejamento', name: 'BEN Contador — Planejamento', emoji: '🗺️', description: 'Planejamento tributário estratégico.', model: 'Claude Sonnet',    category: 'contador', project: 'juris', color: '#d97706', accentColor: '#fef3c7' },
+  { id: 'ben-contador-creditos',       shortName: 'Créditos',     name: 'BEN Contador — Créditos',     emoji: '💳', description: 'Recuperação de créditos tributários.', model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#059669', accentColor: '#d1fae5' },
+  { id: 'ben-contador-auditoria',      shortName: 'Auditoria',    name: 'BEN Contador — Auditoria',    emoji: '🔍', description: 'Auditoria fiscal.',                   model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#dc2626', accentColor: '#fee2e2' },
+  { id: 'ben-contador-relatorio',      shortName: 'Relatório',    name: 'BEN Contador — Relatório',    emoji: '📋', description: 'Relatórios fiscais.',                 model: 'Claude Haiku 4.5', category: 'contador', project: 'juris', color: '#0369a1', accentColor: '#e0f2fe' },
   { id: 'ben-perito-forense',          shortName: 'Padrão',       name: 'BEN Perito Forense — Padrão',    emoji: '🔬', description: 'Laudos periciais.',          model: 'Claude Sonnet',    category: 'perito', project: 'juris', color: '#4f46e5', accentColor: '#e0e7ff' },
   { id: 'ben-perito-forense-profundo', shortName: 'Profundo',     name: 'BEN Perito Forense — Profundo',  emoji: '🧬', description: 'Análise pericial profunda.', model: 'Claude Opus 4',    category: 'perito', project: 'juris', color: '#b91c1c', accentColor: '#fee2e2', premium: true },
   { id: 'ben-perito-forense-digital',  shortName: 'Digital',      name: 'BEN Perito Forense Digital',     emoji: '💻', description: 'Perícia digital.',          model: 'Claude Sonnet',    category: 'perito', project: 'juris', color: '#7c3aed', accentColor: '#ede9fe' },
@@ -83,7 +69,7 @@ const AGENTS: Agent[] = [
   { id: 'ben-analista-monitoramento', shortName: 'Monitoramento', name: 'BEN Analista Monitoramento',     emoji: '🔍', description: 'Saúde do sistema.',           model: 'GPT-4o Mini',      category: 'sistema',     project: 'growth', color: '#dc2626', accentColor: '#fee2e2' },
 ]
 
-const DEFAULT_AGENT_ID = 'ben-redator-juridico'
+const DEFAULT_AGENT_ID = 'ben-agente-operacional-standard'
 
 const CATEGORY_LABEL: Record<string, string> = {
   juridico: 'Jurídico', contador: 'Contador', perito: 'Perito',
@@ -486,9 +472,8 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
 
   // ── Sugestões de abertura ──────────────────────────────────
   const SUGGESTIONS: Record<string, string[]> = {
-    'ben-redator-juridico':           ['Redigir ofício ao Tribunal de Justiça', 'Elaborar memorando interno', 'Criar notificação extrajudicial'],
-    'ben-peticionista-juridico':      ['Petição inicial de ação ordinária', 'Recurso de apelação com razões', 'Agravo regimental urgente'],
-    'ben-tributarista':               ['Análise de tese tributária ICMS', 'Planejamento fiscal para empresa', 'Exceção de pré-executividade'],
+    'ben-agente-operacional-standard':    ['Extrair dados-chave do documento', 'Resumir peça processual em 3 pontos', 'Classificar demanda por área do direito'],
+    'ben-pesquisador-juridico':           ['Jurisprudência do STJ sobre dano moral', 'Teses do STF sobre bis in idem tributário', 'Decisões recentes do TJPI sobre rescisão contratual'],
     'ben-tributarista-estrategista':       ['Impugnação ao auto de infração por IRPJ', 'Estratégia multi-instância CARF → STJ', 'Nulidade de autuação fiscal por vício de intimação'],
     'ben-processualista-estrategico':      ['Mapear nulidades processuais do processo em anexo', 'Elaborar habeas corpus por prisão preventiva sem fundamentação', 'Recurso de apelação com error in judicando'],
     'default':                        ['Faça uma pergunta em linguagem natural', 'Solicite uma peça processual com os dados do caso', 'Envie um documento para análise'],
@@ -1015,37 +1000,17 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                 </div>
               )}
 
-              {/* ── Linha discreta abaixo: agente ativo + status + seletor de modelo ── */}
+              {/* ── Linha discreta abaixo: agente ativo + status ── */}
               <div className="flex items-center justify-center gap-3 mt-2 text-xs flex-wrap" style={{ color: '#9CA3AF' }}>
                 {selectedAgent && (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full"
                     style={{ background: selectedAgent.accentColor + '88', color: selectedAgent.color }}>
                     <span>{selectedAgent.emoji}</span>
                     <span className="font-semibold">{selectedAgent.name}</span>
-                    <span style={{ color: '#D1D5DB', fontSize: '10px' }}>·</span>
-                    <ModelBadge model={modelOverride === 'opus' ? 'claude-opus-4-5' : modelOverride === 'sonnet' ? 'claude-sonnet-4-5' : selectedAgent.model} />
                     {selectedAgent.premium && <span>⭐</span>}
                   </span>
                 )}
-                {/* Seletor Opus / Sonnet — só para agentes Claude Opus ou Sonnet */}
-                {selectedAgent && /claude-(opus|sonnet)/i.test(selectedAgent.model) && (
-                  <span className="inline-flex items-center gap-1 rounded-full border px-1 py-0.5"
-                    style={{ borderColor: '#BFDBFE', background: '#F0F9FF' }}>
-                    <span className="text-xs text-gray-400 px-1">Motor:</span>
-                    {(['sonnet', 'opus'] as const).map(opt => (
-                      <button key={opt}
-                        onClick={() => setModelOverride(prev => prev === opt ? null : opt)}
-                        className="px-2 py-0.5 rounded-full text-xs font-medium transition-all"
-                        style={{
-                          background: modelOverride === opt ? (opt === 'opus' ? '#fef3c7' : '#fce7f3') : 'transparent',
-                          color: modelOverride === opt ? (opt === 'opus' ? '#92400e' : '#9d174d') : '#6B7280',
-                          fontWeight: modelOverride === opt ? 700 : 400,
-                        }}>
-                        {opt === 'opus' ? '★ Opus' : '⚡ Sonnet'}
-                      </button>
-                    ))}
-                  </span>
-                )}
+                {/* Motor Opus/Sonnet oculto — BEN Copilot ativo como padrão */}
                 {useSearch && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
                     style={{ background: '#EFF6FF', color: '#2563EB' }}>

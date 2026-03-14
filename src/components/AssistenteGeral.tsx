@@ -289,13 +289,13 @@ export default function AssistenteGeral() {
           color: '#DEC078',
           boxShadow: '0 8px 32px rgba(25,56,92,0.6), 0 0 0 1px rgba(222,192,120,0.15)',
         }}
-        title="Abrir BEN Assistente"
+        title="Abrir BEN Copilot"
       >
         <div className="relative">
           <Bot size={18} />
           <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#19385C] animate-pulse" />
         </div>
-        <span>BEN</span>
+        <span>BEN Copilot</span>
         {mensagens.length > 0 && (
           <span className="bg-yellow-500/20 text-yellow-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
             {mensagens.length}
@@ -331,7 +331,7 @@ export default function AssistenteGeral() {
             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#19385C]" />
           </div>
           <div>
-            <p className="font-bold text-sm font-serif" style={{ color: '#DEC078', letterSpacing: '-0.01em' }}>BEN Assistente</p>
+            <p className="font-bold text-sm font-serif" style={{ color: '#DEC078', letterSpacing: '-0.01em' }}>BEN Copilot</p>
             <p className="text-[10px] font-sans" style={{ color: 'rgba(159,176,215,0.80)' }}>
               {carregando ? 'Pensando...' : 'GPT-4o · Copiloto Universal'}
             </p>
