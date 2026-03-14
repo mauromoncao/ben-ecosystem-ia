@@ -44,7 +44,7 @@ const AGENTS: Agent[] = [
   { id: 'ben-agente-operacional-maximus',  shortName: 'Agente Maximus',        name: 'AGENTE OPERACIONAL MAXIMUS',          emoji: '⭐', description: 'Análise jurídica de máxima profundidade — última instância, análise final e vinculante.', model: 'Claude Opus 4',    category: 'juridico',    project: 'juris',  color: '#92400e', accentColor: '#fef3c7', premium: true },
   { id: 'ben-agente-operacional-premium',  shortName: 'Agente Premium',        name: 'AGENTE OPERACIONAL PREMIUM',          emoji: '🔷', description: 'Análise jurídica moderada a profunda. Thinking adaptativo automático. Sinaliza casos para o Maximus.', model: 'Claude Sonnet 4',  category: 'juridico', project: 'juris', color: '#1d4ed8', accentColor: '#dbeafe', premium: true },
   { id: 'ben-agente-operacional-standard', shortName: 'Agente Standard',       name: 'AGENTE OPERACIONAL STANDARD',         emoji: '🟢', description: 'Execução operacional rápida. Extração, resumo, classificação, checklist. Thinking OFF.', model: 'Claude Haiku 4',   category: 'juridico',    project: 'juris',  color: '#16a34a', accentColor: '#dcfce7', premium: false },
-  { id: 'ben-tributarista-estrategista',   shortName: 'Tributarista Estrat.',  name: 'AGENTE TRIBUTARISTA ESTRATEGISTA',    emoji: '⚖️', description: 'Especialista em Direito Tributário Puro. Thinking sempre ativo. Raciocínio em 7 camadas. Defesa no CARF, TJ, STJ e STF.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#b45309', accentColor: '#fef3c7', premium: true },
+  { id: 'ben-tributarista-estrategista',   shortName: 'Tributarista Estrat.',  name: 'AGENTE TRIBUTARISTA ESTRATEGISTA',    emoji: '🔱', description: 'Especialista em Direito Tributário Puro. Thinking sempre ativo. Raciocínio em 7 camadas. Defesa no CARF, TJ, STJ e STF.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#b45309', accentColor: '#fef3c7', premium: true },
   { id: 'ben-processualista-estrategico',  shortName: 'Processualista Estrat.',name: 'AGENTE PROCESSUALISTA ESTRATÉGICO',   emoji: '📋', description: 'Estrategista processual de nível STF/STJ. Thinking sempre ativo. Análise em 6 camadas. Pipeline RAG para PDFs.', model: 'Claude Opus 4', category: 'juridico', project: 'juris', color: '#1e3a5f', accentColor: '#dbeafe', premium: true },
   { id: 'ben-pesquisador-juridico',        shortName: 'Pesquisador',           name: 'BEN Pesquisador Jurídico',            emoji: '🔎', description: 'Pesquisa em tempo real: STF, STJ, TRF, TJPI com citações.',       model: 'Perplexity',       category: 'juridico',    project: 'juris',  color: '#6d28d9', accentColor: '#ede9fe' },
   // ── Contador ─────────────────────────────────────────────────
@@ -78,7 +78,7 @@ const AGENTS: Agent[] = [
   { id: 'ben-engenheiro-prompt',      shortName: 'Eng. Prompt',      name: 'BEN Engenheiro de Prompt',       emoji: '🧠', description: 'Otimização de prompts e arquitetura de agentes IA.',        model: 'GPT-4o',           category: 'sistema',     project: 'juris',  color: '#4f46e5', accentColor: '#e0e7ff' },
   { id: 'ben-analista-monitoramento', shortName: 'Monitoramento',    name: 'BEN Analista Monitoramento',     emoji: '🔍', description: 'Saúde do sistema e monitoramento de métricas.',            model: 'Claude Haiku 4.5', category: 'sistema',     project: 'juris',  color: '#dc2626', accentColor: '#fee2e2' },
   { id: 'ben-monitor-juridico',       shortName: 'Monitor Jurídico', name: 'BEN Monitor Jurídico DJe + CNJ', emoji: '📡', description: 'Monitoramento de publicações DJe e CNJ em tempo real.',   model: 'Claude Sonnet 4',  category: 'sistema',     project: 'juris',  color: '#0e7490', accentColor: '#cffafe' },
-  { id: 'ben-assistente-cnj',         shortName: 'Assistente CNJ',   name: 'BEN Assistente CNJ DataJud',     emoji: '⚖️', description: 'Consultas ao DataJud e CNJ com análise de movimentações.', model: 'Claude Sonnet 4',  category: 'sistema',     project: 'juris',  color: '#0e7490', accentColor: '#cffafe' },
+  { id: 'ben-assistente-cnj',         shortName: 'Assistente CNJ',   name: 'BEN Assistente CNJ DataJud',     emoji: '🔱', description: 'Consultas ao DataJud e CNJ com análise de movimentações.', model: 'Claude Sonnet 4',  category: 'sistema',     project: 'juris',  color: '#0e7490', accentColor: '#cffafe' },
   { id: 'ben-assistente-voz',         shortName: 'Assistente Voz',   name: 'BEN Assistente Voz — TTS',       emoji: '🎙️', description: 'Converte textos dos agentes em áudio via ElevenLabs.',     model: 'Claude Haiku 4',   category: 'sistema',     project: 'juris',  color: '#7c3aed', accentColor: '#ede9fe' },
 ]
 
@@ -729,7 +729,7 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                   {msg.role === 'assistant' && (
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0 mr-2.5 mt-0.5 shadow-sm"
                       style={{ background: selectedAgent?.accentColor || '#F3F4F6' }}>
-                      {selectedAgent?.emoji || '⚖️'}
+                      {selectedAgent?.emoji || '🔱'}
                     </div>
                   )}
                   <div className="max-w-[82%]">
