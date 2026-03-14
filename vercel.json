@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/agents/run",    "destination": "/api/agents/run" },
+    { "source": "/api/upload",        "destination": "/api/upload" },
     { "source": "/api/bridge",        "destination": "/api/bridge" },
     { "source": "/api/leads",         "destination": "/api/leads" },
     { "source": "/api/leads/:path*",  "destination": "/api/leads" },
