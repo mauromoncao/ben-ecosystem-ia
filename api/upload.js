@@ -1,7 +1,7 @@
 // ============================================================
 // BEN ECOSYSTEM IA — Proxy Upload → Juris Center Parser
 // Rota: POST /api/upload
-// Proxies para: ben-juris-center.vercel.app/api/upload
+// Proxies para: juris.mauromoncao.adv.br/api/upload
 // ============================================================
 
 export const config = {
@@ -13,7 +13,7 @@ export const config = {
   },
 }
 
-const JURIS_URL = process.env.JURIS_API_URL || 'https://ben-juris-center.vercel.app'
+const JURIS_URL = process.env.JURIS_API_URL || 'https://juris.mauromoncao.adv.br'
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')

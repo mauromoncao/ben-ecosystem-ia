@@ -5,8 +5,8 @@
 
 export const config = { maxDuration: 20 }
 
-const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app').trim()
-const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app').trim()
+const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://bengrowth.mauromoncao.adv.br').trim()
+const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://juris.mauromoncao.adv.br').trim()
 const VPS_URL    = (process.env.VPS_LEADS_URL        || 'http://181.215.135.202:3001').trim()
 
 async function checkModule(baseUrl, name) {
@@ -108,7 +108,7 @@ export default async function handler(req, res) {
       growth: GROWTH_URL,
       juris: JURIS_URL,
       vps: VPS_URL,
-      ecosystem: 'https://ben-ecosystem-ia.vercel.app',
+      ecosystem: 'https://ecosystem.mauromoncao.adv.br',
     },
   })
 }

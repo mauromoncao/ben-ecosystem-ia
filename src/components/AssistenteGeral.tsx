@@ -23,7 +23,7 @@ interface Mensagem {
 // ── Constantes ───────────────────────────────────────────────
 const STORAGE_KEY = 'ben_assistente_geral_msgs';
 const MAX_MSGS_STORAGE = 100;
-const JURIS_API = import.meta.env.VITE_JURIS_API_URL || 'https://ben-juris-center.vercel.app';
+const JURIS_API = import.meta.env.VITE_JURIS_API_URL || 'https://juris.mauromoncao.adv.br';
 
 // ── Hook: persistência no localStorage ──────────────────────
 function useMensagens() {
