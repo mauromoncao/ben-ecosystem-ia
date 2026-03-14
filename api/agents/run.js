@@ -3,8 +3,8 @@
 // Rota: POST /api/agents/run
 //
 // Roteia automaticamente para:
-//   → Growth Center: ben-growth-center.vercel.app/api/agents/run
-//   → Juris Center:  ben-juris-center.vercel.app/api/agents/run
+//   → Growth Center: bengrowth.mauromoncao.adv.br/api/agents/run
+//   → Juris Center:  juris.mauromoncao.adv.br/api/agents/run
 //
 // ── AGENTES GROWTH (7) ──────────────────────────────────────
 //   ben-atendente               BEN Atendente Jurídico
@@ -52,8 +52,8 @@
 
 export const config = { maxDuration: 120 }
 
-const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://ben-growth-center.vercel.app').trim()
-const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://ben-juris-center.vercel.app').trim()
+const GROWTH_URL = (process.env.VITE_GROWTH_API_URL || 'https://bengrowth.mauromoncao.adv.br').trim()
+const JURIS_URL  = (process.env.VITE_JURIS_API_URL  || 'https://juris.mauromoncao.adv.br').trim()
 const VPS_URL    = (process.env.VPS_LEADS_URL        || 'http://181.215.135.202:3001').trim()
 
 // ── Mapa de agentes → sistema destino ────────────────────────
@@ -227,7 +227,7 @@ export default async function handler(req, res) {
 
     // ── Log de custo no Monitor interno (assíncrono) ─────────
     if (data.usage) {
-      fetch(`${process.env.ECOSYSTEM_URL || 'https://ben-ecosystem-ia.vercel.app'}/api/monitor`, {
+      fetch(`${process.env.ECOSYSTEM_URL || 'https://ecosystem.mauromoncao.adv.br'}/api/monitor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
