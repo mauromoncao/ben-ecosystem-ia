@@ -6,3 +6,10 @@ dist/
 *.log
 .DS_Store
 .vercel
+
+# Segurança adicional
+secrets/
+credentials/
+private/
+*.pem
+*.key

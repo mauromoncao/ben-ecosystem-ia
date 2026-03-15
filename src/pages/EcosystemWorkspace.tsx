@@ -476,7 +476,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
         reader.readAsDataURL(file)
       })
 
-      // Tenta primeiro via endpoint Vercel /api/upload (HTTPS seguro)
+      // Tenta primeiro via endpoint CF Pages /api/upload (HTTPS seguro)
       // Se falhar (VPS offline), tenta diretamente no VPS
       let data: Record<string, unknown> | null = null
 
