@@ -41,14 +41,14 @@ const modelDistribution = [
 ]
 
 const agentActivities = [
-  { id: 1, agent: 'Agente Maximus',        action: 'Elaborou petição inicial — Tributário',       status: 'success',   ts: '15/03 09:42', model: 'Claude Opus 4'   },
-  { id: 2, agent: 'BEN Conteudista',       action: 'Gerou 2 artigos de blog — Tributário',        status: 'success',   ts: '15/03 09:15', model: 'GPT-4o'          },
-  { id: 3, agent: 'BEN Monitor Jurídico',  action: 'Monitorando publicações DJe — 247 processos', status: 'running',   ts: '15/03 09:00', model: 'Claude Sonnet 4' },
-  { id: 4, agent: 'Perito Forense',        action: 'Redigindo laudo pericial — Bancário',         status: 'running',   ts: '15/03 08:55', model: 'Claude Sonnet 4' },
-  { id: 5, agent: 'BEN Analista',          action: 'Relatório de campanhas Mar/2026',             status: 'success',   ts: '15/03 08:00', model: 'Claude Haiku 4'  },
-  { id: 6, agent: 'BEN Copilot',           action: 'Respostas: 34 consultas de usuários',         status: 'success',   ts: '15/03 07:30', model: 'GPT-4o'          },
-  { id: 7, agent: 'Assistente CNJ',        action: 'Consultou DataJud — 12 processos',            status: 'success',   ts: '15/03 07:10', model: 'Claude Sonnet 4' },
-  { id: 8, agent: 'Lex Campanhas',         action: 'Otimizou Meta Ads — ROAS 5.6x',              status: 'scheduled', ts: '15/03 10:00', model: 'GPT-4o'          },
+  { id: 1, agent: 'Agente Maximus',        action: 'Elaborou petição inicial — Tributário',       status: 'success',   ts: '15/03 09:42', model: 'BEN IA Pro'   },
+  { id: 2, agent: 'BEN Conteudista',       action: 'Gerou 2 artigos de blog — Tributário',        status: 'success',   ts: '15/03 09:15', model: 'BEN IA Pro'          },
+  { id: 3, agent: 'BEN Monitor Jurídico',  action: 'Monitorando publicações DJe — 247 processos', status: 'running',   ts: '15/03 09:00', model: 'BEN IA Plus' },
+  { id: 4, agent: 'Perito Forense',        action: 'Redigindo laudo pericial — Bancário',         status: 'running',   ts: '15/03 08:55', model: 'BEN IA Plus' },
+  { id: 5, agent: 'BEN Analista',          action: 'Relatório de campanhas Mar/2026',             status: 'success',   ts: '15/03 08:00', model: 'BEN IA'  },
+  { id: 6, agent: 'BEN Copilot',           action: 'Respostas: 34 consultas de usuários',         status: 'success',   ts: '15/03 07:30', model: 'BEN IA Pro'          },
+  { id: 7, agent: 'Assistente CNJ',        action: 'Consultou DataJud — 12 processos',            status: 'success',   ts: '15/03 07:10', model: 'BEN IA Plus' },
+  { id: 8, agent: 'Lex Campanhas',         action: 'Otimizou Meta Ads — ROAS 5.6x',              status: 'scheduled', ts: '15/03 10:00', model: 'BEN IA Pro'          },
 ]
 
 const vpsServices = [

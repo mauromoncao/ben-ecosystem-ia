@@ -1,12 +1,12 @@
 // ══════════════════════════════════════════════════════════════
-// BEN ASSISTENTE GERAL — Chat Fixo Universal
-// Copiloto do Dr. Mauro | GPT-4o | Persistente | Proativo
+// BEN COPILOT — Chat Fixo Universal
+// Copiloto do Dr. Mauro | Persistente | Proativo
 // ══════════════════════════════════════════════════════════════
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, X, Minimize2, Maximize2,
-  Trash2, Bot, User, Loader2, Sparkles, ChevronDown,
+  Trash2, User, Loader2, Sparkles, ChevronDown,
   RotateCcw, Copy, Check
 } from 'lucide-react';
 
@@ -292,8 +292,12 @@ export default function AssistenteGeral() {
         title="Abrir BEN Copilot"
       >
         <div className="relative">
-          <Bot size={18} />
-          <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#19385C] animate-pulse" />
+          <img
+            src="/dr-ben-avatar.jpg"
+            alt="Dr. Ben"
+            style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(222,192,120,0.50)' }}
+          />
+          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#19385C] animate-pulse" />
         </div>
         <span>BEN Copilot</span>
         {mensagens.length > 0 && (
@@ -325,15 +329,17 @@ export default function AssistenteGeral() {
       >
         <div className="flex items-center gap-2.5">
           <div className="relative">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(222,192,120,0.15)', border: '1px solid rgba(222,192,120,0.30)' }}>
-              <Sparkles size={16} style={{ color: '#DEC078' }} />
-            </div>
+            <img
+              src="/dr-ben-avatar.jpg"
+              alt="Dr. Ben"
+              style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(222,192,120,0.50)' }}
+            />
             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#19385C]" />
           </div>
           <div>
             <p className="font-bold text-sm font-serif" style={{ color: '#DEC078', letterSpacing: '-0.01em' }}>BEN Copilot</p>
             <p className="text-[10px] font-sans" style={{ color: 'rgba(159,176,215,0.80)' }}>
-              {carregando ? 'Pensando...' : 'GPT-4o · Copiloto Universal'}
+              {carregando ? 'Pensando...' : '● Copiloto Universal · Online 24h'}
             </p>
           </div>
         </div>
