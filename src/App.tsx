@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import EcosystemWorkspace from './pages/EcosystemWorkspace'
 import MonitorCustos from './pages/MonitorCustos'
+import DashboardEcosistema from './pages/DashboardEcosistema'
 
 // ─── PrivateRoute ─────────────────────────────────────────────
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -107,9 +108,9 @@ function Sidebar({
   const navigate = useNavigate()
 
   const EXTERNAL = [
-    { href: 'https://bengrowth.mauromoncao.adv.br', icon: TrendingUp,      label: 'Growth Center',   color: '#6EE7B7', internal: false },
-    { href: 'https://juris.mauromoncao.adv.br',     icon: Scale,           label: 'Juris Center',    color: '#93C5FD', internal: false },
-    { href: 'https://hub.mauromoncao.adv.br',        icon: LayoutDashboard, label: 'HUB Estratégico', color: '#C4B5FD', internal: false },
+    { href: 'https://growth.mauromoncao.adv.br', icon: TrendingUp,      label: 'Growth Center',   color: '#6EE7B7', internal: false },
+    { href: 'https://juris.mauromoncao.adv.br',  icon: Scale,           label: 'Juris Center',    color: '#93C5FD', internal: false },
+    { href: '/dashboard',                         icon: LayoutDashboard, label: 'Dashboard',        color: '#E2B714', internal: true  },
   ]
 
   const MONITOR_ITEM = { path: '/monitor-admin', icon: Activity, label: 'Monitor de Tokens', color: '#FCA5A5' }
@@ -425,6 +426,13 @@ function AppRoutes() {
         </PrivateRoute>
       } />
       <Route path="/monitor-admin" element={<MonitorCustos />} />
+      <Route path="/dashboard" element={
+        <PrivateRoute>
+          <Layout>
+            <DashboardEcosistema />
+          </Layout>
+        </PrivateRoute>
+      } />
       <Route path="*" element={<Navigate to="/workspace" replace />} />
     </Routes>
   )
