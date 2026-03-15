@@ -20,16 +20,20 @@ const CORS = {
 }
 
 // ── Todos os IDs canônicos GROWTH ────────────────────────────
+// Growth agents usam prefixo ben-growth-* no CF Worker
 const GROWTH_AGENTS = new Set([
+  // Nomes curtos (aliases) → roteados para Growth, que resolve internamente
   'ben-atendente', 'ben-conteudista', 'ben-estrategista-campanhas',
   'ben-estrategista-marketing', 'ben-analista-relatorios',
   'ben-diretor-criativo', 'ben-analista-monitoramento',
+  // Nomes canônicos com prefixo growth
   'ben-growth-atendente', 'ben-growth-conteudista', 'ben-growth-campanhas',
   'ben-growth-marketing', 'ben-growth-relatorios', 'ben-growth-criativo',
   'ben-growth-monitoramento',
 ])
 
-// ── Aliases legados ──────────────────────────────────────────
+// ── Aliases legados (apenas Juris) ──────────────────────────
+// NOTA: Growth aliases são resolvidos DENTRO do ben-growth-center
 const AGENT_ALIASES = {
   'ben-super-agente-juridico': 'ben-agente-operacional-maximus',
   'ben-juridico':              'ben-agente-operacional-premium',
@@ -40,13 +44,7 @@ const AGENT_ALIASES = {
   'ben-perito-laudo':          'ben-perito-forense-laudo',
   'ben-perito-contraditorio':  'ben-perito-forense-contestar',
   'ben-perito-relatorio':      'ben-perito-forense-relatorio',
-  'ben-growth-atendente':      'ben-atendente',
-  'ben-growth-conteudista':    'ben-conteudista',
-  'ben-growth-campanhas':      'ben-estrategista-campanhas',
-  'ben-growth-marketing':      'ben-estrategista-marketing',
-  'ben-growth-relatorios':     'ben-analista-relatorios',
-  'ben-growth-criativo':       'ben-diretor-criativo',
-  'ben-growth-monitoramento':  'ben-analista-monitoramento',
+  // Growth aliases NÃO são resolvidos aqui — Growth center faz isso
 }
 
 function resolveAgentId(agentId) {
@@ -88,11 +86,14 @@ export async function onRequest(context) {
       })
     }
 
-    const resolvedId = resolveAgentId(agentId)
     const destino = getDestino(agentId)
     const backendUrl = destino === 'growth'
       ? `${GROWTH_URL}/api/agents/run`
       : `${JURIS_URL}/api/agents/run`
+
+    // Para Growth: passa o agentId original (Growth center resolve aliases internamente)
+    // Para Juris: resolve aliases legados aqui
+    const resolvedId = destino === 'growth' ? agentId : resolveAgentId(agentId)
 
     const startTime = Date.now()
 
