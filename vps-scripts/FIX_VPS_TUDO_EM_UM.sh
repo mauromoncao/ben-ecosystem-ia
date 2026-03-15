@@ -102,7 +102,7 @@ DB_PASS=${DB_PASS}
 JWT_SECRET=ben_jwt_mauro_moncao_2026_enterprise_secret_key_advogados
 
 # OpenAI (para embeddings vetoriais)
-OPENAI_API_KEY=sk-proj--QsacKTO10qjv2-SUBSTITUA-PELA-CHAVE-REAL
+OPENAI_API_KEY=PREENCHER_OPENAI_KEY
 
 # Monitor admin token
 MONITOR_ADMIN_TOKEN=ben_monitor_mauro_2026_secure
@@ -156,9 +156,9 @@ NODE_ENV=production
 PORT=3188
 
 # ── API Keys (atualizadas 2026-03-14) ─────────────────────
-OPENAI_API_KEY=sk-proj--QsacKTO10qjv2-SUBSTITUA-PELA-CHAVE-REAL
-ANTHROPIC_API_KEY=sk-ant-api03-zUNuAFmy-SUBSTITUA-PELA-CHAVE-REAL
-PERPLEXITY_API_KEY=pplx-Erq9bMc2HNLWkNol-SUBSTITUA-PELA-CHAVE-REAL
+OPENAI_API_KEY=PREENCHER_OPENAI_KEY
+ANTHROPIC_API_KEY=PREENCHER_ANTHROPIC_KEY
+PERPLEXITY_API_KEY=PREENCHER_PERPLEXITY_KEY
 
 # ── Configurações ──────────────────────────────────────────
 CORS_ORIGINS=https://ecosystem.mauromoncao.adv.br,https://juris.mauromoncao.adv.br,https://bengrowth.mauromoncao.adv.br,https://ben-agents-worker.mauromoncaoestudos.workers.dev
@@ -692,8 +692,8 @@ echo -e "${YELLOW}⚠️  AÇÕES MANUAIS NECESSÁRIAS:${NC}"
 echo ""
 echo "  1. Atualize as API keys reais no arquivo:"
 echo "     nano $AGENTS_DIR/.env"
-echo "     → OPENAI_API_KEY=sk-proj-..."
-echo "     → ANTHROPIC_API_KEY=sk-ant-api03-..."
+echo "     → OPENAI_API_KEY=<sua-chave-openai>"
+echo "     → ANTHROPIC_API_KEY=<sua-chave-anthropic>"
 echo "     → PERPLEXITY_API_KEY=pplx-..."
 echo ""
 echo "  2. Após atualizar as keys:"

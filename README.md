@@ -6,8 +6,8 @@
 ## Visão Geral
 
 Produto independente do **BEN Strategic Intelligence Hub**, integrado aos dois sistemas:
-- **Ben Growth Center** (`ben-growth-center.vercel.app`) — 6 agentes Growth
-- **Ben Juris Center** (`ben-juris-center.vercel.app`) — 11 agentes Juris
+- **Ben Growth Center** (`bengrowth.mauromoncao.adv.br`) — 6 agentes Growth
+- **Ben Juris Center** (`juris.mauromoncao.adv.br`) — 11 agentes Juris
 
 Total: **17 agentes de IA** em um workspace unificado, com chat livre estilo ChatGPT/Genspark.
 
@@ -18,8 +18,8 @@ hub.mauromoncao.adv.br
     ├── bengrowth.mauromoncao.adv.br  ──→ /ecosystem (link externo)
     ├── juris.mauromoncao.adv.br      ──→ /ecosystem (link externo)
     └── ecosystem.mauromoncao.adv.br  ◄── este projeto
-            ├── API: ben-growth-center.vercel.app/api/agents/run  (Growth)
-            └── API: ben-juris-center.vercel.app/api/agents/run   (Juris)
+            ├── API: bengrowth.mauromoncao.adv.br/api/agents/run  (Growth)
+            └── API: juris.mauromoncao.adv.br/api/agents/run   (Juris)
 ```
 
 ## Agentes
@@ -54,16 +54,16 @@ hub.mauromoncao.adv.br
 ```bash
 npm install
 npm run build
-npx vercel --prod
+npx wrangler pages deploy dist
 ```
 
-## Variáveis de Ambiente (Vercel)
+## Variáveis de Ambiente (Cloudflare Pages)
 
 ```
 VITE_AUTH_EMAIL_1=admin@mauromoncao.adv.br
 VITE_AUTH_SENHA_1=suasenha
-VITE_GROWTH_API_URL=https://ben-growth-center.vercel.app
-VITE_JURIS_API_URL=https://ben-juris-center.vercel.app
+VITE_GROWTH_API_URL=https://bengrowth.mauromoncao.adv.br
+VITE_JURIS_API_URL=https://juris.mauromoncao.adv.br
 ```
 
 ## Integração com os Painéis
@@ -87,7 +87,7 @@ Para adicionar o botão "Ben Ecosystem IA" nos outros sistemas:
 - Tailwind CSS
 - lucide-react (ícones)
 - react-router-dom v6
-- Deploy: Vercel
+- Deploy: Cloudflare Pages
 
 ## URL Final
 

@@ -21,10 +21,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-// Credenciais locais (fallback quando não vem token externo)
+// Credenciais locais (lidas exclusivamente de variáveis de ambiente)
+// ⚠️ SEGURANÇA: sem fallback hardcoded — configure VITE_AUTH_* no Cloudflare Pages
 const LOCAL_CREDENTIALS = [
-  { email: import.meta.env.VITE_AUTH_EMAIL_1 || 'mauromoncaoestudos@gmail.com', senha: import.meta.env.VITE_AUTH_SENHA_1 || 'BenHub@Center2026', nome: 'Mauro Monção' },
-  { email: import.meta.env.VITE_AUTH_EMAIL_2 || 'mauromoncaoadv.escritorio@gmail.com', senha: import.meta.env.VITE_AUTH_SENHA_2 || 'BenHub@Center2026', nome: 'Mauro Monção' },
+  { email: import.meta.env.VITE_AUTH_EMAIL_1, senha: import.meta.env.VITE_AUTH_SENHA_1, nome: 'Mauro Monção' },
+  { email: import.meta.env.VITE_AUTH_EMAIL_2, senha: import.meta.env.VITE_AUTH_SENHA_2, nome: 'Mauro Monção' },
 ].filter(c => c.email && c.senha)
 
 const STORAGE_KEY = 'ben_ecosystem_auth'
