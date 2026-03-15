@@ -99,9 +99,10 @@ export async function onRequest(context) {
       ? `${GROWTH_URL}/api/agents/run`
       : `${JURIS_URL}/api/agents/run`
 
-    // Para Growth: passa o agentId original (Growth center resolve aliases internamente)
-    // Para Juris: resolve aliases legados aqui
-    const resolvedId = destino === 'growth' ? agentId : resolveAgentId(agentId)
+    // Resolve aliases SEMPRE — tanto para Growth quanto para Juris
+    // Growth: ben-atendente → ben-growth-atendente (CF Worker precisa do nome canônico)
+    // Juris: resolve aliases legados
+    const resolvedId = resolveAgentId(agentId)
 
     const startTime = Date.now()
 
