@@ -68,7 +68,7 @@ const AGENT_EMOJI: Record<string,string> = {
   'ben-contratualista':'📋','ben-mandatario-juridico':'📜',
   'ben-analista-processual':'🔬','ben-auditor-processual':'🔏',
   'ben-gestor-juridico':'🏢','ben-tributarista':'💰',
-  'ben-trabalhista':'👷','ben-previdenciarista':'🏛️',
+  'ben-trabalhista':'👷','ben-previdenciarista':'🔱',
   'ben-pesquisador-juridico':'🔎','ben-especialista-compliance':'🛡️',
   'ben-relator-juridico':'📚','ben-redator-juridico':'✒️',
   'ben-constitucionalista':'⚡','ben-engenheiro-prompt':'🧠',
