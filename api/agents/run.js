@@ -26,7 +26,8 @@ const VPS_LEADS_URL  = (process.env.VPS_LEADS_URL       || 'http://181.215.135.2
 const GROWTH_AGENTS = new Set([
   'ben-atendente', 'ben-conteudista', 'ben-estrategista-campanhas',
   'ben-estrategista-marketing', 'ben-analista-relatorios',
-  'ben-diretor-criativo', 'ben-analista-monitoramento', 'mara-ia',
+  'ben-diretor-criativo', 'ben-analista-monitoramento',
+  // mara-ia: NATIVA do Growth Center — NÃO rotear pelo Ecosystem (regra canônica)
   // aliases growth
   'ben-growth-atendente', 'ben-growth-conteudista', 'ben-growth-campanhas',
   'ben-growth-marketing', 'ben-growth-relatorios', 'ben-growth-criativo',
