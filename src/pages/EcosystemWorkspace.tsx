@@ -11,7 +11,7 @@ import {
   Clock, PanelRight, PanelRightClose,
   TrendingUp, Scale, BarChart3, Cpu, FlaskConical, Users,
   Mail, FolderOpen, FileImage, Stamp, ChevronLeft,
-  BookOpen, Mic, Sparkles,
+  BookOpen, Mic, Sparkles, Database,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -198,6 +198,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [useSearch, setUseSearch] = useState(false)
+  const [useKnowledge, setUseKnowledge] = useState(false)
   const [attachment, setAttachment] = useState<AttachmentItem | null>(null)
 
   const [showHistory, setShowHistory] = useState(true)
@@ -353,6 +354,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
           agentId: selectedAgent.id,
           input: artifactContext + msg + attachContext,
           useSearch,
+          useKnowledge,
           modelOverride: modelOverride ?? undefined,
           // Passa namespace Pinecone para RAG no backend
           pdfNamespace: attachment?.namespace || undefined,
@@ -395,7 +397,7 @@ export default function EcosystemWorkspace({ pendingAgentId, onAgentOpened }: Ec
     } finally {
       setLoading(false)
     }
-  }, [input, loading, selectedAgent, activeConvId, useSearch, attachment])
+  }, [input, loading, selectedAgent, activeConvId, useSearch, useKnowledge, attachment])
 
   const copyArtifact = () => {
     navigator.clipboard.writeText(artifactContent)
@@ -1105,6 +1107,19 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                       )}
                     </div>
 
+                    {/* Acervo KB */}
+                    <button onClick={() => setUseKnowledge(!useKnowledge)}
+                      className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-all font-medium"
+                      style={{
+                        background: useKnowledge ? 'rgba(139,92,246,0.12)' : '#F4F6FA',
+                        color: useKnowledge ? '#7C3AED' : '#6B7280',
+                        border: `1px solid ${useKnowledge ? '#A78BFA' : '#E2E8F0'}`,
+                      }}
+                      title="Consultar acervo do escritório (Knowledge Base)">
+                      <Database className="w-3.5 h-3.5" />
+                      <span>Acervo</span>
+                    </button>
+
                     {/* Pesquisa web */}
                     <button onClick={() => setUseSearch(!useSearch)}
                       className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-all font-medium"
@@ -1177,6 +1192,12 @@ Tel: [Telefone] | E-mail: contato@mauromoncao.adv.br
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
                     style={{ background: '#EFF6FF', color: '#2563EB' }}>
                     <Globe className="w-3 h-3" /> Web ativa
+                  </span>
+                )}
+                {useKnowledge && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+                    style={{ background: 'rgba(139,92,246,0.1)', color: '#7C3AED', border: '1px solid rgba(139,92,246,0.3)' }}>
+                    <Database className="w-3 h-3" /> Acervo ativo
                   </span>
                 )}
                 {artifactOpen && artifactContent && (

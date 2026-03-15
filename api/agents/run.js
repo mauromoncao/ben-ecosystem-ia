@@ -1,5 +1,5 @@
 // ============================================================
-// BEN ECOSYSTEM IA — Proxy de Agentes v6.0
+// BEN ECOSYSTEM IA — Proxy de Agentes v6.1
 // Rota: POST /api/agents/run
 //
 // Roteia para:
@@ -7,20 +7,60 @@
 //   2° Juris Center: juris.mauromoncao.adv.br/api/agents/run
 //   3° Growth Center: bengrowth.mauromoncao.adv.br/api/agents/run
 //
-// ── TODOS OS AGENTES (35) ────────────────────────────────────
-//   JURIS (28): maximus, premium, standard, tributarista,
-//     processualista, pesquisador, engenheiro, contador (9),
-//     perito (7), assistente-geral, assistente-cnj, voz, monitor-juridico
-//   GROWTH (7): atendente, conteudista, campanhas, marketing,
-//     relatorios, criativo, monitoramento
+// v6.1: Knowledge Base Integration
+//   - useKnowledge: true → busca no acervo vetorial antes de responder
+//   - context.kb_results injetado automaticamente no payload
 // ============================================================
 
 export const config = { maxDuration: 120 }
 
 const VPS_AGENTS_URL = 'http://181.215.135.202:3188'
+const VPS_PARSER_URL = process.env.VPS_PARSER_URL || 'http://181.215.135.202:3010'
 const GROWTH_URL     = (process.env.VITE_GROWTH_API_URL || 'https://bengrowth.mauromoncao.adv.br').trim()
 const JURIS_URL      = (process.env.VITE_JURIS_API_URL  || 'https://juris.mauromoncao.adv.br').trim()
 const VPS_LEADS_URL  = (process.env.VPS_LEADS_URL       || 'http://181.215.135.202:3001').trim()
+const FILE_PARSER_TOKEN = process.env.FILE_PARSER_TOKEN || 'ben-parser-2026'
+
+// ── Knowledge Base: busca semântica antes do agente responder ─
+async function searchKnowledgeBase(query, options = {}) {
+  const { namespace, category, topK = 6 } = options
+  try {
+    const res = await fetch(`${VPS_PARSER_URL}/kb-search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-parser-token': FILE_PARSER_TOKEN,
+      },
+      body: JSON.stringify({ query, namespace, category, topK }),
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.results || []
+  } catch { return null }
+}
+
+// ── Formata resultados KB para injetar no contexto do agente ──
+function formatKBContext(results) {
+  if (!results || results.length === 0) return null
+
+  let ctx = '\n\n=== CONTEXTO DO ACERVO DO ESCRITÓRIO (Knowledge Base) ===\n'
+  ctx += 'Os seguintes documentos do escritório são relevantes para esta consulta:\n\n'
+
+  for (const r of results.slice(0, 5)) {
+    ctx += `📄 **${r.filename}**`
+    if (r.category)   ctx += ` [${r.category}]`
+    if (r.process_id) ctx += ` | Processo: ${r.process_id}`
+    if (r.client_id)  ctx += ` | Cliente: ${r.client_id}`
+    ctx += `\nRelevância: ${Math.round(r.score * 100)}%\n`
+    if (r.excerpts && r.excerpts[0]) {
+      ctx += `Trecho: ${r.excerpts[0].text?.slice(0, 600)}\n`
+    }
+    ctx += '\n'
+  }
+  ctx += '=== FIM DO CONTEXTO DO ACERVO ===\n'
+  return ctx
+}
 
 // ── TODOS os IDs canônicos ────────────────────────────────────
 const GROWTH_AGENTS = new Set([
@@ -164,7 +204,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' })
 
   try {
-    const { agentId, input, context = {}, useSearch = false, useMemory = false, clientId, modelOverride } = req.body || {}
+    const { agentId, input, context = {}, useSearch = false, useMemory = false,
+            useKnowledge = false, kbNamespace, kbCategory,
+            clientId, modelOverride } = req.body || {}
 
     if (!agentId || !input) {
       return res.status(400).json({ error: 'agentId e input são obrigatórios' })
@@ -173,13 +215,34 @@ export default async function handler(req, res) {
     const resolvedId = resolveAgentId(agentId)
     const destino    = getDestino(agentId)
 
-    console.log(`[Ecosystem v6.0] ${agentId} → ${resolvedId} → ${destino}`)
+    console.log(`[Ecosystem v6.1] ${agentId} → ${resolvedId} → ${destino} | KB:${useKnowledge}`)
+
+    // ── Knowledge Base Injection ──────────────────────────────
+    let kbContext    = null
+    let kbResults    = null
+    if (useKnowledge) {
+      kbResults = await searchKnowledgeBase(input, {
+        namespace: kbNamespace,
+        category:  kbCategory,
+        topK: 6,
+      })
+      kbContext = formatKBContext(kbResults)
+      if (kbContext) {
+        console.log(`[KB] ${kbResults?.length || 0} docs encontrados para: "${input.slice(0,60)}..."`)
+      }
+    }
 
     const startTime = Date.now()
     const payload = {
       agentId: resolvedId,
-      input,
-      context: { ...context, source: 'ben-ecosystem-ia', version: '6.0' },
+      input: kbContext ? `${input}${kbContext}` : input,
+      context: {
+        ...context,
+        source: 'ben-ecosystem-ia',
+        version: '6.1',
+        kb_used: !!kbContext,
+        kb_docs: kbResults?.length || 0,
+      },
       useSearch, useMemory, clientId, modelOverride,
     }
 
@@ -204,7 +267,8 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({
-      ...data, destino, via, proxiedBy: 'ben-ecosystem-ia-v6', elapsed_ms: elapsed,
+      ...data, destino, via, proxiedBy: 'ben-ecosystem-ia-v6.1', elapsed_ms: elapsed,
+      kb_used: !!kbContext, kb_docs: kbResults?.length || 0,
     })
 
   } catch (error) {
