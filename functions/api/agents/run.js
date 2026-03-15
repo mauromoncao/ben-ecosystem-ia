@@ -32,9 +32,10 @@ const GROWTH_AGENTS = new Set([
   'ben-growth-monitoramento',
 ])
 
-// ── Aliases legados (apenas Juris) ──────────────────────────
-// NOTA: Growth aliases são resolvidos DENTRO do ben-growth-center
+// ── Aliases — Juris legados + Growth (nome curto → canônico ben-growth-*) ─
+// Growth aliases resolvidos AQUI para garantir que o CF Worker receba o nome certo
 const AGENT_ALIASES = {
+  // Juris legados
   'ben-super-agente-juridico': 'ben-agente-operacional-maximus',
   'ben-juridico':              'ben-agente-operacional-premium',
   'ben-copilot':               'ben-assistente-geral',
@@ -44,7 +45,14 @@ const AGENT_ALIASES = {
   'ben-perito-laudo':          'ben-perito-forense-laudo',
   'ben-perito-contraditorio':  'ben-perito-forense-contestar',
   'ben-perito-relatorio':      'ben-perito-forense-relatorio',
-  // Growth aliases NÃO são resolvidos aqui — Growth center faz isso
+  // Growth: nome curto → nome canônico ben-growth-* (aceito pelo CF Worker)
+  'ben-atendente':              'ben-growth-atendente',
+  'ben-conteudista':            'ben-growth-conteudista',
+  'ben-estrategista-campanhas': 'ben-growth-campanhas',
+  'ben-estrategista-marketing': 'ben-growth-marketing',
+  'ben-analista-relatorios':    'ben-growth-relatorios',
+  'ben-diretor-criativo':       'ben-growth-criativo',
+  'ben-analista-monitoramento': 'ben-growth-monitoramento',
 }
 
 function resolveAgentId(agentId) {
